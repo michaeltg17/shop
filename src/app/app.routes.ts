@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { CustomersTable } from './components/customers-table/customers-table';
 import { UserPage } from './components/user-page/user-page';
+import { ProductsPage } from './components/products-page/products-page';
 import { PendingChangesGuard } from './guards/pending-changes.guard';
 
 export const routes: Routes = [
@@ -24,5 +25,6 @@ export const routes: Routes = [
     canDeactivate: [PendingChangesGuard],
     runGuardsAndResolvers: 'always'
   },
-  { path: 'user', component: UserPage }
+  { path: 'user', component: UserPage },
+  { path: 'products', component: ProductsPage }
 ];
