@@ -34,6 +34,11 @@
       }
     </mat-form-field>
 
+    <mat-form-field>
+      <mat-label>Phone number</mat-label>
+      <input matInput [formControl]="phoneNumber" [readonly]="data.mode === dialogMode.View" />
+    </mat-form-field>
+
     <mat-checkbox [formControl]="isActive"> Active </mat-checkbox>
   </div>
 </mat-dialog-content>

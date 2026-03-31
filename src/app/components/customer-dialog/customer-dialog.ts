@@ -38,6 +38,10 @@ export class CustomerDialog implements OnDestroy {
     validators: [Validators.required, Validators.email]
   });
 
+  phoneNumber = new FormControl(this.data.customer?.phoneNumber ?? '', {
+    nonNullable: true
+  });
+
   isActive = new FormControl(
     { value: this.data.customer?.isActive ?? true, disabled: this.data.mode === DialogMode.View },
     {
@@ -83,7 +87,8 @@ export class CustomerDialog implements OnDestroy {
       firstName: this.firstName.value,
       lastName: this.lastName.value,
       email: this.email.value,
-      isActive: this.isActive.value
+      isActive: this.isActive.value,
+      phoneNumber: this.phoneNumber.value
     });
   }
 

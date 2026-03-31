@@ -70,6 +70,7 @@ export class CustomersTable implements OnInit, AfterViewInit {
     { key: 'firstName', label: 'First Name' },
     { key: 'lastName', label: 'Last Name' },
     { key: 'email', label: 'Email' },
+    { key: 'phoneNumber', label: 'Phone Number' },
     { key: 'isActive', label: 'Active' }
   ];
   displayedColumns = ['select', ...this.columns.map(c => c.key)];
