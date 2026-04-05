@@ -1,0 +1,101 @@
+<div class="contact-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Contact Us</mat-card-title>
+      <mat-card-subtitle>Have questions or feedback? Get in touch!</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" placeholder="Enter your name">
+          @if (name?.invalid && name?.touched) {
+            @if (name?.errors?.['required']) {
+              <mat-error>Name is required</mat-error>
+            }
+            @if (name?.errors?.['minlength']) {
+              <mat-error>Name must be at least 2 characters</mat-error>
+            }
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" placeholder="Enter your email">
+          @if (email?.invalid && email?.touched) {
+            @if (email?.errors?.['required']) {
+              <mat-error>Email is required</mat-error>
+            }
+            @if (email?.errors?.['email']) {
+              <mat-error>Please enter a valid email</mat-error>
+            }
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Subject</mat-label>
+          <input matInput formControlName="subject" placeholder="Enter subject">
+          @if (subject?.invalid && subject?.touched) {
+            @if (subject?.errors?.['required']) {
+              <mat-error>Subject is required</mat-error>
+            }
+            @if (subject?.errors?.['minlength']) {
+              <mat-error>Subject must be at least 5 characters</mat-error>
+            }
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Message</mat-label>
+          <textarea matInput formControlName="message" placeholder="Enter your message" rows="5"></textarea>
+          @if (message?.invalid && message?.touched) {
+            @if (message?.errors?.['required']) {
+              <mat-error>Message is required</mat-error>
+            }
+            @if (message?.errors?.['minlength']) {
+              <mat-error>Message must be at least 10 characters</mat-error>
+            }
+          }
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="contactForm.invalid"
+          class="submit-button">
+          Send Message
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="contact-info">
+    <mat-card-header>
+      <mat-card-title>Our Information</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="contact-details">
+        <div class="contact-item">
+          <h3>📍 Address</h3>
+          <p>123 Business Street</p>
+          <p>San Francisco, CA 94107</p>
+        </div>
+        <div class="contact-item">
+          <h3>📞 Phone</h3>
+          <p>+1 (555) 123-4567</p>
+        </div>
+        <div class="contact-item">
+          <h3>✉️ Email</h3>
+          <p>contact@example.com</p>
+        </div>
+        <div class="contact-item">
+          <h3>🕒 Hours</h3>
+          <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+          <p>Saturday: 10:00 AM - 4:00 PM</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
