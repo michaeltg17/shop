@@ -1,0 +1,56 @@
+.carriers-page {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 16px;
+  }
+
+  .filter-field {
+    flex: 1;
+  }
+
+  .table-container {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .carriers-table {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+  }
+
+  .error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    padding: 16px;
+  }
+
+  .actions-container {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 8px;
+    border-top: 1px solid #ccc;
+  }
+
+  .add-button {
+    margin-left: 16px;
+  }
+}

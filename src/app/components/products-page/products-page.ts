@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { signal } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-products-page',
@@ -20,27 +22,29 @@ import { MatIconModule } from '@angular/material/icon';
 export class ProductsPage implements OnInit {
   private productService = inject(ProductService);
 
-  products: Product[] = [];
-  loading = false;
-  error: string | null = null;
+  products = signal<Product[]>([]);
+  loading = signal(false);
+  error = signal<string | null>(null);
 
   ngOnInit() {
     this.loadProducts();
   }
 
   loadProducts() {
-    this.loading = true;
-    this.error = null;
+    this.loading.set(true);
+    this.error.set(null);
 
-    try {
-      this.productService.loadProducts();
-      this.products = this.productService.products();
-      this.loading = false;
-    } catch (err) {
-      this.error = 'Failed to load products';
-      this.loading = false;
-      console.error('Error loading products:', err);
-    }
+    this.productService.loadProducts().subscribe({
+      next: (products) => {
+        this.products.set(products);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.error.set('Failed to load products');
+        this.loading.set(false);
+        console.error('Error loading products:', err);
+      }
+    });
   }
 
   trackByProductId(index: number, product: Product): number {

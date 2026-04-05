@@ -1,17 +1,17 @@
 <div class="products-page">
   <h1>Products</h1>
 
-  @if (loading) {
+  @if (loading()) {
     <div class="loading">Loading products...</div>
   }
 
-  @if (error) {
-    <div class="error">{{ error }}</div>
+  @if (error()) {
+    <div class="error">{{ error() }}</div>
   }
 
-  @if (!loading && !error) {
+  @if (!loading() && !error()) {
     <div class="products-grid">
-      @for (product of products; track trackByProductId(product)) {
+      @for (product of products(); track trackByProductId(product)) {
         <mat-card class="product-card">
           @if (product.imageUrl) {
             <img mat-card-image [src]="product.imageUrl" [alt]="product.title">

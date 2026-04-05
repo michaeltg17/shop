@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "title": "Wireless Bluetooth Headphones",
+    "description": "Premium wireless headphones with noise cancellation and 30-hour battery life.",
+    "price": 129.99,
+    "imageUrl": "https://via.placeholder.com/300x200?text=Wireless+Headphones"
+  },
+  {
+    "id": 2,
+    "title": "Smart Fitness Watch",
+    "description": "Advanced fitness tracker with heart rate monitoring and GPS tracking.",
+    "price": 199.99,
+    "imageUrl": "https://via.placeholder.com/300x200?text=Fitness+Watch"
+  },
+  {
+    "id": 3,
+    "title": "Portable USB Charger",
+    "description": "High-capacity portable charger with fast charging technology for all devices.",
+    "price": 39.99,
+    "imageUrl": "https://via.placeholder.com/300x200?text=USB+Charger"
+  },
+  {
+    "id": 4,
+    "title": "Wireless Charging Pad",
+    "description": "Fast wireless charging pad compatible with all Qi-enabled devices.",
+    "price": 29.99,
+    "imageUrl": "https://via.placeholder.com/300x200?text=Charging+Pad"
+  },
+  {
+    "id": 5,
+    "title": "Smart Home Hub",
+    "description": "Central hub for controlling all your smart home devices with voice control.",
+    "price": 89.99,
+    "imageUrl": "https://via.placeholder.com/300x200?text=Smart+Hub"
+  },
+  {
+    "id": 6,
+    "title": "Ergonomic Office Chair",
+    "description": "Comfortable ergonomic chair with lumbar support and adjustable height.",
+    "price": 299.99,
+    "imageUrl": "https://via.placeholder.com/300x200?text=Office+Chair"
+  },
+  {
+    "id": 7,
+    "title": "Mechanical Gaming Keyboard",
+    "description": "High-performance mechanical keyboard with RGB lighting and programmable keys.",
+    "price": 79.99,
+    "imageUrl": "https://via.placeholder.com/300x200?text=Gaming+Keyboard"
+  },
+  {
+    "id": 8,
+    "title": "4K Ultra HD Smart TV",
+    "description": "55-inch 4K Ultra HD Smart TV with HDR and smart streaming capabilities.",
+    "price": 599.99,
+    "imageUrl": "https://via.placeholder.com/300x200?text=Smart+TV"
+  },
+  {
+    "id": 9,
+    "title": "Digital Camera",
+    "description": "24MP digital camera with 4K video recording and image stabilization.",
+    "price": 349.99,
+    "imageUrl": "https://via.placeholder.com/300x200?text=Digital+Camera"
+  },
+  {
+    "id": 10,
+    "title": "Tablet Computer",
+    "description": "10-inch tablet with powerful processor and all-day battery life.",
+    "price": 249.99,
+    "imageUrl": "https://via.placeholder.com/300x200?text=Tablet"
+  }
+]

@@ -1,0 +1,44 @@
+<div class="carrier-dialog">
+  <h2 matDialogTitle>
+    {{ isEditing ? 'Edit Carrier' : 'Add New Carrier' }}
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="carrierForm" (ngSubmit)="onSubmit()" class="carrier-form">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Carrier Name</mat-label>
+        <input matInput formControlName="name" required>
+        @if (carrierForm.get('name')?.invalid && carrierForm.get('name')?.touched) {
+          <mat-error>
+            @if (carrierForm.get('name')?.errors?.['required']) {
+              Carrier name is required
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Tracking URL</mat-label>
+        <input matInput formControlName="trackingUrl" required>
+        @if (carrierForm.get('trackingUrl')?.invalid && carrierForm.get('trackingUrl')?.touched) {
+          <mat-error>
+            @if (carrierForm.get('trackingUrl')?.errors?.['required']) {
+              Tracking URL is required
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-checkbox formControlName="isActive">
+        Active
+      </mat-checkbox>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="carrierForm.invalid">
+      {{ isEditing ? 'Update' : 'Add' }}
+    </button>
+  </mat-dialog-actions>
+</div>
