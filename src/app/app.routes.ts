@@ -5,30 +5,36 @@ import { ProductsPage } from './components/products-page/products-page';
 import { ContactPage } from './components/contact-page/contact-page';
 import { CarriersPage } from './components/carriers-page/carriers-page';
 import { PendingChangesGuard } from './guards/pending-changes.guard';
+import { LoginPage } from './components/login-page/login-page';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'customers', pathMatch: 'full' },
-  { path: 'customers', component: CustomersTable, canDeactivate: [PendingChangesGuard], runGuardsAndResolvers: 'always' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login', component: LoginPage },
+  { path: 'customers', component: CustomersTable, canDeactivate: [PendingChangesGuard], runGuardsAndResolvers: 'always', canActivate: [AuthGuard] },
   {
     path: 'customers/new',
     component: CustomersTable,
     canDeactivate: [PendingChangesGuard],
-    runGuardsAndResolvers: 'always'
+    runGuardsAndResolvers: 'always',
+    canActivate: [AuthGuard]
   },
   {
     path: 'customers/:id',
     component: CustomersTable,
     canDeactivate: [PendingChangesGuard],
-    runGuardsAndResolvers: 'always'
+    runGuardsAndResolvers: 'always',
+    canActivate: [AuthGuard]
   },
   {
     path: 'customers/:id/edit',
     component: CustomersTable,
     canDeactivate: [PendingChangesGuard],
-    runGuardsAndResolvers: 'always'
+    runGuardsAndResolvers: 'always',
+    canActivate: [AuthGuard]
   },
-  { path: 'user', component: UserPage },
-  { path: 'products', component: ProductsPage },
+  { path: 'user', component: UserPage, canActivate: [AuthGuard] },
+  { path: 'products', component: ProductsPage, canActivate: [AuthGuard] }
   { path: 'contact', component: ContactPage }
   { path: 'carriers', component: CarriersPage }
 ];
