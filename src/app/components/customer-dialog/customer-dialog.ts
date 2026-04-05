@@ -55,6 +55,7 @@ export class CustomerDialog implements OnDestroy {
       this.lastName.disable();
       this.email.disable();
       this.isActive.disable();
+      this.phoneNumber.disable();
     }
     // dynamic disableClose: prevent closing when the user made changes
     // initially allow close (unless in view mode where fields are disabled)
