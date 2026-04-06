@@ -39,7 +39,7 @@ export interface CarrierDialogData {
 export class CarrierDialog implements OnInit {
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<CarrierDialog>);
-  @Inject(MAT_DIALOG_DATA) public data: CarrierDialogData = {} as CarrierDialogData;
+  @Inject(MAT_DIALOG_DATA) public data: CarrierDialogData = {};
 
   carrierForm!: FormGroup;
   isEditing = !!this.data.carrier;
