@@ -20,6 +20,7 @@
             <h2 class="product-title">{{ product.title }}</h2>
             <p class="product-description">{{ product.description }}</p>
             <p class="product-price">${{ product.price }}</p>
+            <button (click)="addToCart(product)" class="btn btn-primary">Add to Cart</button>
           </mat-card-content>
         </mat-card>
       }
