@@ -34,7 +34,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   { path: 'user', component: UserPage, canActivate: [AuthGuard] },
-  { path: 'products', component: ProductsPage, canActivate: [AuthGuard] }
-  { path: 'contact', component: ContactPage }
+  { path: 'products', component: ProductsPage, canActivate: [AuthGuard] },
+  { path: 'contact', component: ContactPage },
   { path: 'carriers', component: CarriersPage }
 ];
