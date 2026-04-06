@@ -6,7 +6,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { signal } from '@angular/core';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-products-page',
@@ -53,7 +52,11 @@ export class ProductsPage implements OnInit {
 
   addToCart(product: Product): void {
     // Add to cart functionality using localStorage
-    let cartItems: any[] = [];
+    interface CartItem {
+      product: Product;
+      quantity: number;
+    }
+    let cartItems: CartItem[] = [];
 
     // Get existing cart items from localStorage
     const cartData = localStorage.getItem('shoppingCart');

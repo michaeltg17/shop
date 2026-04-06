@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Carrier } from '../models/carrier';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -57,7 +57,7 @@ export class CarrierService {
         this.carriers.set(carriers);
         this.carriersSubject.next(carriers);
         this.loading.set(false);
-      } catch (err) {
+      } catch {
         this.error.set('Failed to load carriers');
         this.loading.set(false);
       }
@@ -84,7 +84,7 @@ export class CarrierService {
         this.carriersSubject.next(updatedCarriers);
         this.saveCarriers(updatedCarriers);
         this.loading.set(false);
-      } catch (err) {
+      } catch {
         this.error.set('Failed to add carrier');
         this.loading.set(false);
       }
@@ -106,7 +106,7 @@ export class CarrierService {
         this.carriersSubject.next(updatedCarriers);
         this.saveCarriers(updatedCarriers);
         this.loading.set(false);
-      } catch (err) {
+      } catch {
         this.error.set('Failed to update carrier');
         this.loading.set(false);
       }
@@ -126,7 +126,7 @@ export class CarrierService {
         this.carriersSubject.next(updatedCarriers);
         this.saveCarriers(updatedCarriers);
         this.loading.set(false);
-      } catch (err) {
+      } catch {
         this.error.set('Failed to delete carrier');
         this.loading.set(false);
       }

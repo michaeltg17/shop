@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,7 +29,7 @@ export class LoginPage implements OnInit {
   isLoginLoading = false;
   loginError: string | null = null;
 
-  constructor(private router: Router) {}
+  private router = inject(Router);
 
   ngOnInit() {
     // Check if user is already logged in

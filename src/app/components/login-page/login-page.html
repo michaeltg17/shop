@@ -31,9 +31,11 @@
         <mat-icon matPrefix>lock</mat-icon>
       </mat-form-field>
 
-      <div class="error-message" *ngIf="loginError">
+      @if (loginError) {
+      <div class="error-message">
         {{ loginError }}
       </div>
+      }
 
       <button
         mat-raised-button
@@ -42,8 +44,11 @@
         type="submit"
         [disabled]="isLoginLoading"
       >
-        <span *ngIf="!isLoginLoading">Sign In</span>
-        <mat-spinner *ngIf="isLoginLoading" diameter="20"></mat-spinner>
+        @if (!isLoginLoading) {
+        <span>Sign In</span>
+        } @else {
+        <mat-spinner diameter="20"></mat-spinner>
+        }
       </button>
     </form>
   </div>

@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./cart-icon.scss']
 })
 export class CartIcon implements OnInit, OnDestroy {
-  cartItemCount: number = 0;
+  cartItemCount = 0;
 
   ngOnInit(): void {
     this.loadCartCount();
@@ -28,11 +28,11 @@ export class CartIcon implements OnInit, OnDestroy {
       const cartData = localStorage.getItem('shoppingCart');
       if (cartData) {
         const cartItems = JSON.parse(cartData);
-        this.cartItemCount = cartItems.reduce((total: number, item: any) => total + item.quantity, 0);
+        this.cartItemCount = cartItems.reduce((total: number, item: { quantity: number }) => total + item.quantity, 0);
       } else {
         this.cartItemCount = 0;
       }
-    } catch (error) {
+    } catch {
       this.cartItemCount = 0;
     }
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Product } from '../../models/product';
 
@@ -14,13 +14,11 @@ export interface CartItem {
 })
 export class CartPage implements OnInit, OnDestroy {
   cartItems: CartItem[] = [];
-  subtotal: number = 0;
-  shipping: number = 5.99;
-  total: number = 0;
+  subtotal = 0;
+  shipping = 5.99;
+  total = 0;
 
-  constructor(
-    private router: Router
-  ) {}
+  private router = inject(Router);
 
   ngOnInit(): void {
     this.loadCart();
