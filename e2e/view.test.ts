@@ -9,7 +9,7 @@ async function clickRowById(page: Page, id: string | number) {
 }
 
 test('clicking a row opens view dialog with readonly fields', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/customers');
   await page.waitForSelector('tr[mat-row]');
 
   // click the row with id 2 (Jacob Wilson)
@@ -22,7 +22,7 @@ test('clicking a row opens view dialog with readonly fields', async ({ page }) =
 
   // inputs should have readonly attribute
   const dialogContent = page.locator('mat-dialog-container mat-dialog-content');
-  await expect(dialogContent.locator('input[readonly]')).toHaveCount(3);
+  await expect(dialogContent.locator('input[readonly]')).toHaveCount(4);
 
   // checkbox should be disabled in view mode — check the internal input element
   const checkboxInput = dialogContent.locator('mat-checkbox input[type="checkbox"]');

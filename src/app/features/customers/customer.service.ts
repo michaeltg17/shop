@@ -14,6 +14,11 @@ export class CustomerService {
   private readonly http = inject(HttpClient);
 
   loadCustomers() {
+    // Skip API call if customers are already loaded
+    if (this.customers().length > 0) {
+      return;
+    }
+
     this.loading.set(true);
     this.error.set(null);
 

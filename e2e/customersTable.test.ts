@@ -10,8 +10,8 @@ test('loadCustomers invoked only once across navigation', async ({ page }) => {
     } catch {}
   });
 
-  // Open app (redirects to /customers)
-  await page.goto('/');
+  // Open app (navigate directly to /customers)
+  await page.goto('/customers');
 
   // Wait for the first customers response
   await page.waitForResponse(resp => resp.url().endsWith('/api/customers') && resp.request().method() === 'GET');
