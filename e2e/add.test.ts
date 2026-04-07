@@ -9,11 +9,12 @@ async function openAddDialog(page: Page) {
   return page.locator('mat-dialog-container');
 }
 
-async function fillAddForm(dialog: any, first = 'E2E', last = 'User', email = 'e2e@example.com', active = true) {
+async function fillAddForm(dialog: any, first = 'E2E', last = 'User', email = 'e2e@example.com', phone = '123-456-7890', active = true) {
   const inputs = dialog.locator('input');
   await inputs.nth(0).fill(first);
   await inputs.nth(1).fill(last);
   await inputs.nth(2).fill(email);
+  await inputs.nth(3).fill(phone);
   const checkbox = dialog.locator('mat-checkbox input[type="checkbox"]');
   const checked = await checkbox.isChecked();
   if (checked !== active) await dialog.locator('mat-checkbox').click();
@@ -30,11 +31,15 @@ test('Adds correctly - Clicks add button to open add dialog', async ({ page }) =
   const dialog = await openAddDialog(page);
 
   const firstName = `E2EFirst${Date.now()}`;
-  await fillAddForm(dialog, firstName, 'Tester', `${firstName.toLowerCase()}@example.com`, true);
+  const phoneNumber = '123-456-7890';
+  await fillAddForm(dialog, firstName, 'Tester', `${firstName.toLowerCase()}@example.com`, phoneNumber, true);
 
   // click Add button in dialog
   const addBtn = dialog.locator('button:has-text("Add")');
   await expect(addBtn).toBeEnabled();
+  
+  // Get initial row count before adding
+  const initialRowCount = await page.locator('tr[mat-row]').count();
   
   // Wait for POST to complete and dialog to close
   await Promise.all([
@@ -47,18 +52,32 @@ test('Adds correctly - Clicks add button to open add dialog', async ({ page }) =
 
   // Wait for URL to settle
   await page.waitForURL(/\/customers$/);
+
+  // Sort by ID descending to bring the newest customer to the first page
+  // Click on the ID column header to sort
+  const idHeader = page.locator('th[mat-header-cell]:has-text("Id")').first();
+  await idHeader.click();
+  // Click again to toggle to descending order
+  await idHeader.click();
+
+  // Wait for table to update after sorting
+  await page.waitForSelector('tr[mat-row]', { timeout: 5000 });
+
+  // Verify the customer appears as a row in the table with expected data
+  const expectedLastName = 'Tester';
+  const expectedEmail = `${firstName.toLowerCase()}@example.com`;
+  const expectedPhone = phoneNumber;
   
-  // Wait a bit for signal updates
-  await page.waitForTimeout(300);
-
-  // Verify the customer was added by checking the GET request response
-  const customers = await page.evaluate(async () => {
-    const response = await fetch('/api/customers');
-    return response.json();
-  });
-
-  const found = customers.some((c: any) => c.firstName === firstName);
-  expect(found).toBe(true);
+  // Find the row containing the first name (should be first row after sorting by ID desc)
+  const row = page.locator(`tr[mat-row]:has-text("${firstName}")`);
+  await expect(row).toBeVisible();
+  
+  // Verify all expected data is displayed in the row
+  // Table columns: select, id, firstName, lastName, email, phoneNumber, isActive
+  await expect(row.locator('td').nth(2)).toHaveText(firstName);
+  await expect(row.locator('td').nth(3)).toHaveText(expectedLastName);
+  await expect(row.locator('td').nth(4)).toHaveText(expectedEmail);
+  await expect(row.locator('td').nth(5)).toHaveText(expectedPhone);
 });
 
 // Validations - test missing first name
