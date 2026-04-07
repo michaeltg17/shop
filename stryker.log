@@ -7,7 +7,7 @@
   "E:\\r\\Angular\\.angular\\cache\\21.1.2\\app\\vite\\deps\\@angular_cdk_bidi.js.map",
   "E:\\r\\Angular\\.angular\\cache\\21.1.2\\app\\vite\\deps\\@angular_cdk_collections.js",
   "E:\\r\\Angular\\.angular\\cache\\21.1.2\\app\\vite\\deps\\@angular_cdk_collections.js.map",
-  "E:\\r\\Angular\\.angular\\cache\\21.1.2\\app\\vite\\deps\\@angular_cdk_drag-drop.js",
+  "E:\\r\\Angular\\.angular\\cache\\21.1.jkkjkjkj2\\app\\vite\\deps\\@angular_cdk_drag-drop.js",
   "E:\\r\\Angular\\.angular\\cache\\21.1.2\\app\\vite\\deps\\@angular_cdk_drag-drop.js.map",
   "E:\\r\\Angular\\.angular\\cache\\21.1.2\\app\\vite\\deps\\@angular_cdk_text-field.js",
   "E:\\r\\Angular\\.angular\\cache\\21.1.2\\app\\vite\\deps\\@angular_cdk_text-field.js.map",
@@ -324,7 +324,7 @@
   mutate: false
 }
 00:07:44 (12580) INFO ConcurrencyTokenProvider Creating 11 test runner process(es).
-00:07:44 (12580) DEBUG ChildProcessProxy Started CheckerWorker in worker process 0 with pid 4176 
+00:07:44 (12580) DEBUG ChildProcessProxy Started CheckerWorker in worker process 0 with pid 4176
 00:07:45 (4176) DEBUG PluginLoader Loading plugin file:///E:/r/Angular/node_modules/@stryker-mutator/instrumenter/dist/src/frameworks/index.js
 00:07:45 (4176) DEBUG PluginLoader Loading plugin file:///E:/r/Angular/node_modules/@stryker-mutator/core/dist/src/reporters/index.js
 00:07:45 (12580) DEBUG Sandbox Creating a sandbox for files in E:\r\Angular\.stryker-tmp\sandbox-d2NPjE
@@ -411,19 +411,19 @@
 00:09:25 (12580) DEBUG ClearTextReporter -     readonly customers = computed(() => this.customersSignal());
 00:09:25 (12580) DEBUG ClearTextReporter +     readonly customers = computed(() => undefined);
 00:09:25 (12580) DEBUG ClearTextReporter Killed by: All tests
-00:09:25 (12580) DEBUG ClearTextReporter 
+00:09:25 (12580) DEBUG ClearTextReporter
 00:09:25 (12580) DEBUG ClearTextReporter [Killed] StringLiteral
 00:09:25 (12580) DEBUG ClearTextReporter src/app/services/customer.service.ts:8:26
 00:09:25 (12580) DEBUG ClearTextReporter -     private readonly url = '/api/customers';
 00:09:25 (12580) DEBUG ClearTextReporter +     private readonly url = "";
 00:09:25 (12580) DEBUG ClearTextReporter Killed by: All tests
-00:09:25 (12580) DEBUG ClearTextReporter 
+00:09:25 (12580) DEBUG ClearTextReporter
 00:09:25 (12580) DEBUG ClearTextReporter [Killed] BooleanLiteral
 00:09:25 (12580) DEBUG ClearTextReporter src/app/services/customer.service.ts:11:42
 00:09:25 (12580) DEBUG ClearTextReporter -     private readonly loadedSignal = signal(false);
 00:09:25 (12580) DEBUG ClearTextReporter +     private readonly loadedSignal = signal(true);
 00:09:25 (12580) DEBUG ClearTextReporter Killed by: All tests
-00:09:25 (12580) DEBUG ClearTextReporter 
+00:09:25 (12580) DEBUG ClearTextReporter
 00:09:25 (12580) DEBUG ClearTextReporter [Killed] BlockStatement
 00:09:25 (12580) DEBUG ClearTextReporter src/app/services/customer.service.ts:30:19
 00:09:25 (12580) DEBUG ClearTextReporter -     loadCustomers() {
@@ -443,13 +443,13 @@
 00:09:25 (12580) DEBUG ClearTextReporter -     }
 00:09:25 (12580) DEBUG ClearTextReporter +     loadCustomers() {}
 00:09:25 (12580) DEBUG ClearTextReporter Killed by: All tests
-00:09:25 (12580) DEBUG ClearTextReporter 
+00:09:25 (12580) DEBUG ClearTextReporter
 00:09:25 (12580) DEBUG ClearTextReporter [Killed] ConditionalExpression
 00:09:25 (12580) DEBUG ClearTextReporter src/app/services/customer.service.ts:31:9
 00:09:25 (12580) DEBUG ClearTextReporter -       if (this.loadedSignal()) return;
 00:09:25 (12580) DEBUG ClearTextReporter +       if (true) return;
 00:09:25 (12580) DEBUG ClearTextReporter Killed by: All tests
-00:09:25 (12580) DEBUG ClearTextReporter 
+00:09:25 (12580) DEBUG ClearTextReporter
 00:09:25 (12580) DEBUG ClearTextReporter [Killed] ObjectLiteral
 00:09:25 (12580) DEBUG ClearTextReporter src/app/services/customer.service.ts:35:51
 00:09:25 (12580) DEBUG ClearTextReporter -       this.http.get<Customer[]>(this.url).subscribe({
@@ -465,7 +465,7 @@
 00:09:25 (12580) DEBUG ClearTextReporter -       });
 00:09:25 (12580) DEBUG ClearTextReporter +       this.http.get<Customer[]>(this.url).subscribe({});
 00:09:25 (12580) DEBUG ClearTextReporter Killed by: All tests
-00:09:25 (12580) DEBUG ClearTextReporter 
+00:09:25 (12580) DEBUG ClearTextReporter
 00:09:25 (12580) DEBUG ClearTextReporter [Killed] BlockStatement
 00:09:25 (12580) DEBUG ClearTextReporter src/app/services/customer.service.ts:36:21
 00:09:25 (12580) DEBUG ClearTextReporter -         next: data => {
@@ -475,24 +475,24 @@
 00:09:25 (12580) DEBUG ClearTextReporter -         },
 00:09:25 (12580) DEBUG ClearTextReporter +         next: data => {},
 00:09:25 (12580) DEBUG ClearTextReporter Killed by: All tests
-00:09:25 (12580) DEBUG ClearTextReporter 
+00:09:25 (12580) DEBUG ClearTextReporter
 00:09:25 (12580) DEBUG ClearTextReporter [Timeout] ConditionalExpression
 00:09:25 (12580) DEBUG ClearTextReporter src/app/services/customer.service.ts:31:9
 00:09:25 (12580) DEBUG ClearTextReporter -       if (this.loadedSignal()) return;
 00:09:25 (12580) DEBUG ClearTextReporter +       if (false) return;
-00:09:25 (12580) DEBUG ClearTextReporter 
+00:09:25 (12580) DEBUG ClearTextReporter
 00:09:25 (12580) DEBUG ClearTextReporter [Killed] StringLiteral
 00:09:25 (12580) DEBUG ClearTextReporter src/app/services/title.service.ts:7:20
 00:09:25 (12580) DEBUG ClearTextReporter -     getTitle = () => 'Angular App';
 00:09:25 (12580) DEBUG ClearTextReporter +     getTitle = () => "";
 00:09:25 (12580) DEBUG ClearTextReporter Killed by: All tests
-00:09:25 (12580) DEBUG ClearTextReporter 
+00:09:25 (12580) DEBUG ClearTextReporter
 00:09:25 (12580) DEBUG ClearTextReporter [Killed] ArrowFunction
 00:09:25 (12580) DEBUG ClearTextReporter src/app/services/title.service.ts:7:14
 00:09:25 (12580) DEBUG ClearTextReporter -     getTitle = () => 'Angular App';
 00:09:25 (12580) DEBUG ClearTextReporter +     getTitle = () => undefined;
 00:09:25 (12580) DEBUG ClearTextReporter Killed by: All tests
-00:09:25 (12580) DEBUG ClearTextReporter 
+00:09:25 (12580) DEBUG ClearTextReporter
 00:09:25 (12580) DEBUG MutationTestReportHelper No breaking threshold configured. Won't fail the build no matter how low your mutation score is. Set `thresholds.break` to change this behavior.
 00:09:25 (12580) INFO HtmlReporter Your report can be found at: file:///E:/r/Angular/reports/mutation/mutation.html
 00:09:25 (12580) INFO MutationTestExecutor Done in 1 minute and 41 seconds.
@@ -826,7 +826,7 @@
   mutate: false
 }
 20:37:13 (13244) INFO ConcurrencyTokenProvider Creating 11 test runner process(es).
-20:37:13 (13244) DEBUG ChildProcessProxy Started CheckerWorker in worker process 0 with pid 21148 
+20:37:13 (13244) DEBUG ChildProcessProxy Started CheckerWorker in worker process 0 with pid 21148
 20:37:14 (21148) DEBUG PluginLoader Loading plugin file:///E:/r/Angular/node_modules/@stryker-mutator/instrumenter/dist/src/frameworks/index.js
 20:37:14 (21148) DEBUG PluginLoader Loading plugin file:///E:/r/Angular/node_modules/@stryker-mutator/core/dist/src/reporters/index.js
 20:37:14 (13244) DEBUG Sandbox Creating a sandbox for files in E:\r\Angular\.stryker-tmp\sandbox-S506Di
@@ -911,31 +911,31 @@
 20:38:47 (13244) DEBUG ClearTextReporter -     readonly customers = computed(() => this.customersSignal());
 20:38:47 (13244) DEBUG ClearTextReporter +     readonly customers = computed(() => undefined);
 20:38:47 (13244) DEBUG ClearTextReporter Killed by: All tests
-20:38:47 (13244) DEBUG ClearTextReporter 
+20:38:47 (13244) DEBUG ClearTextReporter
 20:38:47 (13244) DEBUG ClearTextReporter [Killed] StringLiteral
 20:38:47 (13244) DEBUG ClearTextReporter src/app/services/customer.service.ts:8:26
 20:38:47 (13244) DEBUG ClearTextReporter -     private readonly url = '/api/customers';
 20:38:47 (13244) DEBUG ClearTextReporter +     private readonly url = "";
 20:38:47 (13244) DEBUG ClearTextReporter Killed by: All tests
-20:38:47 (13244) DEBUG ClearTextReporter 
+20:38:47 (13244) DEBUG ClearTextReporter
 20:38:47 (13244) DEBUG ClearTextReporter [Killed] BooleanLiteral
 20:38:47 (13244) DEBUG ClearTextReporter src/app/services/customer.service.ts:11:42
 20:38:47 (13244) DEBUG ClearTextReporter -     private readonly loadedSignal = signal(false);
 20:38:47 (13244) DEBUG ClearTextReporter +     private readonly loadedSignal = signal(true);
 20:38:47 (13244) DEBUG ClearTextReporter Killed by: All tests
-20:38:47 (13244) DEBUG ClearTextReporter 
+20:38:47 (13244) DEBUG ClearTextReporter
 20:38:47 (13244) DEBUG ClearTextReporter [Killed] ConditionalExpression
 20:38:47 (13244) DEBUG ClearTextReporter src/app/services/customer.service.ts:31:9
 20:38:47 (13244) DEBUG ClearTextReporter -       if (this.loadedSignal()) return;
 20:38:47 (13244) DEBUG ClearTextReporter +       if (false) return;
 20:38:47 (13244) DEBUG ClearTextReporter Killed by: All tests
-20:38:47 (13244) DEBUG ClearTextReporter 
+20:38:47 (13244) DEBUG ClearTextReporter
 20:38:47 (13244) DEBUG ClearTextReporter [Killed] BooleanLiteral
 20:38:47 (13244) DEBUG ClearTextReporter src/app/services/customer.service.ts:38:31
 20:38:47 (13244) DEBUG ClearTextReporter -           this.loadedSignal.set(true);
 20:38:47 (13244) DEBUG ClearTextReporter +           this.loadedSignal.set(false);
 20:38:47 (13244) DEBUG ClearTextReporter Killed by: All tests
-20:38:47 (13244) DEBUG ClearTextReporter 
+20:38:47 (13244) DEBUG ClearTextReporter
 20:38:47 (13244) DEBUG ClearTextReporter [Killed] ObjectLiteral
 20:38:47 (13244) DEBUG ClearTextReporter src/app/services/customer.service.ts:35:51
 20:38:47 (13244) DEBUG ClearTextReporter -       this.http.get<Customer[]>(this.url).subscribe({
@@ -951,7 +951,7 @@
 20:38:47 (13244) DEBUG ClearTextReporter -       });
 20:38:47 (13244) DEBUG ClearTextReporter +       this.http.get<Customer[]>(this.url).subscribe({});
 20:38:47 (13244) DEBUG ClearTextReporter Killed by: All tests
-20:38:47 (13244) DEBUG ClearTextReporter 
+20:38:47 (13244) DEBUG ClearTextReporter
 20:38:47 (13244) DEBUG ClearTextReporter [Killed] BlockStatement
 20:38:47 (13244) DEBUG ClearTextReporter src/app/services/customer.service.ts:36:21
 20:38:47 (13244) DEBUG ClearTextReporter -         next: data => {
@@ -961,7 +961,7 @@
 20:38:47 (13244) DEBUG ClearTextReporter -         },
 20:38:47 (13244) DEBUG ClearTextReporter +         next: data => {},
 20:38:47 (13244) DEBUG ClearTextReporter Killed by: All tests
-20:38:47 (13244) DEBUG ClearTextReporter 
+20:38:47 (13244) DEBUG ClearTextReporter
 20:38:47 (13244) DEBUG ClearTextReporter [Killed] BlockStatement
 20:38:47 (13244) DEBUG ClearTextReporter src/app/services/customer.service.ts:30:19
 20:38:47 (13244) DEBUG ClearTextReporter -     loadCustomers() {
@@ -981,25 +981,25 @@
 20:38:47 (13244) DEBUG ClearTextReporter -     }
 20:38:47 (13244) DEBUG ClearTextReporter +     loadCustomers() {}
 20:38:47 (13244) DEBUG ClearTextReporter Killed by: All tests
-20:38:47 (13244) DEBUG ClearTextReporter 
+20:38:47 (13244) DEBUG ClearTextReporter
 20:38:47 (13244) DEBUG ClearTextReporter [Killed] ConditionalExpression
 20:38:47 (13244) DEBUG ClearTextReporter src/app/services/customer.service.ts:31:9
 20:38:47 (13244) DEBUG ClearTextReporter -       if (this.loadedSignal()) return;
 20:38:47 (13244) DEBUG ClearTextReporter +       if (true) return;
 20:38:47 (13244) DEBUG ClearTextReporter Killed by: All tests
-20:38:47 (13244) DEBUG ClearTextReporter 
+20:38:47 (13244) DEBUG ClearTextReporter
 20:38:47 (13244) DEBUG ClearTextReporter [Killed] ArrowFunction
 20:38:47 (13244) DEBUG ClearTextReporter src/app/services/title.service.ts:7:14
 20:38:47 (13244) DEBUG ClearTextReporter -     getTitle = () => 'Angular App';
 20:38:47 (13244) DEBUG ClearTextReporter +     getTitle = () => undefined;
 20:38:47 (13244) DEBUG ClearTextReporter Killed by: All tests
-20:38:47 (13244) DEBUG ClearTextReporter 
+20:38:47 (13244) DEBUG ClearTextReporter
 20:38:47 (13244) DEBUG ClearTextReporter [Killed] StringLiteral
 20:38:47 (13244) DEBUG ClearTextReporter src/app/services/title.service.ts:7:20
 20:38:47 (13244) DEBUG ClearTextReporter -     getTitle = () => 'Angular App';
 20:38:47 (13244) DEBUG ClearTextReporter +     getTitle = () => "";
 20:38:47 (13244) DEBUG ClearTextReporter Killed by: All tests
-20:38:47 (13244) DEBUG ClearTextReporter 
+20:38:47 (13244) DEBUG ClearTextReporter
 20:38:47 (13244) DEBUG MutationTestReportHelper No breaking threshold configured. Won't fail the build no matter how low your mutation score is. Set `thresholds.break` to change this behavior.
 20:38:47 (13244) INFO HtmlReporter Your report can be found at: file:///E:/r/Angular/reports/mutation/mutation.html
 20:38:47 (13244) INFO MutationTestExecutor Done in 1 minute and 34 seconds.

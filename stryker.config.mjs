@@ -5,8 +5,8 @@ const config = {
   testRunner: 'command',
   coverageAnalysis: 'off',
   buildCommand: 'node start-server.js',
-  //mutate: ['src/app/services/title.service.ts'],
-  mutate: ['src/app/services/title.service.ts', 'src/app/services/customer.service.ts'],
+  mutate: ['src/app/features/customers/customer.service.ts'],
+  //mutate: ['src/app/services/title.service.ts', 'src/app/services/customer.service.ts'],
   //mutate: ['src/app/**/*.ts'],
   commandRunner: {
     command: 'node run-playwright.js'
