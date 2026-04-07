@@ -1,0 +1,32 @@
+<button mat-icon-button [matMenuTriggerFor]="themeMenu">
+  <mat-icon>format_color_fill</mat-icon>
+</button>
+<mat-menu #themeMenu="matMenu" class="theme-selector">
+  <div class="container" role="group" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+    <div>
+      <h3 class="title">Mode</h3>
+      <mat-radio-group
+        class="item-group"
+        [value]="themeService.currentTheme.mode"
+        (change)="themeService.setThemeMode($event.value)"
+      >
+        @for (m of themeModes; track m) {
+        <mat-radio-button [value]="m"> {{ m | titlecase }} </mat-radio-button>
+        }
+      </mat-radio-group>
+    </div>
+
+    <div class="color-section">
+      <h3 class="title">Color</h3>
+      <mat-radio-group
+        class="item-group"
+        [value]="themeService.currentTheme.color"
+        (change)="themeService.setThemeColor($event.value)"
+      >
+        @for (c of themeColors; track c) {
+        <mat-radio-button [value]="c"> {{ c | titlecase }} </mat-radio-button>
+        }
+      </mat-radio-group>
+    </div>
+  </div>
+</mat-menu>

@@ -1,0 +1,11 @@
+.carrier-dialog {
+  .full-width {
+    width: 100%;
+  }
+
+  .carrier-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+}
