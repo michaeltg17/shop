@@ -1,9 +1,20 @@
 import { http, HttpResponse } from 'msw';
 import customersJson from '../../public/customers.json';
+import productsJson from '../../public/products.json';
 import { Customer } from '../app/features/customers/customer';
+import { Product } from '../app/features/products/product';
 import { setupWorker } from 'msw/browser';
 
 let customers: Customer[] = [...customersJson];
+let products: Product[] = productsJson.map(p => ({
+  id: p.id,
+  title: p.title,
+  description: p.description,
+  price: p.price,
+  category: 'Electronics',
+  image: p.imageUrl,
+  rating: { rate: 4.5, count: 100 }
+}));
 
 export const handlers = [
   http.get('/api/customers', () => {
@@ -39,6 +50,16 @@ export const handlers = [
     customers = customers.filter(c => !ids.includes(c.id));
 
     return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.get('/api/products', () => {
+    console.log('[MSW] GET /api/products - returning', products.length, 'products');
+    return HttpResponse.json(products);
+  }),
+
+  http.get('/api/products/:id', ({ params }) => {
+    const product = products.find(p => p.id === Number(params['id']));
+    return product ? HttpResponse.json(product) : new HttpResponse(null, { status: 404 });
   })
 ];
 
