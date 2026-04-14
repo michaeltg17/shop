@@ -7,6 +7,9 @@ describe('CartIcon', () => {
   let fixture: ComponentFixture<CartIcon>;
 
   beforeEach(async () => {
+    // Clear localStorage before each test to ensure test isolation
+    localStorage.clear();
+
     await TestBed.configureTestingModule({
       imports: [CartIcon],
       providers: [
