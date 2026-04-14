@@ -48,6 +48,7 @@ describe('ProductsPage', () => {
   });
 
   it('should add product to cart', () => {
+    localStorage.clear();
     vi.spyOn(window, 'alert').mockImplementation(() => {
       /* empty */
     });
