@@ -8,6 +8,6 @@
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts"],
   "angularCompilerOptions": {
-    "strictTemplates": false
+    "strictTemplates": true
   }
 }
