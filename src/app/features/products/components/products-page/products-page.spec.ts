@@ -61,23 +61,27 @@ describe('ProductsPage', () => {
       /* empty */
     });
     component.addToCart(mockProduct);
-    const cart = JSON.parse(localStorage.getItem('shoppingCart') || '[]');
+    const cartData = localStorage.getItem('shoppingCart');
+    const cart = cartData ? JSON.parse(cartData) : [];
     expect(cart.length).toBe(1);
     expect(cart[0].product.id).toBe(mockProduct.id);
     expect(cart[0].quantity).toBe(1);
   });
 
   it('should increase quantity when adding existing product to cart', () => {
+    localStorage.clear();
     localStorage.setItem('shoppingCart', JSON.stringify([{ product: mockProduct, quantity: 1 }]));
     vi.spyOn(window, 'alert').mockImplementation(() => {
       /* empty */
     });
     component.addToCart(mockProduct);
-    const cart = JSON.parse(localStorage.getItem('shoppingCart') || '[]');
+    const cartData = localStorage.getItem('shoppingCart');
+    const cart = cartData ? JSON.parse(cartData) : [];
     expect(cart[0].quantity).toBe(2);
   });
 
   it('should dispatch storage event after adding to cart', () => {
+    localStorage.clear();
     const eventSpy = vi.spyOn(window, 'dispatchEvent');
     vi.spyOn(window, 'alert').mockImplementation(() => {
       /* empty */

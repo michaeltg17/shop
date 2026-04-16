@@ -36,18 +36,21 @@ describe('CartIcon', () => {
   });
 
   it('should load cart count from localStorage', () => {
+    localStorage.clear();
     localStorage.setItem('shoppingCart', JSON.stringify([{ quantity: 2 }, { quantity: 3 }]));
     component.loadCartCount();
     expect(component.cartItemCount).toBe(5);
   });
 
   it('should set cartItemCount to 0 when no cart data exists', () => {
+    localStorage.clear();
     localStorage.removeItem('shoppingCart');
     component.loadCartCount();
     expect(component.cartItemCount).toBe(0);
   });
 
   it('should set cartItemCount to 0 on parse error', () => {
+    localStorage.clear();
     localStorage.setItem('shoppingCart', 'invalid json');
     component.loadCartCount();
     expect(component.cartItemCount).toBe(0);
