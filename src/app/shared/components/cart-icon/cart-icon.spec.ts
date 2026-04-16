@@ -22,6 +22,11 @@ describe('CartIcon', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    // Clear localStorage after each test to prevent state leakage
+    localStorage.clear();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });

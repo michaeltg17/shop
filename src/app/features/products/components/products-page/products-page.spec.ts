@@ -20,6 +20,9 @@ describe('ProductsPage', () => {
   };
 
   beforeEach(async () => {
+    // Clear localStorage before each test to ensure test isolation
+    localStorage.clear();
+
     productService = {
       loadProducts: vi.fn().mockReturnValue(of([mockProduct])),
     };
@@ -32,6 +35,11 @@ describe('ProductsPage', () => {
     fixture = TestBed.createComponent(ProductsPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    // Clear localStorage after each test to prevent state leakage
+    localStorage.clear();
   });
 
   it('should create', () => {
