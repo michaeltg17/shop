@@ -1,27 +1,17 @@
-// /** @type {import('@stryker-mutator/api/core').PartialStrykerOptions} */
-// const config = {
-//   packageManager: 'npm',
-//   reporters: ['html', 'clear-text', 'progress'],
-//   testRunner: 'command',
-//   coverageAnalysis: 'off',
-//   buildCommand: 'node start-server.js',
-//   mutate: ['src/app/features/customers/customer.service.ts'],
-//   //mutate: ['src/app/services/title.service.ts', 'src/app/services/customer.service.ts'],
-//   //mutate: ['src/app/**/*.ts'],
-//   commandRunner: {
-//     command: 'node run-playwright.js'
-//   },
-//   logLevel: 'trace',
-//   fileLogLevel: 'trace',
-//   timeoutFactor: 3
-// };
-// export default config;
-
-/** @type {import('@stryker-mutator/api/core').PartialStrykerOptions} */
-const config = {
-  "testRunner": "vitest",
-  "vitest": {
-    "related": false
-  }
+/** @type {import('@stryker-mutator/api/core').StrykerOptions} */
+module.exports = {
+  mutate: [
+    'src/app/**/*.ts',
+    '!src/**/*.spec.ts',
+    '!src/test.ts',
+    '!src/environments/*.ts'
+  ],
+  testRunner: 'jest',
+  jest: {
+    projectType: 'custom',
+    configFile: 'jest.config.js'
+  },
+  reporters: ['html', 'clear-text', 'progress'],
+  coverageAnalysis: 'off', // safer default for Angular + Jest
+  tsconfigFile: 'tsconfig.json',
 };
-export default config;
