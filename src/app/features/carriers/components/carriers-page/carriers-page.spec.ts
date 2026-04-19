@@ -48,7 +48,10 @@ describe('CarriersPage', () => {
     };
   };
 
-  const createMockDialogRefBool = <T>(): { ref: MatDialogRef<boolean>; trigger: (result?: boolean) => void } => {
+  const createMockDialogRefBool = (): {
+    ref: MatDialogRef<boolean>;
+    trigger: (result?: boolean) => void;
+  } => {
     const afterClosedSubject = new Subject<boolean>();
     const ref = {
       afterClosed: () => afterClosedSubject.asObservable(),
@@ -92,7 +95,7 @@ describe('CarriersPage', () => {
     };
 
     dialog = {
-      open: jest.fn().mockImplementation((component) => {
+      open: jest.fn().mockImplementation(component => {
         if (component === ConfirmationDialog) {
           const result = createMockDialogRefBool();
           return result.ref;
@@ -203,5 +206,4 @@ describe('CarriersPage', () => {
     component.deleteCarriers();
     expect(carrierService.deleteCarrier).not.toHaveBeenCalled();
   });
-
 });

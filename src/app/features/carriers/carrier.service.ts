@@ -21,7 +21,7 @@ export class CarrierService {
       .get<Carrier[]>(this.carriersUrl)
       .pipe(
         tap(carriers => this.carriers.set(carriers)),
-        catchError(err => {
+        catchError(() => {
           this.error.set('Failed to load carriers');
           this.loading.set(false);
           return EMPTY;
@@ -40,7 +40,7 @@ export class CarrierService {
           const current = this.carriers();
           this.carriers.set([...current, newCarrier]);
         }),
-        catchError(err => {
+        catchError(() => {
           this.error.set('Failed to add carrier');
           return EMPTY;
         })
@@ -61,7 +61,7 @@ export class CarrierService {
             this.carriers.set(updated);
           }
         }),
-        catchError(err => {
+        catchError(() => {
           this.error.set('Failed to update carrier');
           return EMPTY;
         })
@@ -77,7 +77,7 @@ export class CarrierService {
           const current = this.carriers();
           this.carriers.set(current.filter(c => c.id !== id));
         }),
-        catchError(err => {
+        catchError(() => {
           this.error.set('Failed to delete carrier');
           return EMPTY;
         })

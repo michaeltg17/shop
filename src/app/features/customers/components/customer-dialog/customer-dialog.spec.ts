@@ -120,7 +120,17 @@ describe('CustomerDialog View Mode', () => {
         { provide: MatDialogRef, useValue: dialogRefSpy },
         {
           provide: MAT_DIALOG_DATA,
-          useValue: { mode: DialogMode.View, customer: { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com', phoneNumber: '123', isActive: true } },
+          useValue: {
+            mode: DialogMode.View,
+            customer: {
+              id: 1,
+              firstName: 'John',
+              lastName: 'Doe',
+              email: 'john@example.com',
+              phoneNumber: '123',
+              isActive: true,
+            },
+          },
         },
         { provide: PendingChangesService, useValue: pendingService },
       ],

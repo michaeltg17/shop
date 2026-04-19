@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProductsPage } from './products-page';
 import { ProductService } from '../../product.service';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { Product } from '../../product';
 
 describe('ProductsPage', () => {
