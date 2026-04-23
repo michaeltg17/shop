@@ -40,3 +40,6 @@ jobs:
 
       - name: Run Playwright tests
         run: npm run playwright
+
+      - name: Run Stryker mutation testing
+        run: npm run stryker

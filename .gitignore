@@ -13,7 +13,6 @@ yarn-error.log
 
 # IDEs and editors
 playwright-report
-reports
 logs
 test-results/
 .idea/
@@ -49,4 +48,3 @@ Thumbs.db
 
 # stryker temp files
 .stryker-tmp
-stryker.log

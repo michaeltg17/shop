@@ -10,7 +10,8 @@
     "build": "ng build",
     "start": "ng serve",
     "playwright": "playwright test",
-    "playwright:install": "npx playwright install"
+    "playwright:install": "npx playwright install",
+    "stryker": "npx stryker run"
   },
   "private": true,
   "dependencies": {
