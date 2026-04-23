@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { CanDeactivate } from '@angular/router';
-import { inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PendingChangesService } from '../../services/pending-changes.service';
 

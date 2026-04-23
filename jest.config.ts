@@ -5,9 +5,7 @@ import { createCjsPreset } from 'jest-preset-angular/presets/index.js';
 
 export default {
     ...createCjsPreset(),
-    testPathIgnorePatterns: [
-        '<rootDir>/playwright/'
-    ],
+    testPathIgnorePatterns: ['<rootDir>/playwright/', '<rootDir>/.stryker-tmp'],
     coverageThreshold: {
         global: {
             branches: 75,
@@ -16,5 +14,5 @@ export default {
             statements: 89
         }
     },
-    setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
+    setupFilesAfterEnv: ['<rootDir>/setup-jest.ts']
 } satisfies Config;

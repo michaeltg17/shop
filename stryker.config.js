@@ -2,7 +2,7 @@
 module.exports = {
   mutate: [
     'src/app/**/*.ts',
-    '!src/**/*.spec.ts'
+    '!src/**/*.spec.ts',
   ],
   testRunner: 'jest',
   jest: {
@@ -10,11 +10,11 @@ module.exports = {
     configFile: 'jest.config.ts'
   },
   reporters: ['html', 'clear-text', 'progress'],
-  coverageAnalysis: 'off',
+  coverageAnalysis: 'perTest',
   tsconfigFile: 'tsconfig.json',
   cleanTempDir: 'always',
   incremental: true,
   thresholds: {
-    break: 80
+    break: 83
   }
 };
