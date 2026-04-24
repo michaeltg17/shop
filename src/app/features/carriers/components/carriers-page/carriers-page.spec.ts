@@ -1,9 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { signal, WritableSignal } from '@angular/core';
 import { CarriersPage } from './carriers-page';
 import { CarrierService } from '../../carrier.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { of, Subject } from 'rxjs';
 import { Carrier } from '../../carrier';
 import { ConfirmationDialog } from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
@@ -11,9 +12,14 @@ import { ConfirmationDialog } from '../../../../shared/components/confirmation-d
 describe('CarriersPage', () => {
   let component: CarriersPage;
   let fixture: ComponentFixture<CarriersPage>;
-  let carrierService: Partial<CarrierService>;
+  let carrierService: Partial<CarrierService> & {
+    carriers: WritableSignal<Carrier[]>;
+    loading: WritableSignal<boolean>;
+    error: WritableSignal<string | null>;
+  };
   let snackBar: Partial<MatSnackBar>;
   let dialog: Partial<MatDialog>;
+  let currentMockRef: { ref: MatDialogRef<unknown>; trigger: (result?: unknown) => void };
 
   const mockCarrier: Carrier = {
     id: 1,
@@ -94,25 +100,29 @@ describe('CarriersPage', () => {
       open: jest.fn(),
     };
 
+    // Create a shared mock dialogRef
+    currentMockRef = createMockDialogRef();
+
     dialog = {
-      open: jest.fn().mockImplementation(component => {
-        if (component === ConfirmationDialog) {
-          const result = createMockDialogRefBool();
-          return result.ref;
-        }
-        const result = createMockDialogRef();
-        return result.ref;
+      open: jest.fn().mockImplementation(() => {
+        return currentMockRef.ref;
       }),
     };
 
-    await TestBed.configureTestingModule({
-      imports: [CarriersPage],
-      providers: [
-        { provide: CarrierService, useValue: carrierService },
-        { provide: MatSnackBar, useValue: snackBar },
-        { provide: MatDialog, useValue: dialog },
-      ],
-    }).compileComponents();
+    await TestBed.overrideComponent(CarriersPage, {
+      remove: {
+        imports: [MatDialogModule, MatSnackBarModule],
+      },
+    })
+      .configureTestingModule({
+        imports: [CarriersPage],
+        providers: [
+          { provide: CarrierService, useValue: carrierService },
+          { provide: MatSnackBar, useValue: snackBar },
+          { provide: MatDialog, useValue: dialog },
+        ],
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(CarriersPage);
     component = fixture.componentInstance;
@@ -144,9 +154,14 @@ describe('CarriersPage', () => {
     expect(component.filterValue).toBe('test');
   });
 
+  it('should set dataSource.filter when applying filter', () => {
+    component.applyFilter('test');
+    expect(component.dataSource.filter).toBe('test');
+  });
+
   it('should check if all selected - all selected', () => {
     const carriers: Carrier[] = [mockCarrier];
-    (carrierService.carriers as unknown as WritableSignal<Carrier[]>).set(carriers);
+    carrierService.carriers.set(carriers);
     component.dataSource.data = carriers;
     component.selection.select(mockCarrier);
     expect(component.isAllSelected()).toBe(true);
@@ -154,15 +169,20 @@ describe('CarriersPage', () => {
 
   it('should check if all selected - none selected', () => {
     const carriers: Carrier[] = [mockCarrier, { ...mockCarrier, id: 2 }];
-    (carrierService.carriers as unknown as WritableSignal<Carrier[]>).set(carriers);
+    carrierService.carriers.set(carriers);
     component.dataSource.data = carriers;
     component.selection.clear();
     expect(component.isAllSelected()).toBe(false);
   });
 
+  it('should check if all selected - empty data returns true', () => {
+    component.dataSource.data = [];
+    expect(component.isAllSelected()).toBe(true);
+  });
+
   it('should toggle all rows - select all', () => {
     const carriers: Carrier[] = [mockCarrier];
-    (carrierService.carriers as unknown as WritableSignal<Carrier[]>).set(carriers);
+    carrierService.carriers.set(carriers);
     component.dataSource.data = carriers;
     component.toggleAllRows();
     expect(component.selection.selected.length).toBe(1);
@@ -170,7 +190,7 @@ describe('CarriersPage', () => {
 
   it('should toggle all rows - deselect all', () => {
     const carriers: Carrier[] = [mockCarrier];
-    (carrierService.carriers as unknown as WritableSignal<Carrier[]>).set(carriers);
+    carrierService.carriers.set(carriers);
     component.dataSource.data = carriers;
     component.selection.select(mockCarrier);
     component.toggleAllRows();
@@ -205,5 +225,183 @@ describe('CarriersPage', () => {
   it('should not delete when no carriers selected', () => {
     component.deleteCarriers();
     expect(carrierService.deleteCarrier).not.toHaveBeenCalled();
+  });
+
+  it('should call addCarrier', () => {
+    component.addCarrier();
+    expect(dialog.open).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        data: { carrier: undefined },
+        panelClass: 'carrier-dialog',
+        closeOnNavigation: false,
+      })
+    );
+  });
+
+  it('should open edit dialog when one carrier selected', () => {
+    component.selection.select(mockCarrier);
+    component.editCarrier();
+    expect(dialog.open).toHaveBeenCalled();
+  });
+
+  it('should open add dialog and add carrier on success', () => {
+    const newCarrier: Carrier = {
+      id: 0,
+      name: 'New Carrier',
+      trackingUrl: 'https://new.com',
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const mockRef = createMockDialogRef<Carrier>();
+    (dialog.open as jest.Mock).mockReturnValue(mockRef.ref);
+
+    component.openAddDialog();
+    mockRef.trigger(newCarrier);
+
+    expect(carrierService.addCarrier).toHaveBeenCalledWith(newCarrier);
+    expect(snackBar.open).toHaveBeenCalledWith('Carrier added successfully', 'Close', {
+      duration: 3000,
+    });
+  });
+
+  it('should not add carrier when dialog closed without result', () => {
+    const mockRef = createMockDialogRef<Carrier>();
+    (dialog.open as jest.Mock).mockReturnValue(mockRef.ref);
+
+    component.openAddDialog();
+    mockRef.trigger(undefined);
+
+    expect(carrierService.addCarrier).not.toHaveBeenCalled();
+  });
+
+  it('should open edit dialog and update carrier on success', () => {
+    const updatedCarrier: Carrier = {
+      ...mockCarrier,
+      name: 'Updated Carrier',
+    };
+
+    const mockRef = createMockDialogRef<Carrier>();
+    (dialog.open as jest.Mock).mockReturnValue(mockRef.ref);
+
+    component.openEditDialog(mockCarrier);
+    mockRef.trigger(updatedCarrier);
+
+    expect(carrierService.updateCarrier).toHaveBeenCalledWith(updatedCarrier);
+    expect(snackBar.open).toHaveBeenCalledWith('Carrier updated successfully', 'Close', {
+      duration: 3000,
+    });
+  });
+
+  it('should not update carrier when edit dialog closed without result', () => {
+    const mockRef = createMockDialogRef<Carrier>();
+    (dialog.open as jest.Mock).mockReturnValue(mockRef.ref);
+
+    component.openEditDialog(mockCarrier);
+    mockRef.trigger(undefined);
+
+    expect(carrierService.updateCarrier).not.toHaveBeenCalled();
+  });
+
+  it('should delete carriers when confirmed', fakeAsync(() => {
+    const mockRef = createMockDialogRefBool();
+    (dialog.open as jest.Mock).mockImplementation(cmp => {
+      if (cmp === ConfirmationDialog) {
+        return mockRef.ref;
+      }
+      return createMockDialogRef().ref;
+    });
+
+    component.selection.select(mockCarrier);
+    component.deleteCarriers();
+    mockRef.trigger(true);
+    tick();
+
+    expect(carrierService.deleteCarrier).toHaveBeenCalledWith(mockCarrier.id);
+    tick();
+  }));
+
+  it('should not delete carriers when cancelled', fakeAsync(() => {
+    const mockRef = createMockDialogRefBool();
+    (dialog.open as jest.Mock).mockImplementation(cmp => {
+      if (cmp === ConfirmationDialog) {
+        return mockRef.ref;
+      }
+      return createMockDialogRef().ref;
+    });
+
+    component.selection.select(mockCarrier);
+    component.deleteCarriers();
+    mockRef.trigger(false);
+    tick();
+
+    expect(carrierService.deleteCarrier).not.toHaveBeenCalled();
+    tick();
+  }));
+
+  it('should open delete confirmation dialog with correct data', fakeAsync(() => {
+    const mockRef = createMockDialogRefBool();
+    (dialog.open as jest.Mock).mockImplementation(cmp => {
+      if (cmp === ConfirmationDialog) {
+        return mockRef.ref;
+      }
+      return createMockDialogRef().ref;
+    });
+
+    component.selection.select(mockCarrier);
+    component.deleteCarriers();
+
+    expect(dialog.open).toHaveBeenCalledWith(ConfirmationDialog, {
+      data: {
+        title: 'Delete Carriers',
+        message: 'Do you really want to delete 1 carrier(s)?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+      },
+    });
+    tick();
+  }));
+
+  it('should show correct count in delete confirmation message', fakeAsync(() => {
+    const mockRef = createMockDialogRefBool();
+    (dialog.open as jest.Mock).mockImplementation(cmp => {
+      if (cmp === ConfirmationDialog) {
+        return mockRef.ref;
+      }
+      return createMockDialogRef().ref;
+    });
+
+    const carrier2 = { ...mockCarrier, id: 2 };
+    component.selection.select(mockCarrier, carrier2);
+    component.deleteCarriers();
+
+    expect(dialog.open).toHaveBeenCalledWith(ConfirmationDialog, {
+      data: expect.objectContaining({
+        message: 'Do you really want to delete 2 carrier(s)?',
+      }),
+    });
+    tick();
+  }));
+
+  it('should set dataSource data from carriers signal', () => {
+    const carriers: Carrier[] = [mockCarrier];
+    carrierService.carriers.set(carriers);
+    // Effects run on the next microtask - trigger via detectChanges
+    fixture.detectChanges();
+    expect(component.dataSource.data).toEqual(carriers);
+  });
+
+  it('should expose loading signal from service', () => {
+    expect(component.loading).toBe(carrierService.loading);
+  });
+
+  it('should expose error signal from service', () => {
+    expect(component.error).toBe(carrierService.error);
+  });
+
+  it('should expose carriers signal from service', () => {
+    expect(component.carriers).toBe(carrierService.carriers);
   });
 });

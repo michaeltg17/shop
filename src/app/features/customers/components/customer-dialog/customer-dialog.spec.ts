@@ -58,6 +58,26 @@ describe('CustomerDialog', () => {
     expect(component.isActive).toBeDefined();
   });
 
+  it('should initialize firstName with empty value in Add mode', () => {
+    expect(component.firstName.value).toBe('');
+  });
+
+  it('should initialize lastName with empty value in Add mode', () => {
+    expect(component.lastName.value).toBe('');
+  });
+
+  it('should initialize email with empty value in Add mode', () => {
+    expect(component.email.value).toBe('');
+  });
+
+  it('should initialize phoneNumber with empty value in Add mode', () => {
+    expect(component.phoneNumber.value).toBe('');
+  });
+
+  it('should initialize isActive with true in Add mode', () => {
+    expect(component.isActive.value).toBe(true);
+  });
+
   it('should be valid when all required fields are filled', () => {
     component.firstName.setValue('John');
     component.lastName.setValue('Doe');
@@ -65,10 +85,31 @@ describe('CustomerDialog', () => {
     expect(component.isValid()).toBe(true);
   });
 
-  it('should be invalid when required fields are empty', () => {
+  it('should be invalid when firstName is empty', () => {
     component.firstName.setValue('');
+    component.lastName.setValue('Doe');
+    component.email.setValue('john@example.com');
+    expect(component.isValid()).toBe(false);
+  });
+
+  it('should be invalid when lastName is empty', () => {
+    component.firstName.setValue('John');
     component.lastName.setValue('');
+    component.email.setValue('john@example.com');
+    expect(component.isValid()).toBe(false);
+  });
+
+  it('should be invalid when email is empty', () => {
+    component.firstName.setValue('John');
+    component.lastName.setValue('Doe');
     component.email.setValue('');
+    expect(component.isValid()).toBe(false);
+  });
+
+  it('should be invalid when email is malformed', () => {
+    component.firstName.setValue('John');
+    component.lastName.setValue('Doe');
+    component.email.setValue('not-an-email');
     expect(component.isValid()).toBe(false);
   });
 
@@ -95,6 +136,80 @@ describe('CustomerDialog', () => {
     expect(component.hasUnsavedChanges()).toBe(false);
     component.firstName.markAsDirty();
     expect(component.hasUnsavedChanges()).toBe(true);
+  });
+
+  it('should return false for hasUnsavedChanges when no fields are dirty', () => {
+    expect(component.hasUnsavedChanges()).toBe(false);
+  });
+
+  it('should detect dirty lastName as unsaved change', () => {
+    component.lastName.markAsDirty();
+    expect(component.hasUnsavedChanges()).toBe(true);
+  });
+
+  it('should detect dirty email as unsaved change', () => {
+    component.email.markAsDirty();
+    expect(component.hasUnsavedChanges()).toBe(true);
+  });
+
+  it('should detect dirty isActive as unsaved change', () => {
+    component.isActive.markAsDirty();
+    expect(component.hasUnsavedChanges()).toBe(true);
+  });
+
+  it('should set disableClose on field changes via valueChanges', () => {
+    // markAsDirty sets dirty state, then setValue triggers valueChanges which fires markDisable
+    component.firstName.markAsDirty();
+    component.firstName.setValue('John');
+    // markDisable checks dirty state and sets disableClose accordingly
+    expect(component.firstName.dirty).toBe(true);
+    expect(dialogRefSpy.disableClose).toBe(true);
+  });
+
+  it('should call pendingService.setPending on field changes', () => {
+    component.firstName.setValue('John');
+    expect(pendingService.setPending).toHaveBeenCalled();
+  });
+
+  it('should call pendingService.clear on destroy', () => {
+    component.ngOnDestroy();
+    expect(pendingService.clear).toHaveBeenCalled();
+  });
+
+  it('should save customer with correct data structure', () => {
+    component.firstName.setValue('Jane');
+    component.lastName.setValue('Smith');
+    component.email.setValue('jane@test.com');
+    component.phoneNumber.setValue('555-1234');
+    component.isActive.setValue(false);
+    component.save();
+
+    expect(dialogRefSpy.close).toHaveBeenCalledWith({
+      id: 0,
+      firstName: 'Jane',
+      lastName: 'Smith',
+      email: 'jane@test.com',
+      isActive: false,
+      phoneNumber: '555-1234',
+    });
+  });
+
+  it('should have firstName with required validator', () => {
+    component.firstName.setValue('');
+    expect(component.firstName.errors).toBeTruthy();
+    expect(component.firstName.errors?.['required']).toBe(true);
+  });
+
+  it('should have email with required and email validators', () => {
+    component.email.setValue('');
+    expect(component.email.errors?.['required']).toBe(true);
+
+    component.email.setValue('invalid');
+    expect(component.email.errors?.['email']).toBe(true);
+  });
+
+  it('should expose dialogMode enum', () => {
+    expect(component.dialogMode).toBe(DialogMode);
   });
 });
 
@@ -151,5 +266,123 @@ describe('CustomerDialog View Mode', () => {
     expect(component.email.disabled).toBe(true);
     expect(component.isActive.disabled).toBe(true);
     expect(component.phoneNumber.disabled).toBe(true);
+  });
+
+  it('should initialize firstName with customer data in View mode', () => {
+    expect(component.firstName.value).toBe('John');
+  });
+
+  it('should initialize lastName with customer data in View mode', () => {
+    expect(component.lastName.value).toBe('Doe');
+  });
+
+  it('should initialize email with customer data in View mode', () => {
+    expect(component.email.value).toBe('john@example.com');
+  });
+
+  it('should initialize phoneNumber with customer data in View mode', () => {
+    expect(component.phoneNumber.value).toBe('123');
+  });
+
+  it('should have isActive disabled in View mode', () => {
+    expect(component.isActive.disabled).toBe(true);
+  });
+
+  it('should not allow save in View mode since controls are disabled', () => {
+    // In view mode, controls are disabled so valid check should fail
+    jest.clearAllMocks();
+    component.save();
+    expect(dialogRefSpy.close).not.toHaveBeenCalled();
+  });
+
+  it('should still allow cancel in View mode', () => {
+    component.cancel();
+    expect(dialogRefSpy.close).toHaveBeenCalled();
+  });
+});
+
+describe('CustomerDialog Edit Mode', () => {
+  let component: CustomerDialog;
+  let fixture: ComponentFixture<CustomerDialog>;
+  let dialogRefSpy: Partial<MatDialogRef<CustomerDialog>>;
+  let pendingService: Partial<PendingChangesService>;
+
+  beforeEach(async () => {
+    dialogRefSpy = {
+      close: jest.fn(),
+      disableClose: false,
+    };
+    pendingService = {
+      setPending: jest.fn(),
+      clear: jest.fn(),
+    };
+
+    await TestBed.configureTestingModule({
+      imports: [CustomerDialog],
+      providers: [
+        { provide: MatDialogRef, useValue: dialogRefSpy },
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {
+            mode: DialogMode.Edit,
+            customer: {
+              id: 5,
+              firstName: 'Existing',
+              lastName: 'Customer',
+              email: 'existing@test.com',
+              phoneNumber: '999',
+              isActive: false,
+            },
+          },
+        },
+        { provide: PendingChangesService, useValue: pendingService },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(CustomerDialog);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create in edit mode', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should initialize controls with existing customer data', () => {
+    expect(component.firstName.value).toBe('Existing');
+    expect(component.lastName.value).toBe('Customer');
+    expect(component.email.value).toBe('existing@test.com');
+    expect(component.phoneNumber.value).toBe('999');
+  });
+
+  it('should not disable controls in Edit mode', () => {
+    expect(component.firstName.disabled).toBe(false);
+    expect(component.lastName.disabled).toBe(false);
+    expect(component.email.disabled).toBe(false);
+    expect(component.isActive.disabled).toBe(false);
+    expect(component.phoneNumber.disabled).toBe(false);
+  });
+
+  it('should save with existing customer id', () => {
+    component.save();
+    expect(dialogRefSpy.close).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 5,
+        firstName: 'Existing',
+        lastName: 'Customer',
+      })
+    );
+  });
+
+  it('should allow modifying and saving updated values', () => {
+    component.firstName.setValue('Updated');
+    component.lastName.setValue('Name');
+    component.save();
+    expect(dialogRefSpy.close).toHaveBeenCalledWith(
+      expect.objectContaining({
+        firstName: 'Updated',
+        lastName: 'Name',
+      })
+    );
   });
 });

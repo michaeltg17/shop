@@ -62,6 +62,42 @@ describe('LoginPage', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/customers']);
   }));
 
+  it('should set loginError when username correct but password wrong', fakeAsync(() => {
+    component.credentials = { username: 'admin', password: 'wrong' };
+    component.onLogin();
+    tick(1500);
+    expect(component.loginError).toBe('Invalid username or password');
+  }));
+
+  it('should set loginError when password correct but username wrong', fakeAsync(() => {
+    component.credentials = { username: 'wrong', password: 'password' };
+    component.onLogin();
+    tick(1500);
+    expect(component.loginError).toBe('Invalid username or password');
+  }));
+
+  it('should set loginError when only username is provided', fakeAsync(() => {
+    component.credentials = { username: 'admin', password: '' };
+    component.onLogin();
+    tick(1500);
+    expect(component.loginError).toBe('Please enter both username and password');
+  }));
+
+  it('should set loginError when only password is provided', fakeAsync(() => {
+    component.credentials = { username: '', password: 'password' };
+    component.onLogin();
+    tick(1500);
+    expect(component.loginError).toBe('Please enter both username and password');
+  }));
+
+  it('should clear loginError before login attempt', fakeAsync(() => {
+    component.loginError = 'previous error';
+    component.credentials = { username: 'admin', password: 'password' };
+    component.onLogin();
+    expect(component.loginError).toBeNull();
+    tick(1500);
+  }));
+
   it('should set isLoginLoading to true then false', fakeAsync(() => {
     expect(component.isLoginLoading).toBe(false);
     component.onLogin();

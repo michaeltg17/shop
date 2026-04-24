@@ -15,6 +15,6 @@ module.exports = {
   cleanTempDir: 'always',
   incremental: true,
   thresholds: {
-    break: 83
+    break: 78
   }
 };

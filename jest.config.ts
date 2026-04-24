@@ -8,10 +8,10 @@ export default {
     testPathIgnorePatterns: ['<rootDir>/playwright/', '<rootDir>/.stryker-tmp'],
     coverageThreshold: {
         global: {
-            branches: 75,
-            functions: 88,
-            lines: 90,
-            statements: 89
+            branches: 87,
+            functions: 95,
+            lines: 95,
+            statements: 95
         }
     },
     setupFilesAfterEnv: ['<rootDir>/setup-jest.ts']
