@@ -47,22 +47,32 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
 
+      - name: Build Docker image (validate)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
       - name: Get version from package.json
         id: package
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
       - name: Get short commit SHA
         id: commit
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -70,6 +80,7 @@ jobs:
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
           context: .
           push: true
