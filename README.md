@@ -23,3 +23,4 @@
 
 - Docker
 - GitHub Actions
+- unsloth/Qwen3.6-27B-Q4_K_M.gguf
