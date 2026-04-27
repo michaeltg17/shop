@@ -3,13 +3,11 @@ node_modules
 .gitignore
 .vscode
 .github
-angular.json
 eslint.config.js
 jest.config.ts
 playwright.config.ts
 setup-jest.ts
 stryker.config.js
-tsconfig*.json
 .prettierignore
 .prettierrc
 .editorconfig
