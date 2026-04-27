@@ -23,4 +23,9 @@
 
 - Docker
 - GitHub Actions
-- unsloth/Qwen3.6-27B-Q4_K_M.gguf
+
+### Dev stack
+- Local AI unsloth/Qwen3.6-27B-Q4_K_M.gguf - 262K Context - RTX 3090
+- searxng
+- cline
+- vscode
