@@ -22,6 +22,6 @@ module.exports = {
     module: 'angular-app',
     version: process.env.GITHUB_SHA || process.env.BRANCH_NAME || 'local',
     baseUrl: 'https://dashboard.stryker-mutator.io',
-    reportType: 'mutation'
+    reportType: 'mutationScore'
   }
 };
