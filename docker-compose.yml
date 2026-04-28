@@ -1,0 +1,9 @@
+services:
+  angular:
+    image: ghcr.io/michaeltg17/angular:latest
+    container_name: angular
+    ports:
+      - "4200:80"
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
