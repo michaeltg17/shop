@@ -32,7 +32,7 @@ jobs:
         run: docker compose -f docker-compose.ci.yml run --rm ci
 
       - name: Generate coverage badges
-        uses: jpb06/coverage-badges-action@latest
+        uses: michaeltg17/coverage-badges-action@fix/node24-runtime
         with:
           branches: main
 
