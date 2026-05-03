@@ -37,8 +37,8 @@ jobs:
       - name: Run CI pipeline in Docker
         run: docker compose -f docker-compose.ci.yml run --rm ci
 
-      - name: Generate coverage badges
-        uses: michaeltg17/coverage-badges-action@fix/node24-runtime
+       - name: Generate coverage badges
+         uses: jpb06/coverage-badges-action@master
         with:
           branches: main
 
