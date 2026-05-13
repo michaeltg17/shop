@@ -42,7 +42,7 @@ jobs:
         with:
           branches: main
 
-      - name: Validate production Docker image builds
+      - name: Validate Docker image builds
         uses: docker/build-push-action@v7
         with:
           context: .
