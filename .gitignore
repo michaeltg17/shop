@@ -48,3 +48,6 @@ Thumbs.db
 
 # stryker temp files
 .stryker-tmp
+
+# Environment variables
+.env

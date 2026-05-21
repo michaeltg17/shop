@@ -7,6 +7,7 @@ services:
     environment:
       - DISPLAY=:99
       - NODE_ENV=ci
+      - SONAR_TOKEN
     volumes:
       - ./coverage:/app/coverage
       - ./reports:/app/reports
