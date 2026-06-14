@@ -42,6 +42,12 @@ describe('BaseTableComponent', () => {
     expect(component.filterValue).toBe('test');
   });
 
+  it('should handle filter with missing target', () => {
+    component.onFilterChange({} as Event);
+    expect(component.filterValue).toBe('');
+    expect(component.dataSource.filter).toBe('');
+  });
+
   it('should emit filterChange when filter changes', () => {
     const spy = jest.spyOn(component.filterChange, 'emit');
     component.onFilterChange({ target: { value: 'hello' } });
