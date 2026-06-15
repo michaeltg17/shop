@@ -113,7 +113,7 @@ export class BaseTableComponent<T> implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  displayedColumns = computed(() => ['select', ...this.columns().map((c) => c.key)]);
+  displayedColumns = computed(() => ['select', ...this.columns().map(c => c.key)]);
 
   isAllSelected(): boolean {
     const numSelected = this.selection().selected.length;
@@ -125,7 +125,7 @@ export class BaseTableComponent<T> implements AfterViewInit {
     if (this.isAllSelected()) {
       this.selection().clear();
     } else {
-      this.dataSource().data.forEach((row) => this.selection().select(row));
+      this.dataSource().data.forEach(row => this.selection().select(row));
     }
   }
 

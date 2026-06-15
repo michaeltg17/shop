@@ -1,12 +1,7 @@
 <div class="toolbar">
   <mat-form-field appearance="outline">
     <mat-label>Search</mat-label>
-    <input
-      matInput
-      [value]="filterValue()"
-      (input)="onFilterChange($event)"
-      placeholder="search"
-    />
+    <input matInput [value]="filterValue()" (input)="onFilterChange($event)" placeholder="search" />
   </mat-form-field>
 
   <button
@@ -59,29 +54,21 @@
 
     <!-- Dynamic Columns -->
     @for (col of columns(); track col.key) {
-      <ng-container [matColumnDef]="col.key">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
-          {{ col.label }}
-        </th>
-        <td mat-cell *matCellDef="let row">
-          @if (cellTemplate()) {
-            <ng-container
-              [ngTemplateOutlet]="cellTemplate()!"
-              [ngTemplateOutletContext]="{ $implicit: row, column: col }"
-            ></ng-container>
-          } @else {
-            {{ row[col.key] }}
-          }
-        </td>
-      </ng-container>
+    <ng-container [matColumnDef]="col.key">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ col.label }}</th>
+      <td mat-cell *matCellDef="let row">
+        @if (cellTemplate()) {
+        <ng-container
+          [ngTemplateOutlet]="cellTemplate()!"
+          [ngTemplateOutletContext]="{ $implicit: row, column: col }"
+        ></ng-container>
+        } @else { {{ row[col.key] }} }
+      </td>
+    </ng-container>
     }
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns()"
-      (click)="rowClick.emit(row)"
-    ></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns()" (click)="rowClick.emit(row)"></tr>
   </table>
 
   <mat-paginator [pageSizeOptions]="pageSizeOptions()" showFirstLastButtons></mat-paginator>
