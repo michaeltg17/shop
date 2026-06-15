@@ -10,7 +10,7 @@ interface TestRow {
 }
 
 @Component({
-  selector: 'test-host',
+  selector: 'app-test-host',
   standalone: true,
   imports: [BaseTableComponent],
   template: `
