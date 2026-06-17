@@ -1,68 +1,39 @@
 import {
   Component,
   OnInit,
-  ViewChild,
-  AfterViewInit,
   inject,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   effect,
-  signal,
 } from '@angular/core';
-import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Carrier } from '../../carrier';
 import { CarrierService } from '../../carrier.service';
-import { FormsModule } from '@angular/forms';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { CarrierDialog } from '../carrier-dialog/carrier-dialog';
 import {
   ConfirmationDialog,
   ConfirmationDialogData,
 } from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { CarrierDialog } from '../carrier-dialog/carrier-dialog';
+import { DialogMode } from '../../../../core/models/dialogMode';
+import { BaseTableComponent, ColumnDef } from '../../../../shared/components/base-table/base-table';
 
 @Component({
   selector: 'app-carriers-page',
-  imports: [
-    MatTableModule,
-    MatSnackBarModule,
-    MatSortModule,
-    MatPaginatorModule,
-    FormsModule,
-    DragDropModule,
-    MatCheckboxModule,
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDialogModule,
-    MatToolbarModule,
-    MatProgressSpinnerModule,
-  ],
+  imports: [MatDialogModule, MatSnackBarModule, BaseTableComponent],
   templateUrl: './carriers-page.html',
   styleUrls: ['./carriers-page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CarriersPage implements OnInit, AfterViewInit {
+export class CarriersPage implements OnInit {
   private carrierService = inject(CarrierService);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
   private changeDetectorRef = inject(ChangeDetectorRef);
 
-  columns = [
+  columns: ColumnDef[] = [
     { key: 'id', label: 'ID' },
     { key: 'name', label: 'Name' },
     { key: 'trackingUrl', label: 'Tracking URL' },
@@ -70,21 +41,14 @@ export class CarriersPage implements OnInit, AfterViewInit {
     { key: 'createdAt', label: 'Created' },
     { key: 'updatedAt', label: 'Updated' },
   ];
-  private readonly dateColumns = ['createdAt', 'updatedAt'];
-  private readonly booleanColumns = ['isActive'];
-  displayedColumns = ['select', ...this.columns.map(c => c.key)];
+
   selection = new SelectionModel<Carrier>(true, []);
   dataSource = new MatTableDataSource<Carrier>();
   filterValue = '';
-  private dialogOpen = signal(false);
-  private activeDialogRef: MatDialogRef<CarrierDialog> | null = null;
 
-  carriers = this.carrierService.carriers;
   loading = this.carrierService.loading;
   error = this.carrierService.error;
-
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  carriers = this.carrierService.carriers;
 
   readonly errorEffect = effect(() => {
     const msg = this.error();
@@ -95,7 +59,6 @@ export class CarriersPage implements OnInit, AfterViewInit {
 
   readonly tableEffect = effect(() => {
     this.dataSource.data = this.carriers();
-    this.applyFilter(this.filterValue);
     this.changeDetectorRef.markForCheck();
   });
 
@@ -103,68 +66,32 @@ export class CarriersPage implements OnInit, AfterViewInit {
     this.carrierService.loadCarriers();
   }
 
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-  }
-
-  applyFilter(value: string) {
-    this.filterValue = value.trim().toLowerCase();
-    this.dataSource.filter = this.filterValue;
-  }
-
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  toggleAllRows() {
-    if (this.isAllSelected()) {
-      this.selection.clear();
-    } else {
-      this.dataSource.data.forEach(row => this.selection.select(row));
-    }
-  }
-
   openAddDialog() {
     const ref = this.dialog.open(CarrierDialog, {
-      data: { carrier: undefined },
+      data: { mode: DialogMode.Add, carrier: undefined },
       panelClass: 'carrier-dialog',
       closeOnNavigation: false,
     });
-
-    this.activeDialogRef = ref as MatDialogRef<CarrierDialog>;
-    ref.afterClosed().subscribe((result: Carrier | undefined) => {
-      this.activeDialogRef = null;
-      if (result) {
-        this.carrierService.addCarrier(result);
+    ref.afterClosed().subscribe(carrier => {
+      if (carrier) {
+        this.carrierService.addCarrier(carrier);
         this.snackBar.open('Carrier added successfully', 'Close', { duration: 3000 });
       }
     });
-    return ref as MatDialogRef<CarrierDialog>;
   }
 
   openEditDialog(carrier: Carrier) {
     const ref = this.dialog.open(CarrierDialog, {
-      data: { carrier },
+      data: { mode: DialogMode.Edit, carrier },
       panelClass: 'carrier-dialog',
       closeOnNavigation: false,
     });
-
-    this.activeDialogRef = ref as MatDialogRef<CarrierDialog>;
-    ref.afterClosed().subscribe((result: Carrier | undefined) => {
-      this.activeDialogRef = null;
-      if (result) {
-        this.carrierService.updateCarrier(result);
+    ref.afterClosed().subscribe(updatedCarrier => {
+      if (updatedCarrier) {
+        this.carrierService.updateCarrier(updatedCarrier);
         this.snackBar.open('Carrier updated successfully', 'Close', { duration: 3000 });
       }
     });
-    return ref as MatDialogRef<CarrierDialog>;
-  }
-
-  addCarrier() {
-    this.openAddDialog();
   }
 
   editCarrier() {
@@ -176,7 +103,7 @@ export class CarriersPage implements OnInit, AfterViewInit {
     if (this.selection.selected.length === 0) return;
 
     const dialogData: ConfirmationDialogData = {
-      title: 'Delete Carriers',
+      title: 'Delete carriers',
       message: `Do you really want to delete ${this.selection.selected.length} carrier(s)?`,
       confirmText: 'Delete',
       cancelText: 'Cancel',
@@ -189,25 +116,10 @@ export class CarriersPage implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
       if (!confirmed) return;
 
-      this.selection.selected.forEach(carrier => {
-        this.carrierService.deleteCarrier(carrier.id);
-      });
+      this.selection.selected.forEach(carrier => this.carrierService.deleteCarrier(carrier.id));
 
       this.selection.clear();
-      this.snackBar.open(
-        `${this.selection.selected.length} carrier(s) deleted successfully`,
-        'Close',
-        { duration: 3000 }
-      );
       this.changeDetectorRef.markForCheck();
     });
-  }
-
-  isDateColumn(key: string): boolean {
-    return this.dateColumns.includes(key);
-  }
-
-  isBooleanColumn(key: string): boolean {
-    return this.booleanColumns.includes(key);
   }
 }

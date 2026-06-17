@@ -1,30 +1,18 @@
 import {
   Component,
   OnInit,
-  ViewChild,
-  AfterViewInit,
   inject,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   effect,
   signal,
 } from '@angular/core';
-import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Customer } from '../../customer';
 import { CustomerService } from '../../customer.service';
 import { CustomerCell } from './customer-cell/customer-cell';
-import { FormsModule } from '@angular/forms';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import {
   ConfirmationDialog,
   ConfirmationDialogData,
@@ -36,30 +24,16 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { PendingChangesService } from '../../../../core/services/pending-changes.service';
+import { BaseTableComponent, ColumnDef } from '../../../../shared/components/base-table/base-table';
 
 @Component({
   selector: 'app-customers-table',
-  imports: [
-    MatTableModule,
-    MatSnackBarModule,
-    MatSortModule,
-    MatPaginatorModule,
-    CustomerCell,
-    FormsModule,
-    DragDropModule,
-    MatCheckboxModule,
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDialogModule,
-  ],
+  imports: [MatSnackBarModule, CustomerCell, MatDialogModule, BaseTableComponent],
   templateUrl: './customers-table.html',
   styleUrls: ['./customers-table.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CustomersTable implements OnInit, AfterViewInit {
+export class CustomersTable implements OnInit {
   private customerService = inject(CustomerService);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
@@ -68,7 +42,7 @@ export class CustomersTable implements OnInit, AfterViewInit {
   private router = inject(Router);
   private pendingService = inject(PendingChangesService);
 
-  columns = [
+  columns: ColumnDef[] = [
     { key: 'id', label: 'Id' },
     { key: 'firstName', label: 'First Name' },
     { key: 'lastName', label: 'Last Name' },
@@ -76,7 +50,7 @@ export class CustomersTable implements OnInit, AfterViewInit {
     { key: 'phoneNumber', label: 'Phone Number' },
     { key: 'isActive', label: 'Active' },
   ];
-  displayedColumns = ['select', ...this.columns.map(c => c.key)];
+
   selection = new SelectionModel<Customer>(true, []);
   dataSource = new MatTableDataSource<Customer>();
   filterValue = '';
@@ -87,9 +61,6 @@ export class CustomersTable implements OnInit, AfterViewInit {
   loading = this.customerService.loading;
   error = this.customerService.error;
 
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-
   readonly errorEffect = effect(() => {
     const msg = this.error();
     if (msg) {
@@ -99,7 +70,6 @@ export class CustomersTable implements OnInit, AfterViewInit {
 
   readonly tableEffect = effect(() => {
     this.dataSource.data = this.customers();
-    this.applyFilter(this.filterValue);
     this.changeDetectorRef.markForCheck();
   });
 
@@ -165,30 +135,6 @@ export class CustomersTable implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.customerService.loadCustomers();
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-  }
-
-  applyFilter(value: string) {
-    this.filterValue = value.trim().toLowerCase();
-    this.dataSource.filter = this.filterValue;
-  }
-
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  toggleAllRows() {
-    if (this.isAllSelected()) {
-      this.selection.clear();
-    } else {
-      this.dataSource.data.forEach(row => this.selection.select(row));
-    }
   }
 
   openViewDialog(customer: Customer) {
@@ -267,7 +213,6 @@ export class CustomersTable implements OnInit, AfterViewInit {
     if (!unsaved) return true;
     const confirmLeave = window.confirm('You have unsaved changes. Leave without saving?');
     if (confirmLeave) {
-      // close the dialog so it doesn't persist after navigation
       try {
         this.activeDialogRef.close();
       } catch {

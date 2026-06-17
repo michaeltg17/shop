@@ -120,11 +120,7 @@ describe('CustomersTable', () => {
     expect(component.columns).toBeDefined();
     expect(component.columns.length).toBe(6);
     expect(component.columns[0].key).toBe('id');
-  });
-
-  it('should have displayed columns including select', () => {
-    expect(component.displayedColumns).toContain('select');
-    expect(component.displayedColumns).toContain('id');
+    expect(component.columns[0].label).toBe('Id');
   });
 
   it('should load customers on init', () => {
@@ -132,53 +128,8 @@ describe('CustomersTable', () => {
     expect(customerService.loadCustomers).toHaveBeenCalled();
   });
 
-  it('should apply filter with trim and lowercase', () => {
-    component.applyFilter('  TEST  ');
-    expect(component.filterValue).toBe('test');
-  });
-
-  it('should set dataSource.filter when applying filter', () => {
-    component.applyFilter('test');
-    expect(component.dataSource.filter).toBe('test');
-  });
-
-  it('should return true when all rows are selected', () => {
-    const customers: Customer[] = [mockCustomer];
-    (customerService.customers as unknown as WritableSignal<Customer[]>).set(customers);
-    component.dataSource.data = customers;
-    component.selection.select(mockCustomer);
-    expect(component.isAllSelected()).toBe(true);
-  });
-
-  it('should return false when not all rows are selected', () => {
-    expect(component.isAllSelected()).toBe(true);
-    const customers: Customer[] = [mockCustomer, { ...mockCustomer, id: 2 }];
-    (customerService.customers as unknown as WritableSignal<Customer[]>).set(customers);
-    component.dataSource.data = customers;
-    component.selection.clear();
-    expect(component.isAllSelected()).toBe(false);
-  });
-
-  it('should return true for isAllSelected with empty data', () => {
-    component.dataSource.data = [];
-    expect(component.isAllSelected()).toBe(true);
-  });
-
-  it('should toggle all rows - select all', () => {
-    const customers: Customer[] = [mockCustomer];
-    (customerService.customers as unknown as WritableSignal<Customer[]>).set(customers);
-    component.dataSource.data = customers;
-    component.toggleAllRows();
-    expect(component.selection.selected.length).toBe(1);
-  });
-
-  it('should toggle all rows - deselect all', () => {
-    const customers: Customer[] = [mockCustomer];
-    (customerService.customers as unknown as WritableSignal<Customer[]>).set(customers);
-    component.dataSource.data = customers;
-    component.selection.select(mockCustomer);
-    component.toggleAllRows();
-    expect(component.selection.selected.length).toBe(0);
+  it('should have filterValue property', () => {
+    expect(component.filterValue).toBe('');
   });
 
   it('should open view dialog via router', () => {
@@ -511,12 +462,11 @@ describe('CustomersTable', () => {
     expect(component.dataSource.data).toEqual(customers);
   });
 
-  it('should apply filter when customers signal changes', () => {
-    component.filterValue = 'john';
+  it('should update dataSource when customers signal changes', () => {
     const customers: Customer[] = [mockCustomer];
     (customerService.customers as unknown as WritableSignal<Customer[]>).set(customers);
     fixture.detectChanges();
-    expect(component.dataSource.filter).toBe('john');
+    expect(component.dataSource.data).toEqual(customers);
   });
 
   it('should call markForCheck when customers signal changes', () => {
