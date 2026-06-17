@@ -54,33 +54,7 @@ export interface ColumnDef {
     CommonModule,
   ],
   templateUrl: './base-table.html',
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-
-      .toolbar {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 16px;
-      }
-
-      .toolbar mat-form-field {
-        flex: 1;
-        min-width: 200px;
-      }
-
-      .table-wrap {
-        overflow-x: auto;
-      }
-
-      .table {
-        width: 100%;
-      }
-    `,
-  ],
+  styleUrl: './base-table.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BaseTableComponent<T> implements AfterViewInit {
