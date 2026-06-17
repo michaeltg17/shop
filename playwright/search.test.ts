@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('search for "wilson" returns two rows', async ({ page }) => {
-  await page.goto('/customers');
+  await page.goto('/admin/customers');
   // wait for the table to render
   await page.waitForSelector('tr[mat-row]');
 

@@ -11,7 +11,7 @@ async function selectRowById(page: Page, id: string | number) {
 
 test.describe('delete flow', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/customers');
+    await page.goto('/admin/customers');
     await page.waitForSelector('tr[mat-row]');
   });
 

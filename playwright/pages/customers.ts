@@ -36,7 +36,7 @@ export class CustomerTablePage {
    * Navigate to the customers page and wait for table to load
    */
   async goto(): Promise<void> {
-    await this.page.goto('/customers');
+    await this.page.goto('/admin/customers');
     await this.page.waitForSelector('tr[mat-row]');
   }
 
