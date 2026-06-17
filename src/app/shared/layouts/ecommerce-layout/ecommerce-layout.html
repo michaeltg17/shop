@@ -1,9 +1,23 @@
 <mat-toolbar>
   <span class="title">{{ titleService.getTitle() }}</span>
   <span class="spacer"></span>
-  <button mat-button routerLink="products" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">Products</button>
+  <button
+    mat-button
+    routerLink="products"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: false }"
+  >
+    Products
+  </button>
   <app-cart-icon></app-cart-icon>
-  <button mat-button routerLink="contact" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">Contact</button>
+  <button
+    mat-button
+    routerLink="contact"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: false }"
+  >
+    Contact
+  </button>
   <app-theme-selector></app-theme-selector>
 </mat-toolbar>
 <router-outlet></router-outlet>

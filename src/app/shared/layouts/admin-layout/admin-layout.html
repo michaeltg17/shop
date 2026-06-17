@@ -1,10 +1,38 @@
 <mat-toolbar>
   <span class="title">{{ titleService.getTitle() }}</span>
   <span class="spacer"></span>
-  <button mat-button routerLink="customers" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">Customers</button>
-  <button mat-button routerLink="products" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">Products</button>
-  <button mat-button routerLink="carriers" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">Carriers</button>
-  <button mat-button routerLink="user" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">User</button>
+  <button
+    mat-button
+    routerLink="customers"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: false }"
+  >
+    Customers
+  </button>
+  <button
+    mat-button
+    routerLink="products"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: false }"
+  >
+    Products
+  </button>
+  <button
+    mat-button
+    routerLink="carriers"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: false }"
+  >
+    Carriers
+  </button>
+  <button
+    mat-button
+    routerLink="user"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: false }"
+  >
+    User
+  </button>
   <app-theme-selector></app-theme-selector>
 </mat-toolbar>
 <router-outlet></router-outlet>
