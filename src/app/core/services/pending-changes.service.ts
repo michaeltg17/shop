@@ -23,10 +23,10 @@ export class PendingChangesService {
 
   setPending(v: boolean) {
     this._pending = v;
+    // Always remove first to prevent duplicate handlers (idempotent)
+    window.removeEventListener('beforeunload', this._beforeUnloadHandler);
     if (v) {
       window.addEventListener('beforeunload', this._beforeUnloadHandler);
-    } else {
-      window.removeEventListener('beforeunload', this._beforeUnloadHandler);
     }
   }
 

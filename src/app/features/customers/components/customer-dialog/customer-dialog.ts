@@ -68,18 +68,11 @@ export class CustomerDialog implements OnInit, OnDestroy {
     // Initially allow close; prevent when dirty
     this.dialogRef.disableClose = false;
 
-    let wasDirty = false;
     const markDisable = () => {
       const anyDirty =
         this.firstName.dirty || this.lastName.dirty || this.email.dirty || this.isActive.dirty;
       this.dialogRef.disableClose = anyDirty;
-      if (anyDirty && !wasDirty) {
-        wasDirty = true;
-        this.pendingService.setPending(true);
-      } else if (!anyDirty && wasDirty) {
-        wasDirty = false;
-        this.pendingService.setPending(false);
-      }
+      this.pendingService.setPending(anyDirty);
     };
 
     // subscribe to value changes to update disableClose and pending state
