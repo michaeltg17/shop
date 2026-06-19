@@ -1,13 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Product } from '../../../products/product';
+import { CartItem } from '../../cart-item';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
-export interface CartItem {
-  product: Product;
-  quantity: number;
-}
+import { CartService } from '../../cart.service';
 
 @Component({
   selector: 'app-cart-page',
@@ -17,33 +13,22 @@ export interface CartItem {
   styleUrls: ['./cart-page.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CartPage implements OnInit, OnDestroy {
-  cartItems: CartItem[] = [];
-  subtotal = 0;
-  shipping = 5.99;
-  total = 0;
-
+export class CartPage {
   private router = inject(Router);
+  private cartService = inject(CartService);
 
-  ngOnInit(): void {
-    this.loadCart();
+  shipping = 5.99;
+
+  get cartItems(): CartItem[] {
+    return this.cartService.cartItems$();
   }
 
-  ngOnDestroy(): void {
-    this.saveCart();
+  get subtotal(): number {
+    return this.cartService.getSubtotal();
   }
 
-  loadCart(): void {
-    const cartData = localStorage.getItem('shoppingCart');
-    if (cartData) {
-      this.cartItems = JSON.parse(cartData);
-      this.calculateTotals();
-    }
-  }
-
-  saveCart(): void {
-    localStorage.setItem('shoppingCart', JSON.stringify(this.cartItems));
-    this.calculateTotals();
+  get total(): number {
+    return this.subtotal + this.shipping;
   }
 
   updateQuantity(item: CartItem, newQuantity: number): void {
@@ -52,21 +37,11 @@ export class CartPage implements OnInit, OnDestroy {
       return;
     }
 
-    item.quantity = newQuantity;
-    this.saveCart();
+    this.cartService.updateQuantity(item.product.id, newQuantity);
   }
 
   removeItem(item: CartItem): void {
-    this.cartItems = this.cartItems.filter(cartItem => cartItem !== item);
-    this.saveCart();
-  }
-
-  calculateTotals(): void {
-    this.subtotal = this.cartItems.reduce(
-      (sum, item) => sum + item.product.price * item.quantity,
-      0
-    );
-    this.total = this.subtotal + this.shipping;
+    this.cartService.removeFromCart(item.product.id);
   }
 
   checkout(): void {
@@ -75,10 +50,8 @@ export class CartPage implements OnInit, OnDestroy {
     }
 
     // In a real application, this would navigate to a checkout page
-    // For now, we'll just show an alert
-    alert('Checkout functionality would be implemented here!');
-    this.cartItems = [];
-    this.saveCart();
-    this.router.navigate(['/products']);
+    // For now, we'll just clear the cart and redirect
+    this.cartService.clearCart();
+    this.router.navigate(['/shop/products']);
   }
 }

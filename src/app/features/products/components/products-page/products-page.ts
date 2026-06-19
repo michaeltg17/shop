@@ -5,17 +5,21 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { CartService } from '../../../cart/cart.service';
 
 @Component({
   selector: 'app-products-page',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule],
+  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatSnackBarModule],
   templateUrl: './products-page.html',
   styleUrls: ['./products-page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductsPage implements OnInit {
   private productService = inject(ProductService);
+  private cartService = inject(CartService);
+  private snackBar = inject(MatSnackBar);
 
   products = signal<Product[]>([]);
   loading = signal(false);
@@ -46,45 +50,7 @@ export class ProductsPage implements OnInit {
   }
 
   addToCart(product: Product): void {
-    // Add to cart functionality using localStorage
-    interface CartItem {
-      product: Product;
-      quantity: number;
-    }
-    let cartItems: CartItem[] = [];
-
-    // Get existing cart items from localStorage
-    const cartData = localStorage.getItem('shoppingCart');
-    if (cartData) {
-      try {
-        cartItems = JSON.parse(cartData);
-      } catch {
-        // If JSON is invalid, start with empty cart
-        cartItems = [];
-      }
-    }
-
-    // Check if product is already in cart
-    const existingItemIndex = cartItems.findIndex(item => item.product.id === product.id);
-
-    if (existingItemIndex > -1) {
-      // Increase quantity if product already exists
-      cartItems[existingItemIndex].quantity += 1;
-    } else {
-      // Add new product to cart
-      cartItems.push({
-        product: product,
-        quantity: 1,
-      });
-    }
-
-    // Save updated cart to localStorage
-    localStorage.setItem('shoppingCart', JSON.stringify(cartItems));
-
-    // Show success message
-    alert(`Added ${product.title} to cart!`);
-
-    // Update cart icon count
-    window.dispatchEvent(new Event('storage'));
+    this.cartService.addToCart(product, 1);
+    this.snackBar.open(`Added ${product.title} to cart!`, 'Close', { duration: 3000 });
   }
 }

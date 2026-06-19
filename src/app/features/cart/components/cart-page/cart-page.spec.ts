@@ -1,13 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CartPage } from './cart-page';
+import { Router, ActivatedRoute } from '@angular/router';
+import { CartService } from '../../cart.service';
+import { CartItem } from '../../../cart-item';
 import { Product } from '../../../products/product';
-import { Router } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
+import { signal } from '@angular/core';
 
 describe('CartPage', () => {
   let component: CartPage;
   let fixture: ComponentFixture<CartPage>;
   let router: Partial<Router>;
+  let cartService: Partial<CartService>;
+  let itemsSignal: ReturnType<typeof signal<CartItem[]>>;
 
   const mockProduct: Product = {
     id: 1,
@@ -24,20 +28,25 @@ describe('CartPage', () => {
 
   beforeEach(async () => {
     router = {
-      navigate: jest.fn(),
+      navigate: jest.fn().mockReturnValue(Promise.resolve(true)),
     };
 
-    const routeSnapshot = {
-      paramMap: { get: () => null },
-      url: [],
-      firstChild: null,
+    itemsSignal = signal<CartItem[]>([]);
+
+    cartService = {
+      cartItems$: itemsSignal.asReadonly(),
+      removeFromCart: jest.fn(),
+      updateQuantity: jest.fn(),
+      clearCart: jest.fn(),
+      getSubtotal: jest.fn(() => 0),
     };
 
     await TestBed.configureTestingModule({
       imports: [CartPage],
       providers: [
         { provide: Router, useValue: router },
-        { provide: ActivatedRoute, useValue: { snapshot: routeSnapshot } },
+        { provide: ActivatedRoute, useValue: { snapshot: { data: {} }, paramMap: {} } },
+        { provide: CartService, useValue: cartService },
       ],
     }).compileComponents();
 
@@ -50,106 +59,60 @@ describe('CartPage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have empty cart items initially', () => {
-    expect(component.cartItems).toEqual([]);
-  });
-
-  it('should have subtotal of 0 initially', () => {
-    expect(component.subtotal).toBe(0);
-  });
-
   it('should have shipping of 5.99', () => {
     expect(component.shipping).toBe(5.99);
   });
 
-  it('should load cart from localStorage', () => {
-    const savedCart = [{ product: mockProduct, quantity: 2 }];
-    localStorage.setItem('shoppingCart', JSON.stringify(savedCart));
-    component.loadCart();
-    expect(component.cartItems).toHaveLength(1);
-    expect(component.cartItems[0].product.title).toBe('Test Product');
+  it('should get cart items from CartService', () => {
+    expect(component.cartItems).toEqual([]);
   });
 
-  it('should save cart to localStorage', () => {
-    component.cartItems = [{ product: mockProduct, quantity: 2 }];
-    component.saveCart();
-    const saved = localStorage.getItem('shoppingCart');
-    expect(saved).toBeTruthy();
-    const parsed = JSON.parse(saved || '[]');
-    expect(parsed).toHaveLength(1);
+  it('should reflect CartService items changes', () => {
+    itemsSignal.set([{ product: mockProduct, quantity: 2 }]);
+    expect(component.cartItems.length).toBe(1);
   });
 
-  it('should update quantity', () => {
-    component.cartItems = [{ product: mockProduct, quantity: 1 }];
-    component.updateQuantity(component.cartItems[0], 3);
-    expect(component.cartItems[0].quantity).toBe(3);
+  it('should get subtotal from CartService', () => {
+    expect(component.subtotal).toBe(0);
   });
 
-  it('should remove item when quantity is 0 or less', () => {
-    component.cartItems = [{ product: mockProduct, quantity: 1 }];
-    component.updateQuantity(component.cartItems[0], 0);
-    expect(component.cartItems).toHaveLength(0);
+  it('should calculate total as subtotal + shipping', () => {
+    expect(component.total).toBe(5.99);
   });
 
-  it('should remove item', () => {
-    component.cartItems = [{ product: mockProduct, quantity: 1 }];
-    component.removeItem(component.cartItems[0]);
-    expect(component.cartItems).toHaveLength(0);
-  });
-
-  it('should calculate totals correctly', () => {
-    component.cartItems = [
-      { product: { ...mockProduct, price: 100 }, quantity: 2 },
-      { product: { ...mockProduct, id: 2, price: 50 }, quantity: 1 },
-    ];
-    component.calculateTotals();
-    expect(component.subtotal).toBe(250);
+  it('should calculate total with non-zero subtotal', () => {
+    (cartService.getSubtotal as jest.Mock).mockReturnValue(250);
     expect(component.total).toBe(255.99);
   });
 
-  it('should checkout with cart items', () => {
-    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {
-      /* empty */
-    });
-    component.cartItems = [{ product: mockProduct, quantity: 1 }];
+  it('should update quantity via CartService', () => {
+    const item: CartItem = { product: mockProduct, quantity: 1 };
+    component.updateQuantity(item, 3);
+    expect(cartService.updateQuantity).toHaveBeenCalledWith(mockProduct.id, 3);
+  });
+
+  it('should remove item when quantity is 0 or less', () => {
+    const item: CartItem = { product: mockProduct, quantity: 1 };
+    component.updateQuantity(item, 0);
+    expect(cartService.removeFromCart).toHaveBeenCalledWith(mockProduct.id);
+  });
+
+  it('should remove item via CartService', () => {
+    const item: CartItem = { product: mockProduct, quantity: 1 };
+    component.removeItem(item);
+    expect(cartService.removeFromCart).toHaveBeenCalledWith(mockProduct.id);
+  });
+
+  it('should checkout when cart has items', () => {
+    itemsSignal.set([{ product: mockProduct, quantity: 2 }]);
     component.checkout();
-    expect(alertSpy).toHaveBeenCalledWith('Checkout functionality would be implemented here!');
-    expect(component.cartItems).toHaveLength(0);
-    expect(router.navigate).toHaveBeenCalledWith(['/products']);
-    alertSpy.mockRestore();
+    expect(cartService.clearCart).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(['/shop/products']);
   });
 
   it('should not checkout when cart is empty', () => {
-    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {
-      /* empty */
-    });
     component.checkout();
-    expect(alertSpy).not.toHaveBeenCalled();
-    alertSpy.mockRestore();
-  });
-
-  it('should save cart on destroy', () => {
-    component.cartItems = [{ product: mockProduct, quantity: 1 }];
-    component.ngOnDestroy();
-    const saved = localStorage.getItem('shoppingCart');
-    expect(saved).toBeTruthy();
-  });
-
-  it('should calculate totals on save', () => {
-    component.cartItems = [{ product: { ...mockProduct, price: 100 }, quantity: 2 }];
-    component.saveCart();
-    expect(component.subtotal).toBe(200);
-  });
-
-  it('should calculate totals on load', () => {
-    const savedCart = [{ product: { ...mockProduct, price: 100 }, quantity: 2 }];
-    localStorage.setItem('shoppingCart', JSON.stringify(savedCart));
-    component.loadCart();
-    expect(component.subtotal).toBe(200);
-  });
-
-  it('should handle invalid localStorage data', () => {
-    localStorage.setItem('shoppingCart', 'invalid json');
-    expect(() => component.loadCart()).toThrow();
+    expect(cartService.clearCart).not.toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 });

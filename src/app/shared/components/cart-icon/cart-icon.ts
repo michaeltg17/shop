@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
@@ -15,14 +15,15 @@ import { CommonModule } from '@angular/common';
 export class CartIcon implements OnInit, OnDestroy {
   cartItemCount = 0;
 
+  private readonly storageListener = () => this.loadCartCount();
+
   ngOnInit(): void {
     this.loadCartCount();
-    // Listen for storage changes to update cart count
-    window.addEventListener('storage', this.loadCartCount.bind(this));
+    window.addEventListener('storage', this.storageListener);
   }
 
   ngOnDestroy(): void {
-    window.removeEventListener('storage', this.loadCartCount.bind(this));
+    window.removeEventListener('storage', this.storageListener);
   }
 
   loadCartCount(): void {
