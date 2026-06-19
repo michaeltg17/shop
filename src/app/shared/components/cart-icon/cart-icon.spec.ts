@@ -89,4 +89,18 @@ describe('CartIcon', () => {
     comp.ngOnInit();
     expect(comp.cartItemCount).toBe(4);
   });
+
+  it('should update cartItemCount when storage event fires', () => {
+    localStorage.clear();
+    const comp = new CartIcon();
+    comp.ngOnInit();
+    expect(comp.cartItemCount).toBe(0);
+
+    // Simulate storage change in another tab
+    localStorage.setItem('shoppingCart', JSON.stringify([{ quantity: 3 }, { quantity: 2 }]));
+    window.dispatchEvent(new Event('storage'));
+    expect(comp.cartItemCount).toBe(5);
+
+    comp.ngOnDestroy();
+  });
 });
