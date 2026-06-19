@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartItem } from '../../../cart-item';
 import { CommonModule } from '@angular/common';
@@ -13,15 +13,11 @@ import { CartService } from '../../cart.service';
   styleUrls: ['./cart-page.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CartPage implements OnInit {
+export class CartPage {
   private router = inject(Router);
   private cartService = inject(CartService);
 
   shipping = 5.99;
-
-  ngOnInit(): void {
-    // CartService manages state reactively
-  }
 
   get cartItems(): CartItem[] {
     return this.cartService.cartItems$();
