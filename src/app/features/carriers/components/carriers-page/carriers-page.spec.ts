@@ -201,6 +201,16 @@ describe('CarriersPage', () => {
     expect(carrierService.updateCarrier).not.toHaveBeenCalled();
   });
 
+  it('should open edit dialog when exactly one carrier is selected', () => {
+    const mockRef = createMockDialogRef<Carrier>();
+    (dialog.open as jest.Mock).mockReturnValue(mockRef.ref);
+
+    component.selection.select(mockCarrier);
+    component.editCarrier();
+
+    expect(dialog.open).toHaveBeenCalled();
+  });
+
   it('should not edit when no carrier selected', () => {
     component.editCarrier();
     expect(dialog.open).not.toHaveBeenCalled();

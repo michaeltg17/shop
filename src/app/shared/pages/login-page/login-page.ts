@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AuthService } from '../../../core/auth/services/auth.service';
 
 @Component({
   selector: 'app-login-page',
@@ -32,15 +33,13 @@ export class LoginPage implements OnInit {
   loginError: string | null = null;
 
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   ngOnInit() {
-    // Check if user is already logged in
-    this.checkAuthentication();
-  }
-
-  checkAuthentication() {
-    // In a real app, you would check if the user is already authenticated
-    // For now, we'll just let them see the login page
+    // If already authenticated, redirect to admin
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/admin/customers']);
+    }
   }
 
   onLogin() {
@@ -57,9 +56,11 @@ export class LoginPage implements OnInit {
         return;
       }
 
-      // Simple authentication check (in a real app, this would be an API call)
+      // Authenticate via service
       if (this.credentials.username === 'admin' && this.credentials.password === 'password') {
-        // Successful login - navigate to dashboard
+        // Set auth state
+        this.authService.login(this.credentials.username, this.credentials.password);
+        // Navigate to admin dashboard
         this.router.navigate(['/admin/customers']);
       } else {
         this.loginError = 'Invalid username or password';

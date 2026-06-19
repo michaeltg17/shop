@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test('search for "wilson" returns two rows', async ({ page }) => {
   await page.goto('/admin/customers');

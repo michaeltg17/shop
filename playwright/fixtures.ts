@@ -1,5 +1,6 @@
-import { test as base } from '@playwright/test';
+import { test as base, expect } from '@playwright/test';
 
+export { expect };
 export const test = base.extend({
   context: async ({ context }, use) => {
     const mutantId = process.env.__STRYKER_ACTIVE_MUTANT__;
@@ -8,6 +9,10 @@ export const test = base.extend({
       (window as any).process = {
         env: { __STRYKER_ACTIVE_MUTANT__: id }
       };
+      localStorage.setItem(
+        'angular_auth_user',
+        JSON.stringify({ username: 'admin', isAdmin: true })
+      );
     }, mutantId);
 
     await use(context);

@@ -1,20 +1,29 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { LoginPage } from './login-page';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../core/auth/services/auth.service';
 
 describe('LoginPage', () => {
   let component: LoginPage;
   let fixture: ComponentFixture<LoginPage>;
   let routerSpy: { navigate: jest.Mock };
+  let authServiceSpy: { isAuthenticated: jest.Mock };
 
   beforeEach(async () => {
     routerSpy = {
       navigate: jest.fn().mockResolvedValue(true),
     };
+    authServiceSpy = {
+      isAuthenticated: jest.fn().mockReturnValue(false),
+      login: jest.fn().mockReturnValue({ subscribe: jest.fn() }),
+    };
 
     await TestBed.configureTestingModule({
       imports: [LoginPage],
-      providers: [{ provide: Router, useValue: routerSpy }],
+      providers: [
+        { provide: Router, useValue: routerSpy },
+        { provide: AuthService, useValue: authServiceSpy },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginPage);
@@ -35,10 +44,16 @@ describe('LoginPage', () => {
     expect(component.credentials.password).toBe('');
   });
 
-  it('should call checkAuthentication on init', () => {
-    const spy = jest.spyOn(component, 'checkAuthentication');
+  it('should redirect to admin when already authenticated', () => {
+    authServiceSpy.isAuthenticated.mockReturnValue(true);
     component.ngOnInit();
-    expect(spy).toHaveBeenCalled();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/admin/customers']);
+  });
+
+  it('should not redirect when not authenticated', () => {
+    authServiceSpy.isAuthenticated.mockReturnValue(false);
+    component.ngOnInit();
+    expect(routerSpy.navigate).not.toHaveBeenCalled();
   });
 
   it('should set loginError when credentials are missing', fakeAsync(() => {

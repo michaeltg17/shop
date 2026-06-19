@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, Page } from './fixtures';
 
 // helper to click the checkbox for the row where the id cell (second td) equals `id`
 async function selectRowById(page: Page, id: string | number) {

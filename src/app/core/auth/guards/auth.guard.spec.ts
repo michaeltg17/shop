@@ -1,10 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { AuthGuard } from './auth.guard';
+import { AuthService } from '../services/auth.service';
 
 describe('AuthGuard', () => {
   let guard: AuthGuard;
   let router: Router;
+  let authService: AuthService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -13,6 +15,7 @@ describe('AuthGuard', () => {
 
     guard = TestBed.inject(AuthGuard);
     router = TestBed.inject(Router);
+    authService = TestBed.inject(AuthService);
   });
 
   afterEach(() => {
@@ -24,18 +27,17 @@ describe('AuthGuard', () => {
   });
 
   it('should return true when user is authenticated', () => {
+    (authService.isAuthenticated as unknown as { set: (v: boolean) => void }).set(true);
     const result = guard.canActivate();
     expect(result).toBe(true);
   });
 
   it('should return a UrlTree redirecting to /login when user is not authenticated', () => {
+    // Set authenticated signal to false
+    (authService.isAuthenticated as unknown as { set: (v: boolean) => void }).set(false);
+
     // Spy on createUrlTree to verify redirect
     const createUrlTreeSpy = jest.spyOn(router, 'createUrlTree');
-
-    // Spy on checkAuth to simulate unauthenticated user
-    jest
-      .spyOn(guard as unknown as { checkAuth: () => boolean }, 'checkAuth')
-      .mockReturnValue(false);
 
     const result = guard.canActivate();
 

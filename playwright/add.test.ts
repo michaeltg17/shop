@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 import { CustomerTablePage, CustomerFormPage } from './pages/customers';
 
 // Adds correctly - Clicks add button to open add dialog

@@ -5,7 +5,15 @@ import { CustomerService } from '../../customer.service';
 import { CustomerDialog } from '../customer-dialog/customer-dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router, RouterState, Event as RouterEvent } from '@angular/router';
+import {
+  ActivatedRoute,
+  Router,
+  RouterState,
+  Event as RouterEvent,
+  NavigationEnd,
+  UrlSegment,
+  RoutesRecognized,
+} from '@angular/router';
 import { PendingChangesService } from '../../../../core/services/pending-changes.service';
 import { of, Subject } from 'rxjs';
 import { Customer } from '../../customer';
@@ -528,5 +536,11 @@ describe('CustomersTable', () => {
     (component['dialog'] as MatDialog).open = jest.fn().mockReturnValue(dialogRefMock);
     component.openAddDialog();
     expect(pendingService.setActiveDialog).toHaveBeenCalled();
+  });
+
+  it('should get routeState via toSignal', () => {
+    const routeState = (component as unknown as { routeState: () => unknown }).routeState();
+    expect(routeState).toBeTruthy();
+    expect(typeof routeState).toBe('object');
   });
 });
