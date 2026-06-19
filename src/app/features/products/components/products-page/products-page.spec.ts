@@ -2,7 +2,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { ProductsPage } from './products-page';
 import { ProductService } from '../../product.service';
 import { CartService } from '../../../cart/cart.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { Product } from '../../product';
@@ -41,6 +41,7 @@ describe('ProductsPage', () => {
     snackBarStub = new MatSnackBarStub();
 
     await TestBed.configureTestingModule({
+      declarations: [],
       imports: [ProductsPage],
       providers: [
         { provide: ProductService, useValue: productService },
@@ -52,7 +53,13 @@ describe('ProductsPage', () => {
           useValue: { navigate: jest.fn().mockReturnValue(Promise.resolve(true)) },
         },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(ProductsPage, {
+        remove: {
+          imports: [MatSnackBarModule],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(ProductsPage);
     component = fixture.componentInstance;
