@@ -18,6 +18,8 @@ module.exports = {
     break: 81
   },
   dashboard: {
-    reportType: 'full'
+    reportType: 'full',
+    project: 'michaeltg17/Angular',
+    version: 'main'
   }
 };
