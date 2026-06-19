@@ -20,7 +20,7 @@ describe('app.routes', () => {
   it('should have a root redirect to login', () => {
     const rootRoute = routes.find(r => r.path === '');
     expect(rootRoute).toBeDefined();
-    expect(rootRoute?.redirectTo).toBe('login');
+    expect(rootRoute?.redirectTo).toBe('shop/products');
     expect(rootRoute?.pathMatch).toBe('full');
   });
 

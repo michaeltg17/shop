@@ -12,7 +12,7 @@ import { AdminLayout } from './shared/layouts/admin-layout/admin-layout';
 import { EcommerceLayout } from './shared/layouts/ecommerce-layout/ecommerce-layout';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'shop/products', pathMatch: 'full' },
   { path: 'login', component: LoginPage },
   {
     path: 'admin',
