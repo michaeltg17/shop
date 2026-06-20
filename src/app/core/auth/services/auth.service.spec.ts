@@ -346,7 +346,10 @@ describe('AuthService', () => {
   });
 
   it('should initialize user signal correctly when stored', () => {
-    localStorage.setItem('angular_auth_user', JSON.stringify({ username: 'stored', isAdmin: true }));
+    localStorage.setItem(
+      'angular_auth_user',
+      JSON.stringify({ username: 'stored', isAdmin: true })
+    );
     const fresh = TestBed.inject(AuthService);
     expect(fresh.user()?.username).toBe('stored');
     expect(fresh.user()?.isAdmin).toBe(true);

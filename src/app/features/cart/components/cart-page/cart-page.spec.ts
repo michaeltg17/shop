@@ -183,25 +183,19 @@ describe('CartPage', () => {
     ]);
     fixture.detectChanges();
     component.checkout();
-    expect(mockSnackBar.open).toHaveBeenCalledWith(
-      'Order placed successfully!',
-      'Close',
-      { duration: 3000 }
-    );
+    expect(mockSnackBar.open).toHaveBeenCalledWith('Order placed successfully!', 'Close', {
+      duration: 3000,
+    });
   });
 
   it('should set allSelected to false when effect runs with items not all selected', () => {
-    itemsSignal.set([
-      { product: mockProduct, quantity: 1, selected: false },
-    ]);
+    itemsSignal.set([{ product: mockProduct, quantity: 1, selected: false }]);
     fixture.detectChanges();
     expect(component.allSelected()).toBe(false);
   });
 
   it('should set allSelected to true when effect runs with all items selected', () => {
-    itemsSignal.set([
-      { product: mockProduct, quantity: 1, selected: true },
-    ]);
+    itemsSignal.set([{ product: mockProduct, quantity: 1, selected: true }]);
     fixture.detectChanges();
     expect(component.allSelected()).toBe(true);
   });

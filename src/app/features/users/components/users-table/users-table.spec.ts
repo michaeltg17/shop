@@ -596,7 +596,9 @@ describe('UsersTable', () => {
   it('should handle canDeactivate when close throws an error', () => {
     const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true);
     const mockDialogRef = {
-      close: () => { throw new Error('Dialog already closed'); },
+      close: () => {
+        throw new Error('Dialog already closed');
+      },
       componentInstance: {
         hasUnsavedChanges: () => true,
       },
