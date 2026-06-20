@@ -39,6 +39,14 @@ describe('app.routes', () => {
     expect(adminRoute?.children?.length).toBeGreaterThan(0);
   });
 
+  it('should have admin redirect to customers by default', () => {
+    const adminRoute = routes.find(r => r.path === 'admin');
+    const redirectRoute = adminRoute?.children?.find(c => c.path === '');
+    expect(redirectRoute).toBeDefined();
+    expect(redirectRoute?.redirectTo).toBe('customers');
+    expect(redirectRoute?.pathMatch).toBe('full');
+  });
+
   it('should have customers routes nested under admin', () => {
     const adminRoute = routes.find(r => r.path === 'admin');
     const customersRoute = adminRoute?.children?.find(c => c.path === 'customers');

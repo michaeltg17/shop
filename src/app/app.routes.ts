@@ -19,6 +19,7 @@ export const routes: Routes = [
     component: AdminLayout,
     canActivate: [AuthGuard],
     children: [
+      { path: '', redirectTo: 'customers', pathMatch: 'full' },
       {
         path: 'customers',
         component: CustomersTable,
