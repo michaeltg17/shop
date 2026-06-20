@@ -125,7 +125,9 @@ describe('CartPage', () => {
   });
 
   it('should checkout when cart has selected items', () => {
-    (cartService.getSelectedItems as jest.Mock).mockReturnValue([{ product: mockProduct, quantity: 2, selected: true }]);
+    (cartService.getSelectedItems as jest.Mock).mockReturnValue([
+      { product: mockProduct, quantity: 2, selected: true },
+    ]);
     fixture.detectChanges();
     component.checkout();
     expect(cartService.clearCart).toHaveBeenCalled();

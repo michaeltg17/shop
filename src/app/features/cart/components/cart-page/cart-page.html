@@ -11,10 +11,7 @@
   <div class="cart-container">
     <div class="cart-items-section">
       <div class="select-all-row">
-        <mat-checkbox
-          [checked]="allSelected()"
-          (change)="toggleAll()"
-          color="primary"
+        <mat-checkbox [checked]="allSelected()" (change)="toggleAll()" color="primary"
           >Select all</mat-checkbox
         >
       </div>
@@ -49,7 +46,11 @@
                 <mat-icon>remove</mat-icon>
               </button>
               <span class="quantity">{{ item.quantity }}</span>
-              <button mat-icon-button (click)="updateQuantity(item, item.quantity + 1)" matTooltip="Increase quantity">
+              <button
+                mat-icon-button
+                (click)="updateQuantity(item, item.quantity + 1)"
+                matTooltip="Increase quantity"
+              >
                 <mat-icon>add</mat-icon>
               </button>
             </div>
