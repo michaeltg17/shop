@@ -96,7 +96,6 @@ describe('app.routes', () => {
     expect(route?.component).toBe(ProductsPage);
   });
 
-
   it('should have a shop (ecommerce) layout route', () => {
     const shopRoute = routes.find(r => r.path === 'shop');
     expect(shopRoute).toBeDefined();
