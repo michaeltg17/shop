@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CartPage } from './cart-page';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CartService } from '../../cart.service';
-import { CartItem } from '../../../cart-item';
+import { CartItem } from '../../cart-item';
 import { Product } from '../../../products/product';
 import { signal } from '@angular/core';
 
@@ -10,7 +10,7 @@ describe('CartPage', () => {
   let component: CartPage;
   let fixture: ComponentFixture<CartPage>;
   let router: Partial<Router>;
-  let cartService: Partial<CartService>;
+  let cartService: CartService;
   let itemsSignal: ReturnType<typeof signal<CartItem[]>>;
 
   const mockProduct: Product = {
@@ -20,11 +20,20 @@ describe('CartPage', () => {
     price: 100,
     category: 'Test Category',
     image: 'https://example.com/image.jpg',
-    rating: {
-      rate: 4.5,
-      count: 100,
-    },
+    rating: { rate: 4.5, count: 100 },
   };
+
+  const mockProduct2: Product = {
+    id: 2,
+    title: 'Another Product',
+    description: 'Another Description',
+    price: 50,
+    category: 'Test Category',
+    image: 'https://example.com/image2.jpg',
+    rating: { rate: 4, count: 50 },
+  };
+
+  const mockSnackBar = { open: jest.fn() };
 
   beforeEach(async () => {
     router = {
@@ -39,7 +48,11 @@ describe('CartPage', () => {
       updateQuantity: jest.fn(),
       clearCart: jest.fn(),
       getSubtotal: jest.fn(() => 0),
-    };
+      getSelectedItems: jest.fn(() => []),
+      toggleItemSelection: jest.fn(),
+      selectAllItems: jest.fn(),
+      selectedItemCount: signal(0),
+    } as Partial<CartService> as CartService;
 
     await TestBed.configureTestingModule({
       imports: [CartPage],
@@ -47,6 +60,7 @@ describe('CartPage', () => {
         { provide: Router, useValue: router },
         { provide: ActivatedRoute, useValue: { snapshot: { data: {} }, paramMap: {} } },
         { provide: CartService, useValue: cartService },
+        { provide: import('@angular/material/snack-bar').MatSnackBar, useValue: mockSnackBar },
       ],
     }).compileComponents();
 
@@ -64,12 +78,7 @@ describe('CartPage', () => {
   });
 
   it('should get cart items from CartService', () => {
-    expect(component.cartItems).toEqual([]);
-  });
-
-  it('should reflect CartService items changes', () => {
-    itemsSignal.set([{ product: mockProduct, quantity: 2 }]);
-    expect(component.cartItems.length).toBe(1);
+    expect(component.cartItems()).toEqual([]);
   });
 
   it('should get subtotal from CartService', () => {
@@ -82,7 +91,19 @@ describe('CartPage', () => {
 
   it('should calculate total with non-zero subtotal', () => {
     (cartService.getSubtotal as jest.Mock).mockReturnValue(250);
+    fixture.detectChanges();
     expect(component.total).toBe(255.99);
+  });
+
+  it('should toggle item selection via CartService', () => {
+    const item: CartItem = { product: mockProduct, quantity: 1, selected: false };
+    component.toggleItemSelection(item);
+    expect(cartService.toggleItemSelection).toHaveBeenCalledWith(mockProduct.id);
+  });
+
+  it('should toggle all items', () => {
+    component.toggleAll();
+    expect(cartService.selectAllItems).toHaveBeenCalledWith(true);
   });
 
   it('should update quantity via CartService', () => {
@@ -103,16 +124,38 @@ describe('CartPage', () => {
     expect(cartService.removeFromCart).toHaveBeenCalledWith(mockProduct.id);
   });
 
-  it('should checkout when cart has items', () => {
-    itemsSignal.set([{ product: mockProduct, quantity: 2 }]);
+  it('should checkout when cart has selected items', () => {
+    (cartService.getSelectedItems as jest.Mock).mockReturnValue([{ product: mockProduct, quantity: 2, selected: true }]);
+    fixture.detectChanges();
     component.checkout();
     expect(cartService.clearCart).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/shop/products']);
   });
 
-  it('should not checkout when cart is empty', () => {
+  it('should not checkout when no items are selected', () => {
+    (cartService.getSelectedItems as jest.Mock).mockReturnValue([]);
+    fixture.detectChanges();
     component.checkout();
     expect(cartService.clearCart).not.toHaveBeenCalled();
     expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should get selected items from CartService', () => {
+    const selected: CartItem[] = [{ product: mockProduct, quantity: 1, selected: true }];
+    (cartService.getSelectedItems as jest.Mock).mockReturnValue(selected);
+    fixture.detectChanges();
+    expect(component.selectedItems).toEqual(selected);
+  });
+
+  it('should reflect CartService items changes', () => {
+    itemsSignal.set([{ product: mockProduct, quantity: 2 }]);
+    fixture.detectChanges();
+    expect(component.cartItems().length).toBe(1);
+  });
+
+  it('should toggleAll deselect when all are selected', () => {
+    component.allSelected.set(true);
+    component.toggleAll();
+    expect(cartService.selectAllItems).toHaveBeenCalledWith(false);
   });
 });

@@ -10,6 +10,11 @@ export class CartService {
 
   cartItems$ = this.cartItems.asReadonly();
   cartItemCount = computed(() => this.cartItems().reduce((sum, item) => sum + item.quantity, 0));
+  selectedItemCount = computed(() =>
+    this.cartItems()
+      .filter(item => item.selected)
+      .reduce((sum, item) => sum + item.quantity, 0)
+  );
 
   addToCart(product: Product, quantity = 1) {
     const current = this.cartItems();
@@ -22,7 +27,7 @@ export class CartService {
         )
       );
     } else {
-      this.cartItems.update(items => [...items, { product, quantity }]);
+      this.cartItems.update(items => [...items, { product, quantity, selected: true }]);
     }
   }
 
@@ -41,11 +46,33 @@ export class CartService {
     );
   }
 
+  toggleItemSelection(productId: number) {
+    this.cartItems.update(items =>
+      items.map(item =>
+        item.product.id === productId ? { ...item, selected: !item.selected } : item
+      )
+    );
+  }
+
+  selectAllItems(selected: boolean) {
+    this.cartItems.update(items => items.map(item => ({ ...item, selected })));
+  }
+
   clearCart() {
     this.cartItems.set([]);
   }
 
   getSubtotal(): number {
-    return this.cartItems().reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    return this.cartItems()
+      .filter(item => item.selected)
+      .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  }
+
+  getSelectedItems(): CartItem[] {
+    return this.cartItems().filter(item => item.selected);
+  }
+
+  getAllItems(): CartItem[] {
+    return this.cartItems();
   }
 }
