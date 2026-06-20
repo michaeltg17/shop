@@ -150,4 +150,70 @@ describe('CartPage', () => {
     component.toggleAll();
     expect(cartService.selectAllItems).toHaveBeenCalledWith(false);
   });
+
+  it('should updateQuantity with negative number removes item', () => {
+    const item: CartItem = { product: mockProduct, quantity: 1 };
+    component.updateQuantity(item, -1);
+    expect(cartService.removeFromCart).toHaveBeenCalledWith(mockProduct.id);
+    expect(cartService.updateQuantity).not.toHaveBeenCalled();
+  });
+
+  it('should show snackbar when removing item', () => {
+    const item: CartItem = { product: mockProduct, quantity: 1 };
+    component.removeItem(item);
+    expect(mockSnackBar.open).toHaveBeenCalledWith(
+      `Removed ${mockProduct.title} from cart`,
+      'Close',
+      { duration: 2000 }
+    );
+  });
+
+  it('should show snackbar when no items selected for checkout', () => {
+    component.checkout();
+    expect(mockSnackBar.open).toHaveBeenCalledWith(
+      'Select at least one item to checkout',
+      'Close',
+      { duration: 3000 }
+    );
+  });
+
+  it('should show success snackbar on checkout', () => {
+    (cartService.getSelectedItems as jest.Mock).mockReturnValue([
+      { product: mockProduct, quantity: 1, selected: true },
+    ]);
+    fixture.detectChanges();
+    component.checkout();
+    expect(mockSnackBar.open).toHaveBeenCalledWith(
+      'Order placed successfully!',
+      'Close',
+      { duration: 3000 }
+    );
+  });
+
+  it('should set allSelected to false when effect runs with items not all selected', () => {
+    itemsSignal.set([
+      { product: mockProduct, quantity: 1, selected: false },
+    ]);
+    fixture.detectChanges();
+    expect(component.allSelected()).toBe(false);
+  });
+
+  it('should set allSelected to true when effect runs with all items selected', () => {
+    itemsSignal.set([
+      { product: mockProduct, quantity: 1, selected: true },
+    ]);
+    fixture.detectChanges();
+    expect(component.allSelected()).toBe(true);
+  });
+
+  it('should set allSelected to false when cart is empty', () => {
+    itemsSignal.set([]);
+    fixture.detectChanges();
+    expect(component.allSelected()).toBe(false);
+  });
+
+  it('should handle subtotal with multiple items', () => {
+    (cartService.getSubtotal as jest.Mock).mockReturnValue(500);
+    expect(component.total).toBe(505.99);
+  });
 });

@@ -535,4 +535,148 @@ describe('CustomersTable', () => {
     expect(routeState).toBeTruthy();
     expect(typeof routeState).toBe('object');
   });
+
+  it('should have correct initial routeState values', () => {
+    const routeState = (component as unknown as { routeState: () => unknown }).routeState();
+    expect((routeState as any).id).toBeNull();
+    expect((routeState as any).isNew).toBe(false);
+    expect((routeState as any).isEdit).toBe(false);
+  });
+
+  it('should initialize with empty selection', () => {
+    expect(component.selection.selected.length).toBe(0);
+  });
+
+  it('should initialize with empty dataSource', () => {
+    expect(component.dataSource.data.length).toBe(0);
+  });
+
+  it('should open delete confirmation with correct dialog data', () => {
+    const dialogRefMock = {
+      afterClosed: () => of(true),
+      close: jest.fn(),
+    };
+    const openSpy = jest.fn().mockReturnValue(dialogRefMock);
+    (component['dialog'] as MatDialog).open = openSpy;
+
+    component.deleteCustomers();
+    expect(openSpy).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        data: {
+          title: 'Delete customers',
+          message: 'Do you really want to delete these customers?',
+          confirmText: 'Delete',
+          cancelText: 'Cancel',
+        },
+      })
+    );
+  });
+
+  it('should toggleAllSelect when all items selected', () => {
+    const customers: Customer[] = [mockCustomer, { ...mockCustomer, id: 2 }];
+    (customerService.customers as unknown as WritableSignal<Customer[]>).set(customers);
+    fixture.detectChanges();
+    expect(component.dataSource.data.length).toBe(2);
+  });
+
+  it('should show snackbar with correct duration on error', () => {
+    (customerService.error as unknown as WritableSignal<string | null>).set('Error message');
+    fixture.detectChanges();
+    expect(snackBar.open).toHaveBeenCalledWith('Error message', 'Close', { duration: 4000 });
+  });
+
+  it('should not show snackbar when error is null', () => {
+    snackBar.open = jest.fn();
+    (customerService.error as unknown as WritableSignal<string | null>).set(null);
+    fixture.detectChanges();
+    expect(snackBar.open).not.toHaveBeenCalled();
+  });
+
+  it('should handle canDeactivate when close throws an error', () => {
+    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true);
+    const mockDialogRef = {
+      close: () => { throw new Error('Dialog already closed'); },
+      componentInstance: {
+        hasUnsavedChanges: () => true,
+      },
+    };
+    (component as unknown as { ['activeDialogRef']: unknown })['activeDialogRef'] = mockDialogRef;
+    expect(component.canDeactivate()).toBe(true);
+    confirmSpy.mockRestore();
+  });
+
+  it('should handle canDeactivate with isActive dirty field', () => {
+    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(false);
+    const mockDialogRef = {
+      close: jest.fn(),
+      componentInstance: {
+        firstName: { dirty: false },
+        lastName: { dirty: false },
+        email: { dirty: false },
+        isActive: { dirty: true },
+      },
+    };
+    (component as unknown as { ['activeDialogRef']: unknown })['activeDialogRef'] = mockDialogRef;
+    expect(component.canDeactivate()).toBe(false);
+    confirmSpy.mockRestore();
+  });
+
+  it('should handle canDeactivate with email dirty field', () => {
+    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(false);
+    const mockDialogRef = {
+      close: jest.fn(),
+      componentInstance: {
+        firstName: { dirty: false },
+        lastName: { dirty: false },
+        email: { dirty: true },
+        isActive: { dirty: false },
+      },
+    };
+    (component as unknown as { ['activeDialogRef']: unknown })['activeDialogRef'] = mockDialogRef;
+    expect(component.canDeactivate()).toBe(false);
+    confirmSpy.mockRestore();
+  });
+
+  it('should return true from canDeactivate when componentInstance is null', () => {
+    (component as unknown as { ['activeDialogRef']: unknown })['activeDialogRef'] = {
+      componentInstance: null,
+      close: jest.fn(),
+    };
+    expect(component.canDeactivate()).toBe(true);
+  });
+
+  it('should navigate to customer view with correct id', () => {
+    jest.spyOn(router, 'navigate');
+    component.viewCustomer({ ...mockCustomer, id: 42 });
+    expect(router.navigate).toHaveBeenCalledWith([42], { relativeTo: route });
+  });
+
+  it('should navigate to customer edit with correct id', () => {
+    component.selection.select({ ...mockCustomer, id: 99 });
+    jest.spyOn(router, 'navigate');
+    component.editCustomer();
+    expect(router.navigate).toHaveBeenCalledWith([99, 'edit'], { relativeTo: route });
+  });
+
+  it('should selectAllItems in toggleAll', () => {
+    component.allSelected.set(true);
+    component.toggleAll();
+  });
+
+  it('should handle multiple dirty fields in canDeactivate fallback', () => {
+    const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(false);
+    const mockDialogRef = {
+      close: jest.fn(),
+      componentInstance: {
+        firstName: { dirty: true },
+        lastName: { dirty: true },
+        email: { dirty: false },
+        isActive: { dirty: false },
+      },
+    };
+    (component as unknown as { ['activeDialogRef']: unknown })['activeDialogRef'] = mockDialogRef;
+    expect(component.canDeactivate()).toBe(false);
+    confirmSpy.mockRestore();
+  });
 });

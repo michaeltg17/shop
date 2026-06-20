@@ -264,4 +264,120 @@ describe('AuthService', () => {
     expect(service.user()).toBeNull();
     expect(service.isAuthenticated()).toBe(false);
   });
+
+  it('should register multiple customers and login with each', () => {
+    service.register('user1', 'pass1').subscribe(() => undefined);
+    service.logout();
+    service.register('user2', 'pass2').subscribe(() => undefined);
+    service.logout();
+
+    service.login('user1', 'pass1').subscribe(success => {
+      expect(success).toBe(true);
+    });
+    expect(service.user()?.username).toBe('user1');
+
+    service.logout();
+    service.login('user2', 'pass2').subscribe(success => {
+      expect(success).toBe(true);
+    });
+    expect(service.user()?.username).toBe('user2');
+  });
+
+  it('should handle localStorage setItem errors during registration', () => {
+    const originalSetItem = localStorage.setItem;
+    localStorage.setItem = jest.fn(() => {
+      throw new Error('QuotaExceededError');
+    });
+    expect(() => {
+      service.register('quota-user', 'pass').subscribe(() => undefined);
+    }).toThrow();
+    localStorage.setItem = originalSetItem;
+  });
+
+  it('should handle localStorage setItem errors during login', () => {
+    const originalSetItem = localStorage.setItem;
+    localStorage.setItem = jest.fn(() => {
+      throw new Error('QuotaExceededError');
+    });
+    expect(() => {
+      service.login('admin', 'password').subscribe(() => undefined);
+    }).toThrow();
+    localStorage.setItem = originalSetItem;
+  });
+
+  it('should set localStorage correctly during admin login', () => {
+    service.login('admin', 'password').subscribe(() => undefined);
+    const stored = localStorage.getItem('angular_auth_user');
+    expect(stored).toBe(JSON.stringify({ username: 'admin', isAdmin: true }));
+  });
+
+  it('should set localStorage correctly during customer registration', () => {
+    service.register('testuser', 'testpass').subscribe(() => undefined);
+    const stored = localStorage.getItem('angular_auth_user');
+    expect(stored).toBe(JSON.stringify({ username: 'testuser', isAdmin: false }));
+  });
+
+  it('should save customers to localStorage during registration', () => {
+    service.register('testuser', 'testpass').subscribe(() => undefined);
+    const stored = localStorage.getItem('angular_customers');
+    const customers = JSON.parse(stored!);
+    expect(customers).toContainEqual({ username: 'testuser', password: 'testpass' });
+  });
+
+  it('should not modify customer list when registration fails due to duplicate', () => {
+    service.register('dup', 'pass1').subscribe(() => undefined);
+    service.logout();
+    const before = localStorage.getItem('angular_customers');
+    service.register('dup', 'pass2').subscribe(() => undefined);
+    const after = localStorage.getItem('angular_customers');
+    expect(before).toBe(after);
+  });
+
+  it('should handle logout removing localStorage key', () => {
+    service.login('admin', 'password').subscribe(() => undefined);
+    service.logout();
+    expect(localStorage.getItem('angular_auth_user')).toBeNull();
+  });
+
+  it('should initialize isAuthenticated as true when user stored', () => {
+    localStorage.setItem('angular_auth_user', JSON.stringify({ username: 'test', isAdmin: false }));
+    const fresh = TestBed.inject(AuthService);
+    expect(fresh.isAuthenticated()).toBe(true);
+  });
+
+  it('should initialize user signal correctly when stored', () => {
+    localStorage.setItem('angular_auth_user', JSON.stringify({ username: 'stored', isAdmin: true }));
+    const fresh = TestBed.inject(AuthService);
+    expect(fresh.user()?.username).toBe('stored');
+    expect(fresh.user()?.isAdmin).toBe(true);
+  });
+
+  it('should handle empty password registration', () => {
+    service.register('user', ' ').subscribe(success => {
+      expect(success).toBe(true);
+    });
+    expect(service.isAuthenticated()).toBe(true);
+  });
+
+  it('should handle login with customer that has empty password', () => {
+    service.register('empty-pw', '').subscribe(() => undefined);
+    service.logout();
+    service.login('empty-pw', '').subscribe(success => {
+      expect(success).toBe(true);
+    });
+  });
+
+  it('should return authState as observable that emits current user', () => {
+    service.login('admin', 'password').subscribe(() => undefined);
+    service.authState.subscribe(user => {
+      expect(user?.username).toBe('admin');
+      expect(user?.isAdmin).toBe(true);
+    });
+  });
+
+  it('should return authState as observable that emits null when not logged in', () => {
+    service.authState.subscribe(user => {
+      expect(user).toBeNull();
+    });
+  });
 });
