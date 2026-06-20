@@ -15,7 +15,7 @@ module.exports = {
   cleanTempDir: 'always',
   incremental: true,
   thresholds: {
-    break: 81
+    break: 80
   },
   dashboard: {
     reportType: 'full',

@@ -1,53 +1,106 @@
 <div class="login-container">
   <div class="login-card">
     <div class="login-header">
-      <h2>Admin Dashboard</h2>
-      <p>Sign in to your account</p>
+      <h2>{{ authMode === 'login' ? 'Welcome Back' : 'Create Account' }}</h2>
+      <p>
+        {{ authMode === 'login' ? 'Sign in to continue' : 'Register to shop and buy products' }}
+      </p>
     </div>
 
-    <form class="login-form" (ngSubmit)="onLogin()" #loginForm="ngForm">
-      <mat-form-field class="full-width" appearance="fill">
-        <mat-label>Username</mat-label>
-        <input
-          matInput
-          placeholder="Enter your username"
-          [(ngModel)]="credentials.username"
-          required
-          name="username"
-        />
-        <mat-icon matPrefix>person</mat-icon>
-      </mat-form-field>
+    <mat-tab-group [(selectedIndex)]="tabIndex" disableRipple>
+      <mat-tab label="Login">
+        <form class="login-form" (ngSubmit)="onLogin()" #loginForm="ngForm">
+          <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Username</mat-label>
+            <input
+              matInput
+              placeholder="Enter your username"
+              [(ngModel)]="credentials.username"
+              required
+              name="loginUsername"
+            />
+            <mat-icon matPrefix>person</mat-icon>
+          </mat-form-field>
 
-      <mat-form-field class="full-width" appearance="fill">
-        <mat-label>Password</mat-label>
-        <input
-          matInput
-          type="password"
-          placeholder="Enter your password"
-          [(ngModel)]="credentials.password"
-          required
-          name="password"
-        />
-        <mat-icon matPrefix>lock</mat-icon>
-      </mat-form-field>
+          <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Password</mat-label>
+            <input
+              matInput
+              type="password"
+              placeholder="Enter your password"
+              [(ngModel)]="credentials.password"
+              required
+              name="loginPassword"
+            />
+            <mat-icon matPrefix>lock</mat-icon>
+          </mat-form-field>
 
-      @if (loginError) {
-      <div class="error-message">{{ loginError }}</div>
-      }
+          @if (message) {
+          <div class="error-message">{{ message }}</div>
+          }
 
-      <button
-        mat-raised-button
-        color="primary"
-        class="login-button"
-        type="submit"
-        [disabled]="isLoginLoading"
-      >
-        @if (!isLoginLoading) {
-        <span>Sign In</span>
-        } @else {
-        <mat-spinner diameter="20"></mat-spinner>
-        }
-      </button>
-    </form>
+          <button
+            mat-raised-button
+            color="primary"
+            class="login-button"
+            type="submit"
+            [disabled]="isLoginLoading"
+          >
+            @if (!isLoginLoading) {
+            <span>Sign In</span>
+            } @else {
+            <mat-spinner diameter="20"></mat-spinner>
+            }
+          </button>
+        </form>
+      </mat-tab>
+
+      <mat-tab label="Register">
+        <form class="login-form" (ngSubmit)="onRegister()" #registerForm="ngForm">
+          <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Username</mat-label>
+            <input
+              matInput
+              placeholder="Choose a username"
+              [(ngModel)]="credentials.username"
+              required
+              name="registerUsername"
+            />
+            <mat-icon matPrefix>person</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Password</mat-label>
+            <input
+              matInput
+              type="password"
+              placeholder="Choose a password"
+              [(ngModel)]="credentials.password"
+              required
+              name="registerPassword"
+            />
+            <mat-icon matPrefix>lock</mat-icon>
+          </mat-form-field>
+
+          @if (message) {
+          <div class="error-message">{{ message }}</div>
+          }
+
+          <button
+            mat-raised-button
+            color="primary"
+            class="login-button"
+            type="submit"
+            [disabled]="isLoginLoading"
+          >
+            @if (!isLoginLoading) {
+            <span>Register</span>
+            } @else {
+            <mat-spinner diameter="20"></mat-spinner>
+            }
+          </button>
+        </form>
+      </mat-tab>
+    </mat-tab-group>
   </div>
 </div>
