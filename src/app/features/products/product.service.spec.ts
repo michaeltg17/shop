@@ -43,7 +43,7 @@ describe('ProductService', () => {
       receivedProducts = products;
     });
 
-    const req = httpMock.expectOne('https://fakestoreapi.com/products');
+    const req = httpMock.expectOne('api/products');
     expect(req.request.method).toBe('GET');
     req.flush(mockProducts);
 
@@ -62,7 +62,7 @@ describe('ProductService', () => {
       },
     });
 
-    const req = httpMock.expectOne('https://fakestoreapi.com/products');
+    const req = httpMock.expectOne('api/products');
     req.flush('Error message', { status: 500, statusText: 'Server Error' });
 
     expect(receivedError).toBeTruthy();
@@ -75,7 +75,7 @@ describe('ProductService', () => {
       receivedProducts = products;
     });
 
-    const req = httpMock.expectOne('https://fakestoreapi.com/products');
+    const req = httpMock.expectOne('api/products');
     req.flush([]);
 
     expect(receivedProducts).toEqual([]);

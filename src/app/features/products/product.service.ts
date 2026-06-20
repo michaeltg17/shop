@@ -8,7 +8,7 @@ import { Product } from './product';
 })
 export class ProductService {
   private readonly http = inject(HttpClient);
-  private readonly productsUrl = 'https://fakestoreapi.com/products';
+  private readonly productsUrl = 'api/products';
 
   loadProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.productsUrl);
