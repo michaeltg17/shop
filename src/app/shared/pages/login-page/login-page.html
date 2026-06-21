@@ -18,6 +18,12 @@
   >
     Contact
   </button>
+  @if (!authService.isAuthenticated()) {
+  <button mat-button routerLink="/login" routerLinkActive="active" class="active">Login</button>
+  } @else {
+  <button mat-button routerLink="/admin/users" routerLinkActive="active">Admin</button>
+  <button mat-button (click)="onLogout()">Logout</button>
+  }
   <app-theme-selector></app-theme-selector>
 </mat-toolbar>
 

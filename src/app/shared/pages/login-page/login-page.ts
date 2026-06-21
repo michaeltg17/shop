@@ -158,4 +158,11 @@ export class LoginPage implements OnInit {
     this.messageError = false;
     this.credentials = { username: '', password: '' };
   }
+
+  onLogout(): void {
+    this.authService.logout();
+    this.message = null;
+    this.messageError = false;
+    this.credentials = { username: '', password: '' };
+  }
 }
