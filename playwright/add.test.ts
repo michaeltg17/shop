@@ -40,22 +40,13 @@ test('Adds correctly - Clicks add button to open add dialog', async ({ page }) =
   await page.waitForTimeout(1000);
   await page.waitForSelector('tr[mat-row]', { timeout: 10000 });
 
-  // Set page size to ensure all rows are visible (default is 5, pagination may hide the new row)
-  const pageSizeTrigger = page.locator('mat-paginator [mat-select-trigger]').first();
-  // Click directly on the trigger element (bypasses touch-target overlay)
-  await pageSizeTrigger.click({ force: true });
-  // Wait for overlay panel
-  await page.waitForSelector('.cdk-overlay-pane', { timeout: 5000 });
-  const option50 = page.locator('mat-option:has-text("50")');
-  if (await option50.count() > 0) {
-    await option50.click();
-  } else {
-    // fallback: select the largest available option
-    const lastOption = page.locator('mat-option').last();
-    await lastOption.click();
-  }
-  // Wait for paginator to apply
+  // Instead of fighting the paginator's touch-target overlay, use the table's search/filter
+  // input to narrow down to our unique test user (avoids pagination issues entirely)
+  const searchInput = page.locator('mat-form-field input[placeholder="Search"]');
+  await searchInput.fill(firstName);
+  // Wait for table to filter
   await page.waitForTimeout(500);
+  await page.waitForSelector('tr[mat-row]', { timeout: 10000 });
 
   // Verify the user appears as a row in the table with expected data
   const expectedLastName = 'Tester';
