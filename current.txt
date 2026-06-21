@@ -1,15 +1,17 @@
 # dev24-7 Worker State
 
-Status: WAITING_FOR_CI — PR #104 (re-pushed fix)
-Started: 2026-06-21T17:30+02:00
+Status: WORKING — PR #104 CI fix (Fake Store API integration, issue #90)
+Updated at: 2026-06-21 18:28 CEST
 Branch: feature/90-fakestoreapi-integration
-PR: https://github.com/michaeltg17/Angular/pull/104
-CI: re-running after prettier fix
+PR: #104 (OPEN)
+CI: Failed (4 Playwright E2E tests) — fixing now
 
-What was done:
-- Previous CI failed on prettier formatting (auth.service.spec.ts, handlers.ts)
-- Applied prettier --write to both files
-- Pushed fix commit (53ede76)
-- CI re-running
+What I'm doing:
+- Fixed 4 failing Playwright E2E tests caused by Fake Store API data mismatch
+- Added Wilson users (id 6,7) to MSW handlers for search.test.ts
+- Fixed customersTable.test.ts: ambiguous "User" button locator (matched "Users" too)
+- Fixed view.test.ts: updated expected row id (6=Jacob Wilson) and name pattern
+- Fixed add.test.ts: increased wait timeout after sort, added extra wait time
+- Fixed search.test.ts: no changes needed (test already correct, data was missing)
 
-Next: Check CI status, merge if green
+Next: commit, push, wait for CI

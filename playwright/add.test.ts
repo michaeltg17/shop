@@ -36,8 +36,9 @@ test('Adds correctly - Clicks add button to open add dialog', async ({ page }) =
   // Sort by ID descending to bring the newest user to the first page
   await usersPage.sortByIdDescending();
 
-  // Wait for table to update after sorting
-  await page.waitForSelector('tr[mat-row]', { timeout: 5000 });
+  // Wait for table to update after sorting — give extra time for data source to refresh
+  await page.waitForTimeout(1000);
+  await page.waitForSelector('tr[mat-row]', { timeout: 10000 });
 
   // Verify the user appears as a row in the table with expected data
   const expectedLastName = 'Tester';

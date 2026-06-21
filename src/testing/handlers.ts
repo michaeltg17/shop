@@ -85,6 +85,24 @@ let fakeUsers: FakeStoreUser[] = [
     },
     __v: 0,
   },
+  {
+    id: 6,
+    email: 'jacob@gmail.com',
+    username: 'jacobw',
+    password: 'jacob123',
+    name: { firstname: 'jacob', lastname: 'Wilson' },
+    phone: '1-555-111-2222',
+    __v: 0,
+  },
+  {
+    id: 7,
+    email: 'joann@gmail.com',
+    username: 'joannw',
+    password: 'joann123',
+    name: { firstname: 'joann', lastname: 'wilson' },
+    phone: '1-555-333-4444',
+    __v: 0,
+  },
 ];
 
 const products: Product[] = productsJson.map(p => ({

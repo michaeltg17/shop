@@ -17,10 +17,12 @@ test('loadUsers invoked only once across navigation', async ({ page }) => {
   await page.waitForResponse(resp => resp.url().includes('/users') && resp.request().method() === 'GET');
   expect(apiCount).toBeGreaterThanOrEqual(1);
 
-  // Click toolbar button to go to user page
-  const userBtn = page.locator('button:has-text("User")');
-  await expect(userBtn).toBeVisible();
-  await userBtn.click();
+  // Click toolbar button to go to user page (exact match to avoid matching "Users" too)
+  const userBtn = page.locator('button:has-text("User")').filter({ has: page.locator('span:has-text("User"):not(:has-text("s"))') });
+  // Use exact text matching: "User" without trailing "s"
+  const userBtnExact = page.getByRole('button', { name: 'User', exact: true });
+  await expect(userBtnExact).toBeVisible();
+  await userBtnExact.click();
   await page.waitForURL(/\/admin\/user/);
 
   // Navigate back to users page

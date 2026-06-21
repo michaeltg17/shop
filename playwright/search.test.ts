@@ -11,7 +11,7 @@ test('search for "wilson" returns two rows', async ({ page }) => {
   const rows = page.locator('tr[mat-row]');
   await expect(rows).toHaveCount(2);
 
-  // verify the rows include expected text (one with last name Wilson)
+  // verify the rows include expected text (one with last name Wilson, one with wilson)
   await expect(rows.nth(0)).toContainText(/Wilson/i);
   await expect(rows.nth(1)).toContainText(/wilson/i);
 });

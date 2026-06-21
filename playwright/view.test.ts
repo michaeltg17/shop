@@ -12,8 +12,8 @@ test('clicking a row opens view dialog with readonly fields', async ({ page }) =
   await page.goto('/admin/users');
   await page.waitForSelector('tr[mat-row]');
 
-  // click the row with id 2 (Jacob Wilson)
-  await clickRowById(page, 2);
+  // click the row with id 6 (Jacob Wilson)
+  await clickRowById(page, 6);
 
   // wait for dialog to appear and assert title
   await page.waitForSelector('mat-dialog-container');
@@ -29,5 +29,5 @@ test('clicking a row opens view dialog with readonly fields', async ({ page }) =
   await expect(checkboxInput).toBeDisabled();
 
   // verify the dialog shows the expected user name
-  await expect(dialogContent.locator('input').first()).toHaveValue(/Jacob|Gary|Joann/i);
+  await expect(dialogContent.locator('input').first()).toHaveValue(/Jacob|Joann/i);
 });
