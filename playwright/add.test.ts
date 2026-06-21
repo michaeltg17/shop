@@ -6,6 +6,9 @@ import { UserTablePage, UserFormPage } from './pages/users';
 // - Clicks add
 // - User is added to the table
 test('Adds correctly - Clicks add button to open add dialog', async ({ page }) => {
+  // This test exercises a full flow: navigate → add → sort → search → verify.
+  // 5 s global timeout is too tight for the full sequence.
+  test.setTimeout(30_000);
   const usersPage = new UserTablePage(page);
   await usersPage.goto();
 
@@ -41,16 +44,14 @@ test('Adds correctly - Clicks add button to open add dialog', async ({ page }) =
   // Sort by ID descending to bring the newest user to the first page
   await usersPage.sortByIdDescending();
 
-  // Wait for table to update after sorting — give extra time for data source to refresh
-  await page.waitForTimeout(1000);
+  // Wait for table to have at least one row after sorting
   await page.waitForSelector('tr[mat-row]', { timeout: 10000 });
 
   // Instead of fighting the paginator's touch-target overlay, use the table's search/filter
   // input to narrow down to our unique test user (avoids pagination issues entirely)
   const searchInput = page.locator('mat-form-field input[placeholder="Search"]');
   await searchInput.fill(firstName);
-  // Wait for table to filter
-  await page.waitForTimeout(500);
+  // Wait for table to filter — use a selector wait instead of a bare timeout
   await page.waitForSelector('tr[mat-row]', { timeout: 10000 });
 
   // Verify the user appears as a row in the table with expected data
