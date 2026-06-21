@@ -1,5 +1,5 @@
 import { routes } from './app.routes';
-import { CustomersTable } from './features/customers/components/customers-table/customers-table';
+import { UsersTable } from './features/users/components/users-table/users-table';
 import { UserPage } from './shared/pages/user-page/user-page';
 import { ProductsPage } from './features/products/components/products-page/products-page';
 import { ContactPage } from './shared/pages/contact-page/contact-page';
@@ -39,46 +39,46 @@ describe('app.routes', () => {
     expect(adminRoute?.children?.length).toBeGreaterThan(0);
   });
 
-  it('should have admin redirect to customers by default', () => {
+  it('should have admin redirect to users by default', () => {
     const adminRoute = routes.find(r => r.path === 'admin');
     const redirectRoute = adminRoute?.children?.find(c => c.path === '');
     expect(redirectRoute).toBeDefined();
-    expect(redirectRoute?.redirectTo).toBe('customers');
+    expect(redirectRoute?.redirectTo).toBe('users');
     expect(redirectRoute?.pathMatch).toBe('full');
   });
 
-  it('should have customers routes nested under admin', () => {
+  it('should have users routes nested under admin', () => {
     const adminRoute = routes.find(r => r.path === 'admin');
-    const customersRoute = adminRoute?.children?.find(c => c.path === 'customers');
-    expect(customersRoute).toBeDefined();
-    expect(customersRoute?.component).toBe(CustomersTable);
-    expect(customersRoute?.canDeactivate).toContain(PendingChangesGuard);
-    expect(customersRoute?.runGuardsAndResolvers).toBe('always');
+    const usersRoute = adminRoute?.children?.find(c => c.path === 'users');
+    expect(usersRoute).toBeDefined();
+    expect(usersRoute?.component).toBe(UsersTable);
+    expect(usersRoute?.canDeactivate).toContain(PendingChangesGuard);
+    expect(usersRoute?.runGuardsAndResolvers).toBe('always');
   });
 
-  it('should have customers/new route nested under admin', () => {
+  it('should have users/new route nested under admin', () => {
     const adminRoute = routes.find(r => r.path === 'admin');
-    const route = adminRoute?.children?.find(c => c.path === 'customers/new');
+    const route = adminRoute?.children?.find(c => c.path === 'users/new');
     expect(route).toBeDefined();
-    expect(route?.component).toBe(CustomersTable);
+    expect(route?.component).toBe(UsersTable);
     expect(route?.canDeactivate).toContain(PendingChangesGuard);
     expect(route?.runGuardsAndResolvers).toBe('always');
   });
 
-  it('should have customers/:id route nested under admin', () => {
+  it('should have users/:id route nested under admin', () => {
     const adminRoute = routes.find(r => r.path === 'admin');
-    const route = adminRoute?.children?.find(c => c.path === 'customers/:id');
+    const route = adminRoute?.children?.find(c => c.path === 'users/:id');
     expect(route).toBeDefined();
-    expect(route?.component).toBe(CustomersTable);
+    expect(route?.component).toBe(UsersTable);
     expect(route?.canDeactivate).toContain(PendingChangesGuard);
     expect(route?.runGuardsAndResolvers).toBe('always');
   });
 
-  it('should have customers/:id/edit route nested under admin', () => {
+  it('should have users/:id/edit route nested under admin', () => {
     const adminRoute = routes.find(r => r.path === 'admin');
-    const route = adminRoute?.children?.find(c => c.path === 'customers/:id/edit');
+    const route = adminRoute?.children?.find(c => c.path === 'users/:id/edit');
     expect(route).toBeDefined();
-    expect(route?.component).toBe(CustomersTable);
+    expect(route?.component).toBe(UsersTable);
     expect(route?.canDeactivate).toContain(PendingChangesGuard);
     expect(route?.runGuardsAndResolvers).toBe('always');
   });

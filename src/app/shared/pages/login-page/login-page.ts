@@ -56,7 +56,7 @@ export class LoginPage implements OnInit {
     const user = this.authService.user();
     if (user) {
       if (user.isAdmin) {
-        this.router.navigate(['/admin/customers']);
+        this.router.navigate(['/admin/users']);
       } else {
         this.router.navigate(['/shop/products']);
       }
@@ -86,7 +86,7 @@ export class LoginPage implements OnInit {
           if (success) {
             const user = this.authService.user();
             if (user?.isAdmin) {
-              this.router.navigate(['/admin/customers']);
+              this.router.navigate(['/admin/users']);
             } else {
               this.router.navigate(['/shop/products']);
             }

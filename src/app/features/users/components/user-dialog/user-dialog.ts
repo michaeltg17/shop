@@ -6,12 +6,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
-import { Customer } from '../../customer';
+import { User } from '../../user';
 import { DialogMode } from '../../../../core/models/dialogMode';
 
 @Component({
   standalone: true,
-  selector: 'app-customer-dialog',
+  selector: 'app-user-dialog',
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -20,38 +20,38 @@ import { DialogMode } from '../../../../core/models/dialogMode';
     MatCheckboxModule,
     MatButtonModule,
   ],
-  templateUrl: './customer-dialog.html',
+  templateUrl: './user-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CustomerDialog implements OnInit, OnDestroy {
-  private dialogRef = inject(MatDialogRef<CustomerDialog>);
-  data = inject<{ mode: DialogMode; customer?: Customer }>(MAT_DIALOG_DATA);
+export class UserDialog implements OnInit, OnDestroy {
+  private dialogRef = inject(MatDialogRef<UserDialog>);
+  data = inject<{ mode: DialogMode; user?: User }>(MAT_DIALOG_DATA);
   dialogMode = DialogMode;
 
   private _subs: { unsubscribe(): void }[] = [];
   private pendingService = inject(PendingChangesService);
 
-  firstName = new FormControl(this.data.customer?.firstName ?? '', {
+  firstName = new FormControl(this.data.user?.firstName ?? '', {
     nonNullable: true,
     validators: Validators.required,
   });
 
-  lastName = new FormControl(this.data.customer?.lastName ?? '', {
+  lastName = new FormControl(this.data.user?.lastName ?? '', {
     nonNullable: true,
     validators: Validators.required,
   });
 
-  email = new FormControl(this.data.customer?.email ?? '', {
+  email = new FormControl(this.data.user?.email ?? '', {
     nonNullable: true,
     validators: [Validators.required, Validators.email],
   });
 
-  phoneNumber = new FormControl(this.data.customer?.phoneNumber ?? '', {
+  phoneNumber = new FormControl(this.data.user?.phoneNumber ?? '', {
     nonNullable: true,
   });
 
   isActive = new FormControl(
-    { value: this.data.customer?.isActive ?? true, disabled: this.data.mode === DialogMode.View },
+    { value: this.data.user?.isActive ?? true, disabled: this.data.mode === DialogMode.View },
     {
       nonNullable: true,
     }
@@ -93,7 +93,7 @@ export class CustomerDialog implements OnInit, OnDestroy {
 
     this.pendingService.clear();
     this.dialogRef.close({
-      id: this.data.customer?.id ?? 0,
+      id: this.data.user?.id ?? 0,
       firstName: this.firstName.value,
       lastName: this.lastName.value,
       email: this.email.value,

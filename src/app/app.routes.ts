@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { CustomersTable } from './features/customers/components/customers-table/customers-table';
+import { UsersTable } from './features/users/components/users-table/users-table';
 import { UserPage } from './shared/pages/user-page/user-page';
 import { ProductsPage } from './features/products/components/products-page/products-page';
 import { ContactPage } from './shared/pages/contact-page/contact-page';
@@ -19,28 +19,28 @@ export const routes: Routes = [
     component: AdminLayout,
     canActivate: [AuthGuard],
     children: [
-      { path: '', redirectTo: 'customers', pathMatch: 'full' },
+      { path: '', redirectTo: 'users', pathMatch: 'full' },
       {
-        path: 'customers',
-        component: CustomersTable,
+        path: 'users',
+        component: UsersTable,
         canDeactivate: [PendingChangesGuard],
         runGuardsAndResolvers: 'always',
       },
       {
-        path: 'customers/new',
-        component: CustomersTable,
+        path: 'users/new',
+        component: UsersTable,
         canDeactivate: [PendingChangesGuard],
         runGuardsAndResolvers: 'always',
       },
       {
-        path: 'customers/:id',
-        component: CustomersTable,
+        path: 'users/:id',
+        component: UsersTable,
         canDeactivate: [PendingChangesGuard],
         runGuardsAndResolvers: 'always',
       },
       {
-        path: 'customers/:id/edit',
-        component: CustomersTable,
+        path: 'users/:id/edit',
+        component: UsersTable,
         canDeactivate: [PendingChangesGuard],
         runGuardsAndResolvers: 'always',
       },

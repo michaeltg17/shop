@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CustomerDialog } from './customer-dialog';
+import { UserDialog } from './user-dialog';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PendingChangesService } from '../../../../core/services/pending-changes.service';
 import { DialogMode } from '../../../../core/models/dialogMode';
 
-describe('CustomerDialog', () => {
-  let component: CustomerDialog;
-  let fixture: ComponentFixture<CustomerDialog>;
-  let dialogRefSpy: Partial<MatDialogRef<CustomerDialog>>;
+describe('UserDialog', () => {
+  let component: UserDialog;
+  let fixture: ComponentFixture<UserDialog>;
+  let dialogRefSpy: Partial<MatDialogRef<UserDialog>>;
   let pendingService: Partial<PendingChangesService>;
 
   beforeEach(async () => {
@@ -21,7 +21,7 @@ describe('CustomerDialog', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [CustomerDialog],
+      imports: [UserDialog],
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
         { provide: MAT_DIALOG_DATA, useValue: { mode: DialogMode.Add } },
@@ -29,7 +29,7 @@ describe('CustomerDialog', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CustomerDialog);
+    fixture = TestBed.createComponent(UserDialog);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -113,7 +113,7 @@ describe('CustomerDialog', () => {
     expect(component.isValid()).toBe(false);
   });
 
-  it('should close dialog with customer data on save', () => {
+  it('should close dialog with user data on save', () => {
     component.firstName.setValue('John');
     component.lastName.setValue('Doe');
     component.email.setValue('john@example.com');
@@ -176,7 +176,7 @@ describe('CustomerDialog', () => {
     expect(pendingService.clear).toHaveBeenCalled();
   });
 
-  it('should save customer with correct data structure', () => {
+  it('should save user with correct data structure', () => {
     component.firstName.setValue('Jane');
     component.lastName.setValue('Smith');
     component.email.setValue('jane@test.com');
@@ -213,10 +213,10 @@ describe('CustomerDialog', () => {
   });
 });
 
-describe('CustomerDialog View Mode', () => {
-  let component: CustomerDialog;
-  let fixture: ComponentFixture<CustomerDialog>;
-  let dialogRefSpy: Partial<MatDialogRef<CustomerDialog>>;
+describe('UserDialog View Mode', () => {
+  let component: UserDialog;
+  let fixture: ComponentFixture<UserDialog>;
+  let dialogRefSpy: Partial<MatDialogRef<UserDialog>>;
   let pendingService: Partial<PendingChangesService>;
 
   beforeEach(async () => {
@@ -230,14 +230,14 @@ describe('CustomerDialog View Mode', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [CustomerDialog],
+      imports: [UserDialog],
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
         {
           provide: MAT_DIALOG_DATA,
           useValue: {
             mode: DialogMode.View,
-            customer: {
+            user: {
               id: 1,
               firstName: 'John',
               lastName: 'Doe',
@@ -251,7 +251,7 @@ describe('CustomerDialog View Mode', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CustomerDialog);
+    fixture = TestBed.createComponent(UserDialog);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -268,19 +268,19 @@ describe('CustomerDialog View Mode', () => {
     expect(component.phoneNumber.disabled).toBe(true);
   });
 
-  it('should initialize firstName with customer data in View mode', () => {
+  it('should initialize firstName with user data in View mode', () => {
     expect(component.firstName.value).toBe('John');
   });
 
-  it('should initialize lastName with customer data in View mode', () => {
+  it('should initialize lastName with user data in View mode', () => {
     expect(component.lastName.value).toBe('Doe');
   });
 
-  it('should initialize email with customer data in View mode', () => {
+  it('should initialize email with user data in View mode', () => {
     expect(component.email.value).toBe('john@example.com');
   });
 
-  it('should initialize phoneNumber with customer data in View mode', () => {
+  it('should initialize phoneNumber with user data in View mode', () => {
     expect(component.phoneNumber.value).toBe('123');
   });
 
@@ -301,10 +301,10 @@ describe('CustomerDialog View Mode', () => {
   });
 });
 
-describe('CustomerDialog Edit Mode', () => {
-  let component: CustomerDialog;
-  let fixture: ComponentFixture<CustomerDialog>;
-  let dialogRefSpy: Partial<MatDialogRef<CustomerDialog>>;
+describe('UserDialog Edit Mode', () => {
+  let component: UserDialog;
+  let fixture: ComponentFixture<UserDialog>;
+  let dialogRefSpy: Partial<MatDialogRef<UserDialog>>;
   let pendingService: Partial<PendingChangesService>;
 
   beforeEach(async () => {
@@ -318,14 +318,14 @@ describe('CustomerDialog Edit Mode', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [CustomerDialog],
+      imports: [UserDialog],
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
         {
           provide: MAT_DIALOG_DATA,
           useValue: {
             mode: DialogMode.Edit,
-            customer: {
+            user: {
               id: 5,
               firstName: 'Existing',
               lastName: 'Customer',
@@ -339,7 +339,7 @@ describe('CustomerDialog Edit Mode', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CustomerDialog);
+    fixture = TestBed.createComponent(UserDialog);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -348,7 +348,7 @@ describe('CustomerDialog Edit Mode', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize controls with existing customer data', () => {
+  it('should initialize controls with existing user data', () => {
     expect(component.firstName.value).toBe('Existing');
     expect(component.lastName.value).toBe('Customer');
     expect(component.email.value).toBe('existing@test.com');
@@ -363,7 +363,7 @@ describe('CustomerDialog Edit Mode', () => {
     expect(component.phoneNumber.disabled).toBe(false);
   });
 
-  it('should save with existing customer id', () => {
+  it('should save with existing user id', () => {
     component.save();
     expect(dialogRefSpy.close).toHaveBeenCalledWith(
       expect.objectContaining({

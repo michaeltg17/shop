@@ -2,13 +2,13 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-customer-cell',
+  selector: 'app-user-cell',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './customer-cell.html',
-  styleUrls: ['./customer-cell.scss'],
+  templateUrl: './user-cell.html',
+  styleUrls: ['./user-cell.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CustomerCell {
+export class UserCell {
   @Input() value: string | boolean | number | null = null;
 }

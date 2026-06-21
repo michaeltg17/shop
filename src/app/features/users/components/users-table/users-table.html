@@ -4,13 +4,13 @@
   [selection]="selection"
   [filterValue]="filterValue"
   [cellTemplate]="cellTemplate"
-  (add)="addCustomer()"
-  (edit)="editCustomer()"
-  (delete)="deleteCustomers()"
-  (rowClick)="viewCustomer($event)"
+  (add)="addUser()"
+  (edit)="editUser()"
+  (delete)="deleteUsers()"
+  (rowClick)="viewUser($event)"
 >
 </app-base-table>
 
 <ng-template #cellTemplate let-row let-column="column">
-  <app-customer-cell [value]="row[column.key]"></app-customer-cell>
+  <app-user-cell [value]="row[column.key]"></app-user-cell>
 </ng-template>

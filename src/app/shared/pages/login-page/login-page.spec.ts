@@ -32,7 +32,7 @@ describe('LoginPage', () => {
       imports: [LoginPage, RouterModule],
       providers: [
         provideRouter([
-          { path: 'admin/customers', redirectTo: '' },
+          { path: 'admin/users', redirectTo: '' },
           { path: 'shop/products', redirectTo: '' },
           { path: '', component: LoginPage },
         ]),
@@ -68,10 +68,10 @@ describe('LoginPage', () => {
   });
 
   // Redirect tests
-  it('should redirect admin to /admin/customers when already authenticated', () => {
+  it('should redirect admin to /admin/users when already authenticated', () => {
     authServiceSpy.user!.mockReturnValue({ username: 'admin', isAdmin: true } as User);
     component.ngOnInit();
-    expect(router.navigate).toHaveBeenCalledWith(['/admin/customers']);
+    expect(router.navigate).toHaveBeenCalledWith(['/admin/users']);
   });
 
   it('should redirect customer to /shop/products when already authenticated', () => {
@@ -104,13 +104,13 @@ describe('LoginPage', () => {
     expect(component.messageError).toBe(true);
   }));
 
-  it('should navigate to /admin/customers on successful admin login', fakeAsync(() => {
+  it('should navigate to /admin/users on successful admin login', fakeAsync(() => {
     component.credentials = { username: 'admin', password: 'admin123' };
     authServiceSpy.login!.mockReturnValue(of(true));
     authServiceSpy.user!.mockReturnValue({ username: 'admin', isAdmin: true } as User);
     component.onLogin();
     tick(1500);
-    expect(router.navigate).toHaveBeenCalledWith(['/admin/customers']);
+    expect(router.navigate).toHaveBeenCalledWith(['/admin/users']);
   }));
 
   it('should navigate to /shop/products on successful customer login', fakeAsync(() => {

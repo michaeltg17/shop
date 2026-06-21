@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal, WritableSignal } from '@angular/core';
-import { CustomersTable } from './customers-table';
-import { CustomerService } from '../../customer.service';
-import { CustomerDialog } from '../customer-dialog/customer-dialog';
+import { UsersTable } from './users-table';
+import { UserService } from '../../user.service';
+import { UserDialog } from '../user-dialog/user-dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterState, Event as RouterEvent } from '@angular/router';
 import { PendingChangesService } from '../../../../core/services/pending-changes.service';
 import { of, Subject } from 'rxjs';
-import { Customer } from '../../customer';
+import { User } from '../../user';
 import { DialogMode } from '../../../../core/models/dialogMode';
 
-describe('CustomersTable', () => {
-  let component: CustomersTable;
-  let fixture: ComponentFixture<CustomersTable>;
-  let customerService: Partial<CustomerService>;
+describe('UsersTable', () => {
+  let component: UsersTable;
+  let fixture: ComponentFixture<UsersTable>;
+  let userService: Partial<UserService>;
   let snackBar: Partial<MatSnackBar>;
   let dialog: Partial<MatDialog>;
   let route: ActivatedRoute;
@@ -22,7 +22,7 @@ describe('CustomersTable', () => {
   let pendingService: Partial<PendingChangesService>;
   let routerEvents: Subject<RouterEvent>;
 
-  const mockCustomer: Customer = {
+  const mockUser: User = {
     id: 1,
     firstName: 'John',
     lastName: 'Doe',
@@ -34,16 +34,16 @@ describe('CustomersTable', () => {
   beforeEach(async () => {
     routerEvents = new Subject<RouterEvent>();
 
-    const customersSignal = signal<Customer[]>([]);
+    const usersSignal = signal<User[]>([]);
     const loadingSignal = signal(false);
     const errorSignal = signal<string | null>(null);
 
-    customerService = {
-      loadCustomers: jest.fn(),
-      addCustomer: jest.fn(),
-      updateCustomer: jest.fn(),
-      deleteCustomers: jest.fn(),
-      customers: customersSignal,
+    userService = {
+      loadUsers: jest.fn(),
+      addUser: jest.fn(),
+      updateUser: jest.fn(),
+      deleteUsers: jest.fn(),
+      users: usersSignal,
       loading: loadingSignal,
       error: errorSignal,
     };
@@ -96,9 +96,9 @@ describe('CustomersTable', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [CustomersTable],
+      imports: [UsersTable],
       providers: [
-        { provide: CustomerService, useValue: customerService },
+        { provide: UserService, useValue: userService },
         { provide: MatSnackBar, useValue: snackBar },
         { provide: MatDialog, useValue: dialog },
         { provide: ActivatedRoute, useValue: route },
@@ -107,7 +107,7 @@ describe('CustomersTable', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CustomersTable);
+    fixture = TestBed.createComponent(UsersTable);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -123,9 +123,9 @@ describe('CustomersTable', () => {
     expect(component.columns[0].label).toBe('Id');
   });
 
-  it('should load customers on init', () => {
+  it('should load users on init', () => {
     component.ngOnInit();
-    expect(customerService.loadCustomers).toHaveBeenCalled();
+    expect(userService.loadUsers).toHaveBeenCalled();
   });
 
   it('should have filterValue property', () => {
@@ -134,34 +134,34 @@ describe('CustomersTable', () => {
 
   it('should open view dialog via router', () => {
     jest.spyOn(router, 'navigate');
-    component.viewCustomer(mockCustomer);
-    expect(router.navigate).toHaveBeenCalledWith([mockCustomer.id], { relativeTo: route });
+    component.viewUser(mockUser);
+    expect(router.navigate).toHaveBeenCalledWith([mockUser.id], { relativeTo: route });
   });
 
-  it('should navigate to add customer', () => {
+  it('should navigate to add user', () => {
     jest.spyOn(router, 'navigate');
-    component.addCustomer();
+    component.addUser();
     expect(router.navigate).toHaveBeenCalledWith(['new'], { relativeTo: route });
   });
 
-  it('should edit selected customer', () => {
+  it('should edit selected user', () => {
     jest.spyOn(router, 'navigate');
-    component.selection.select(mockCustomer);
-    component.editCustomer();
-    expect(router.navigate).toHaveBeenCalledWith([mockCustomer.id, 'edit'], { relativeTo: route });
+    component.selection.select(mockUser);
+    component.editUser();
+    expect(router.navigate).toHaveBeenCalledWith([mockUser.id, 'edit'], { relativeTo: route });
   });
 
-  it('should not edit when no customer selected', () => {
+  it('should not edit when no user selected', () => {
     jest.spyOn(router, 'navigate');
-    component.editCustomer();
+    component.editUser();
     expect(router.navigate).not.toHaveBeenCalled();
   });
 
-  it('should not edit when multiple customers selected', () => {
+  it('should not edit when multiple users selected', () => {
     jest.spyOn(router, 'navigate');
-    component.selection.select(mockCustomer);
-    component.selection.select({ ...mockCustomer, id: 2 });
-    component.editCustomer();
+    component.selection.select(mockUser);
+    component.selection.select({ ...mockUser, id: 2 });
+    component.editUser();
     expect(router.navigate).not.toHaveBeenCalled();
   });
 
@@ -267,15 +267,15 @@ describe('CustomersTable', () => {
     const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
-    component.openViewDialog(mockCustomer);
+    component.openViewDialog(mockUser);
     expect(openSpy).toHaveBeenCalledWith(
-      CustomerDialog,
+      UserDialog,
       expect.objectContaining({
         data: expect.objectContaining({
           mode: DialogMode.View,
-          customer: mockCustomer,
+          user: mockUser,
         }),
-        panelClass: ['customer-dialog', 'mode-view'],
+        panelClass: ['user-dialog', 'mode-view'],
         closeOnNavigation: false,
       })
     );
@@ -290,15 +290,15 @@ describe('CustomersTable', () => {
     const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
-    component.openEditDialog(mockCustomer);
+    component.openEditDialog(mockUser);
     expect(openSpy).toHaveBeenCalledWith(
-      CustomerDialog,
+      UserDialog,
       expect.objectContaining({
         data: expect.objectContaining({
           mode: DialogMode.Edit,
-          customer: mockCustomer,
+          user: mockUser,
         }),
-        panelClass: 'customer-dialog',
+        panelClass: 'user-dialog',
         closeOnNavigation: false,
       })
     );
@@ -315,12 +315,12 @@ describe('CustomersTable', () => {
 
     component.openAddDialog();
     expect(openSpy).toHaveBeenCalledWith(
-      CustomerDialog,
+      UserDialog,
       expect.objectContaining({
         data: expect.objectContaining({
           mode: DialogMode.Add,
         }),
-        panelClass: 'customer-dialog',
+        panelClass: 'user-dialog',
         closeOnNavigation: false,
       })
     );
@@ -335,7 +335,7 @@ describe('CustomersTable', () => {
     (component['dialog'] as MatDialog).open = jest.fn().mockReturnValue(dialogRefMock);
     pendingService.setActiveDialog = jest.fn();
 
-    component.openViewDialog(mockCustomer);
+    component.openViewDialog(mockUser);
     expect(pendingService.setActiveDialog).toHaveBeenCalled();
   });
 
@@ -348,7 +348,7 @@ describe('CustomersTable', () => {
     (component['dialog'] as MatDialog).open = jest.fn().mockReturnValue(dialogRefMock);
     pendingService.setActiveDialog = jest.fn();
 
-    component.openEditDialog(mockCustomer);
+    component.openEditDialog(mockUser);
     expect(pendingService.setActiveDialog).toHaveBeenCalled();
   });
 
@@ -365,7 +365,7 @@ describe('CustomersTable', () => {
     expect(pendingService.setActiveDialog).toHaveBeenCalled();
   });
 
-  it('should call deleteCustomers and show confirmation dialog', () => {
+  it('should call deleteUsers and show confirmation dialog', () => {
     const dialogRefMock = {
       afterClosed: () => of(true),
       close: jest.fn(),
@@ -373,12 +373,12 @@ describe('CustomersTable', () => {
     const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
-    component.selection.select(mockCustomer);
-    component.deleteCustomers();
+    component.selection.select(mockUser);
+    component.deleteUsers();
     expect(openSpy).toHaveBeenCalled();
   });
 
-  it('should not delete customers when user cancels', () => {
+  it('should not delete users when user cancels', () => {
     const dialogRefMock = {
       afterClosed: () => of(false),
       close: jest.fn(),
@@ -386,13 +386,13 @@ describe('CustomersTable', () => {
     const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
-    component.selection.select(mockCustomer);
-    component.deleteCustomers();
+    component.selection.select(mockUser);
+    component.deleteUsers();
 
-    expect(customerService.deleteCustomers).not.toHaveBeenCalled();
+    expect(userService.deleteUsers).not.toHaveBeenCalled();
   });
 
-  it('should delete customers when user confirms', () => {
+  it('should delete users when user confirms', () => {
     const dialogRefMock = {
       afterClosed: () => of(true),
       close: jest.fn(),
@@ -400,39 +400,39 @@ describe('CustomersTable', () => {
     const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
-    const customer2 = { ...mockCustomer, id: 2 };
-    component.selection.select(mockCustomer, customer2);
-    component.deleteCustomers();
+    const user2 = { ...mockUser, id: 2 };
+    component.selection.select(mockUser, user2);
+    component.deleteUsers();
 
-    expect(customerService.deleteCustomers).toHaveBeenCalledWith([1, 2]);
+    expect(userService.deleteUsers).toHaveBeenCalledWith([1, 2]);
   });
 
-  it('should clear selection after deleting customers', () => {
+  it('should clear selection after deleting users', () => {
     const dialogRefMock = {
       afterClosed: () => of(true),
       close: jest.fn(),
     };
     (component['dialog'] as MatDialog).open = jest.fn().mockReturnValue(dialogRefMock);
 
-    component.selection.select(mockCustomer);
-    component.deleteCustomers();
+    component.selection.select(mockUser);
+    component.deleteUsers();
 
     expect(component.selection.selected.length).toBe(0);
   });
 
-  it('should expose customers signal from service', () => {
-    expect(component.customers).toBe(customerService.customers);
+  it('should expose users signal from service', () => {
+    expect(component.users).toBe(userService.users);
   });
 
   it('should expose loading signal from service', () => {
-    expect(component.loading).toBe(customerService.loading);
+    expect(component.loading).toBe(userService.loading);
   });
 
   it('should expose error signal from service', () => {
-    expect(component.error).toBe(customerService.error);
+    expect(component.error).toBe(userService.error);
   });
 
-  it('should open add dialog on /customers/new route', () => {
+  it('should open add dialog on /users/new route', () => {
     const dialogRefMock = {
       afterClosed: () => of(undefined),
       close: jest.fn(),
@@ -441,36 +441,36 @@ describe('CustomersTable', () => {
     const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
-    // The addCustomer method navigates to 'new' relative to the current route
-    component.addCustomer();
+    // The addUser method navigates to 'new' relative to the current route
+    component.addUser();
     expect(router.navigate).toHaveBeenCalledWith(['new'], { relativeTo: route });
   });
 
   it('should show snackbar on error via error effect', () => {
-    expect(component.error).toBe(customerService.error);
-    (customerService.error as unknown as WritableSignal<string | null>).set('Test error');
+    expect(component.error).toBe(userService.error);
+    (userService.error as unknown as WritableSignal<string | null>).set('Test error');
     fixture.detectChanges();
     expect(component.error()).toBe('Test error');
   });
 
-  it('should update dataSource.data when customers signal changes', () => {
-    const customers: Customer[] = [mockCustomer];
-    (customerService.customers as unknown as WritableSignal<Customer[]>).set(customers);
+  it('should update dataSource.data when users signal changes', () => {
+    const users: User[] = [mockUser];
+    (userService.users as unknown as WritableSignal<User[]>).set(users);
     fixture.detectChanges();
-    expect(component.dataSource.data).toEqual(customers);
+    expect(component.dataSource.data).toEqual(users);
   });
 
-  it('should update dataSource when customers signal changes', () => {
-    const customers: Customer[] = [mockCustomer];
-    (customerService.customers as unknown as WritableSignal<Customer[]>).set(customers);
+  it('should update dataSource when users signal changes', () => {
+    const users: User[] = [mockUser];
+    (userService.users as unknown as WritableSignal<User[]>).set(users);
     fixture.detectChanges();
-    expect(component.dataSource.data).toEqual(customers);
+    expect(component.dataSource.data).toEqual(users);
   });
 
-  it('should call markForCheck when customers signal changes', () => {
+  it('should call markForCheck when users signal changes', () => {
     const markForCheckSpy = jest.spyOn(component['changeDetectorRef'], 'markForCheck');
-    const customers: Customer[] = [mockCustomer];
-    (customerService.customers as unknown as WritableSignal<Customer[]>).set(customers);
+    const users: User[] = [mockUser];
+    (userService.users as unknown as WritableSignal<User[]>).set(users);
     fixture.detectChanges();
     expect(markForCheckSpy).toHaveBeenCalled();
   });
@@ -482,7 +482,7 @@ describe('CustomersTable', () => {
       componentInstance: {},
     };
     (component['dialog'] as MatDialog).open = jest.fn().mockReturnValue(dialogRefMock);
-    component.openEditDialog(mockCustomer);
+    component.openEditDialog(mockUser);
     expect(pendingService.setActiveDialog).toHaveBeenCalled();
   });
 
@@ -504,7 +504,7 @@ describe('CustomersTable', () => {
       componentInstance: {},
     };
     (component['dialog'] as MatDialog).open = jest.fn().mockReturnValue(dialogRefMock);
-    component.openViewDialog(mockCustomer);
+    component.openViewDialog(mockUser);
     expect(pendingService.setActiveDialog).toHaveBeenCalled();
   });
 
@@ -515,7 +515,7 @@ describe('CustomersTable', () => {
       componentInstance: {},
     };
     (component['dialog'] as MatDialog).open = jest.fn().mockReturnValue(dialogRefMock);
-    component.openEditDialog(mockCustomer);
+    component.openEditDialog(mockUser);
     expect(pendingService.setActiveDialog).toHaveBeenCalled();
   });
 

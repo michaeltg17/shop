@@ -10,16 +10,16 @@ import {
 } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Customer } from '../../customer';
-import { CustomerService } from '../../customer.service';
-import { CustomerCell } from './customer-cell/customer-cell';
+import { User } from '../../user';
+import { UserService } from '../../user.service';
+import { UserCell } from './user-cell/user-cell';
 import { SelectionModel } from '@angular/cdk/collections';
 import {
   ConfirmationDialog,
   ConfirmationDialogData,
 } from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { CustomerDialog } from '../customer-dialog/customer-dialog';
+import { UserDialog } from '../user-dialog/user-dialog';
 import { DialogMode } from '../../../../core/models/dialogMode';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -28,14 +28,14 @@ import { PendingChangesService } from '../../../../core/services/pending-changes
 import { BaseTableComponent, ColumnDef } from '../../../../shared/components/base-table/base-table';
 
 @Component({
-  selector: 'app-customers-table',
-  imports: [MatSnackBarModule, CustomerCell, MatDialogModule, BaseTableComponent],
-  templateUrl: './customers-table.html',
-  styleUrls: ['./customers-table.scss'],
+  selector: 'app-users-table',
+  imports: [MatSnackBarModule, UserCell, MatDialogModule, BaseTableComponent],
+  templateUrl: './users-table.html',
+  styleUrls: ['./users-table.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CustomersTable implements OnInit {
-  private customerService = inject(CustomerService);
+export class UsersTable implements OnInit {
+  private userService = inject(UserService);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
   private changeDetectorRef = inject(ChangeDetectorRef);
@@ -52,15 +52,15 @@ export class CustomersTable implements OnInit {
     { key: 'isActive', label: 'Active' },
   ];
 
-  selection = new SelectionModel<Customer>(true, []);
-  dataSource = new MatTableDataSource<Customer>();
+  selection = new SelectionModel<User>(true, []);
+  dataSource = new MatTableDataSource<User>();
   filterValue = '';
   private dialogOpen = signal(false);
-  private activeDialogRef: MatDialogRef<CustomerDialog> | null = null;
+  private activeDialogRef: MatDialogRef<UserDialog> | null = null;
 
-  customers = this.customerService.customers;
-  loading = this.customerService.loading;
-  error = this.customerService.error;
+  users = this.userService.users;
+  loading = this.userService.loading;
+  error = this.userService.error;
 
   readonly errorEffect = effect(() => {
     const msg = this.error();
@@ -70,19 +70,19 @@ export class CustomersTable implements OnInit {
   });
 
   readonly tableEffect = effect(() => {
-    this.dataSource.data = this.customers();
+    this.dataSource.data = this.users();
     this.changeDetectorRef.markForCheck();
   });
 
   readonly routeEffect = effect(() => {
     const rs = this.routeState();
-    const customers = this.customers();
+    const users = this.users();
 
     if (untracked(() => this.dialogOpen())) return;
 
     const { id, isNew, isEdit } = rs;
 
-    if (!customers.length) return;
+    if (!users.length) return;
 
     if (isNew) {
       this.dialogOpen.set(true);
@@ -92,7 +92,7 @@ export class CustomersTable implements OnInit {
         this.pendingService.clearActiveDialog();
         this.router.navigate(['../'], { relativeTo: this.route }).then(() => {
           this.dialogOpen.set(false);
-          if (result) this.customerService.addCustomer(result);
+          if (result) this.userService.addUser(result);
         });
       });
       return;
@@ -100,17 +100,17 @@ export class CustomersTable implements OnInit {
 
     if (!id) return;
 
-    const customer = customers.find(c => c.id === +id);
-    if (!customer) return;
+    const user = users.find(u => u.id === +id);
+    if (!user) return;
 
     this.dialogOpen.set(true);
-    const ref = isEdit ? this.openEditDialog(customer) : this.openViewDialog(customer);
+    const ref = isEdit ? this.openEditDialog(user) : this.openViewDialog(user);
     ref.afterClosed().subscribe(result => {
       this.pendingService.clear();
       this.pendingService.clearActiveDialog();
       this.router.navigate(['../'], { relativeTo: this.route }).then(() => {
         this.dialogOpen.set(false);
-        if (isEdit && result) this.customerService.updateCustomer(result);
+        if (isEdit && result) this.userService.updateUser(result);
       });
     });
   });
@@ -137,58 +137,58 @@ export class CustomersTable implements OnInit {
   }
 
   ngOnInit() {
-    this.customerService.loadCustomers();
+    this.userService.loadUsers();
   }
 
-  openViewDialog(customer: Customer) {
-    const ref = this.dialog.open(CustomerDialog, {
-      panelClass: ['customer-dialog', 'mode-view'],
-      data: { mode: DialogMode.View, customer },
+  openViewDialog(user: User) {
+    const ref = this.dialog.open(UserDialog, {
+      panelClass: ['user-dialog', 'mode-view'],
+      data: { mode: DialogMode.View, user },
       closeOnNavigation: false,
     });
 
-    this.activeDialogRef = ref as MatDialogRef<CustomerDialog>;
+    this.activeDialogRef = ref as MatDialogRef<UserDialog>;
     this.pendingService.setActiveDialog(this.activeDialogRef);
     ref.afterClosed().subscribe(() => {
       this.activeDialogRef = null;
       this.pendingService.clearActiveDialog();
       this.pendingService.clear();
     });
-    return ref as MatDialogRef<CustomerDialog>;
+    return ref as MatDialogRef<UserDialog>;
   }
 
-  openEditDialog(customer: Customer) {
-    const ref = this.dialog.open(CustomerDialog, {
-      data: { mode: DialogMode.Edit, customer },
-      panelClass: 'customer-dialog',
+  openEditDialog(user: User) {
+    const ref = this.dialog.open(UserDialog, {
+      data: { mode: DialogMode.Edit, user },
+      panelClass: 'user-dialog',
       closeOnNavigation: false,
     });
 
-    this.activeDialogRef = ref as MatDialogRef<CustomerDialog>;
+    this.activeDialogRef = ref as MatDialogRef<UserDialog>;
     this.pendingService.setActiveDialog(this.activeDialogRef);
     ref.afterClosed().subscribe(() => {
       this.activeDialogRef = null;
       this.pendingService.clearActiveDialog();
       this.pendingService.clear();
     });
-    return ref as MatDialogRef<CustomerDialog>;
+    return ref as MatDialogRef<UserDialog>;
   }
 
   openAddDialog() {
-    const ref = this.dialog.open(CustomerDialog, {
+    const ref = this.dialog.open(UserDialog, {
       data: { mode: DialogMode.Add },
-      panelClass: 'customer-dialog',
+      panelClass: 'user-dialog',
       closeOnNavigation: false,
     });
 
-    this.activeDialogRef = ref as MatDialogRef<CustomerDialog>;
+    this.activeDialogRef = ref as MatDialogRef<UserDialog>;
     this.pendingService.setActiveDialog(this.activeDialogRef);
     ref.afterClosed().subscribe(() => {
       this.activeDialogRef = null;
       this.pendingService.clearActiveDialog();
       this.pendingService.clear();
     });
-    return ref as MatDialogRef<CustomerDialog>;
+    return ref as MatDialogRef<UserDialog>;
   }
 
   // Called by router CanDeactivate guard
@@ -225,23 +225,23 @@ export class CustomersTable implements OnInit {
     return confirmLeave;
   }
 
-  viewCustomer(customer: Customer) {
-    this.router.navigate([customer.id], { relativeTo: this.route });
+  viewUser(user: User) {
+    this.router.navigate([user.id], { relativeTo: this.route });
   }
 
-  addCustomer() {
+  addUser() {
     this.router.navigate(['new'], { relativeTo: this.route });
   }
 
-  editCustomer() {
+  editUser() {
     if (this.selection.selected.length !== 1) return;
     this.router.navigate([this.selection.selected[0].id, 'edit'], { relativeTo: this.route });
   }
 
-  deleteCustomers() {
+  deleteUsers() {
     const dialogData: ConfirmationDialogData = {
-      title: 'Delete customers',
-      message: 'Do you really want to delete these customers?',
+      title: 'Delete users',
+      message: 'Do you really want to delete these users?',
       confirmText: 'Delete',
       cancelText: 'Cancel',
     };
@@ -253,7 +253,7 @@ export class CustomersTable implements OnInit {
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
       if (!confirmed) return;
 
-      this.customerService.deleteCustomers(this.selection.selected.map(r => r.id));
+      this.userService.deleteUsers(this.selection.selected.map(r => r.id));
 
       this.selection.clear();
       this.changeDetectorRef.markForCheck();
