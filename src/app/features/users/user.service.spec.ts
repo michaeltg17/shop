@@ -244,6 +244,15 @@ describe('UserService', () => {
     expect(service.users()).toEqual([existingUsers[1]]);
   });
 
+  it('should set error on deleteUser failure', () => {
+    service.deleteUser(1);
+
+    const req = httpMock.expectOne(`${usersUrl}/1`);
+    req.flush({ error: 'fail' }, { status: 500, statusText: 'Server Error' });
+
+    expect(service.error()).toBe('Failed to delete user');
+  });
+
   it('should delete users by ids (batch)', () => {
     const existingUsers: User[] = [
       {
