@@ -560,13 +560,13 @@ describe('UsersTable', () => {
     const openSpy = jest.fn().mockReturnValue(dialogRefMock);
     (component['dialog'] as MatDialog).open = openSpy;
 
-    component.deleteCustomers();
+    component.deleteUsers();
     expect(openSpy).toHaveBeenCalledWith(
       expect.anything(),
       expect.objectContaining({
         data: {
-          title: 'Delete customers',
-          message: 'Do you really want to delete these customers?',
+          title: 'Delete users',
+          message: 'Do you really want to delete these users?',
           confirmText: 'Delete',
           cancelText: 'Cancel',
         },
@@ -574,22 +574,22 @@ describe('UsersTable', () => {
     );
   });
 
-  it('should toggleAllSelect when all items selected', () => {
-    const customers: Customer[] = [mockCustomer, { ...mockCustomer, id: 2 }];
-    (customerService.customers as unknown as WritableSignal<Customer[]>).set(customers);
+  it('should update dataSource when users signal changes with multiple items', () => {
+    const users: User[] = [mockUser, { ...mockUser, id: 2 }];
+    (userService.users as unknown as WritableSignal<User[]>).set(users);
     fixture.detectChanges();
     expect(component.dataSource.data.length).toBe(2);
   });
 
   it('should show snackbar with correct duration on error', () => {
-    (customerService.error as unknown as WritableSignal<string | null>).set('Error message');
+    (userService.error as unknown as WritableSignal<string | null>).set('Error message');
     fixture.detectChanges();
     expect(snackBar.open).toHaveBeenCalledWith('Error message', 'Close', { duration: 4000 });
   });
 
   it('should not show snackbar when error is null', () => {
     snackBar.open = jest.fn();
-    (customerService.error as unknown as WritableSignal<string | null>).set(null);
+    (userService.error as unknown as WritableSignal<string | null>).set(null);
     fixture.detectChanges();
     expect(snackBar.open).not.toHaveBeenCalled();
   });
@@ -649,22 +649,17 @@ describe('UsersTable', () => {
     expect(component.canDeactivate()).toBe(true);
   });
 
-  it('should navigate to customer view with correct id', () => {
+  it('should navigate to user view with correct id', () => {
     jest.spyOn(router, 'navigate');
-    component.viewCustomer({ ...mockCustomer, id: 42 });
+    component.viewUser({ ...mockUser, id: 42 });
     expect(router.navigate).toHaveBeenCalledWith([42], { relativeTo: route });
   });
 
-  it('should navigate to customer edit with correct id', () => {
-    component.selection.select({ ...mockCustomer, id: 99 });
+  it('should navigate to user edit with correct id', () => {
+    component.selection.select({ ...mockUser, id: 99 });
     jest.spyOn(router, 'navigate');
-    component.editCustomer();
+    component.editUser();
     expect(router.navigate).toHaveBeenCalledWith([99, 'edit'], { relativeTo: route });
-  });
-
-  it('should selectAllItems in toggleAll', () => {
-    component.allSelected.set(true);
-    component.toggleAll();
   });
 
   it('should handle multiple dirty fields in canDeactivate fallback', () => {

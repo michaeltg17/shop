@@ -5,6 +5,7 @@ import { CartService } from '../../cart.service';
 import { CartItem } from '../../cart-item';
 import { Product } from '../../../products/product';
 import { signal } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 describe('CartPage', () => {
   let component: CartPage;
@@ -23,9 +24,12 @@ describe('CartPage', () => {
     rating: { rate: 4.5, count: 100 },
   };
 
-  const mockSnackBar = { open: jest.fn() };
+  let mockSnackBar: { open: jest.Mock };
 
   beforeEach(async () => {
+    TestBed.resetTestingModule();
+
+    mockSnackBar = { open: jest.fn() };
     router = {
       navigate: jest.fn().mockReturnValue(Promise.resolve(true)),
     };
@@ -50,7 +54,7 @@ describe('CartPage', () => {
         { provide: Router, useValue: router },
         { provide: ActivatedRoute, useValue: { snapshot: { data: {} }, paramMap: {} } },
         { provide: CartService, useValue: cartService },
-        { provide: import('@angular/material/snack-bar').MatSnackBar, useValue: mockSnackBar },
+        { provide: MatSnackBar, useValue: mockSnackBar },
       ],
     }).compileComponents();
 

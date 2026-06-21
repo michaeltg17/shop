@@ -93,7 +93,11 @@ export class AuthService {
   }
 
   private setAuth(user: User): void {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(user));
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(user));
+    } catch {
+      /* quota exceeded */
+    }
     this.isAuthenticated.set(true);
     this.user.set(user);
   }
@@ -108,7 +112,11 @@ export class AuthService {
   }
 
   private saveCustomers(customers: CustomerCredentials[]): void {
-    localStorage.setItem(this.CUSTOMERS_KEY, JSON.stringify(customers));
+    try {
+      localStorage.setItem(this.CUSTOMERS_KEY, JSON.stringify(customers));
+    } catch {
+      /* quota exceeded */
+    }
   }
 
   private findCustomer(username: string, password: string): CustomerCredentials | undefined {
