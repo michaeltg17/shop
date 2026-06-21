@@ -11,12 +11,12 @@ async function selectRowById(page: Page, id: string | number) {
 
 test.describe('delete flow', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/admin/customers');
+    await page.goto('/admin/users');
     await page.waitForSelector('tr[mat-row]');
   });
 
   test('delete confirmed removes rows and disables delete when none selected', async ({ page }) => {
-    const deleteBtn = page.locator('app-customers-table').locator('button:has-text("delete")');
+    const deleteBtn = page.locator('app-users-table').locator('button:has-text("delete")');
 
     // delete disabled with no selection
     await expect(deleteBtn).toBeDisabled();
@@ -45,7 +45,7 @@ test.describe('delete flow', () => {
   });
 
   test('canceling delete keeps rows intact', async ({ page }) => {
-    const deleteBtn = page.locator('app-customers-table').locator('button:has-text("delete")');
+    const deleteBtn = page.locator('app-users-table').locator('button:has-text("delete")');
 
     // ensure delete disabled initially
     await expect(deleteBtn).toBeDisabled();

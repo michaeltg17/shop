@@ -1,20 +1,20 @@
 import { expect } from '@playwright/test';
 import { test } from './fixtures';
 
-test('loadCustomers invoked only once across navigation', async ({ page }) => {
+test('loadUsers invoked only once across navigation', async ({ page }) => {
   let apiCount = 0;
 
   page.on('request', request => {
     try {
-      if (request.url().endsWith('/api/customers') && request.method() === 'GET') apiCount++;
+      if (request.url().includes('/users') && request.method() === 'GET') apiCount++;
     } catch {}
   });
 
-  // Open app (navigate directly to /customers)
-  await page.goto('/admin/customers');
+  // Open app (navigate directly to /admin/users)
+  await page.goto('/admin/users');
 
-  // Wait for the first customers response
-  await page.waitForResponse(resp => resp.url().endsWith('/api/customers') && resp.request().method() === 'GET');
+  // Wait for the first users response
+  await page.waitForResponse(resp => resp.url().includes('/users') && resp.request().method() === 'GET');
   expect(apiCount).toBeGreaterThanOrEqual(1);
 
   // Click toolbar button to go to user page
@@ -23,9 +23,9 @@ test('loadCustomers invoked only once across navigation', async ({ page }) => {
   await userBtn.click();
   await page.waitForURL(/\/admin\/user/);
 
-  // Navigate back to customers page
+  // Navigate back to users page
   await page.goBack();
-  await page.waitForURL(/\/admin\/customers/);
+  await page.waitForURL(/\/admin\/users/);
 
   // Allow a short grace period for any unexpected network calls
   await page.waitForTimeout(500);

@@ -3,7 +3,7 @@ import { expect } from '@playwright/test';
 
 test('has correct title', async ({ page }) => {
   //Page has title
-  await page.goto('/admin/customers');
+  await page.goto('/admin/users');
   await expect(page).toHaveTitle('Angular App');
 
   // Toolbar has title

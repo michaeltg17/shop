@@ -1,7 +1,7 @@
 import { test, expect } from './fixtures';
 
 test('search for "wilson" returns two rows', async ({ page }) => {
-  await page.goto('/admin/customers');
+  await page.goto('/admin/users');
   // wait for the table to render
   await page.waitForSelector('tr[mat-row]');
 
