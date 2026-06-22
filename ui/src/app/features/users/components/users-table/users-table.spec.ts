@@ -880,7 +880,7 @@ describe('UsersTable', () => {
     expect(openSpy).not.toHaveBeenCalled();
   });
 
-  it('should call addUser after dialog closes with result', (done) => {
+  it('should call addUser after dialog closes with result', () => {
     const result = { id: 2, firstName: 'New', lastName: 'User', email: 'new@test.com', phoneNumber: '', isActive: true };
     const dialogRefMock = {
       afterClosed: () => of(result),
@@ -888,6 +888,7 @@ describe('UsersTable', () => {
       componentInstance: {},
     };
     (component['dialog'] as MatDialog).open = jest.fn().mockReturnValue(dialogRefMock);
+    (router.navigate as jest.Mock).mockResolvedValue(true);
     (userService.users as unknown as WritableSignal<User[]>).set([mockUser]);
 
     const urlSegments = [{ path: 'new' }];
@@ -909,16 +910,15 @@ describe('UsersTable', () => {
     routerEvents.next(new NavigationEnd(0, '/users/new', '/users/new'));
     fixture.detectChanges();
 
-    // Wait for async dialog callback
-    setTimeout(() => {
+    // Wait for async effect + dialog callback
+    return new Promise(resolve => setTimeout(resolve, 100)).then(() => {
       expect(userService.addUser).toHaveBeenCalledWith(result);
       expect(pendingService.clear).toHaveBeenCalled();
       expect(pendingService.clearActiveDialog).toHaveBeenCalled();
-      done();
-    }, 50);
+    });
   });
 
-  it('should call updateUser after edit dialog closes with result', (done) => {
+  it('should call updateUser after edit dialog closes with result', () => {
     const result = { ...mockUser, firstName: 'Updated' };
     const dialogRefMock = {
       afterClosed: () => of(result),
@@ -926,6 +926,7 @@ describe('UsersTable', () => {
       componentInstance: {},
     };
     (component['dialog'] as MatDialog).open = jest.fn().mockReturnValue(dialogRefMock);
+    (router.navigate as jest.Mock).mockResolvedValue(true);
     (userService.users as unknown as WritableSignal<User[]>).set([mockUser]);
 
     const urlSegments = [{ path: '1' }, { path: 'edit' }];
@@ -947,11 +948,10 @@ describe('UsersTable', () => {
     routerEvents.next(new NavigationEnd(0, '/users/1/edit', '/users/1/edit'));
     fixture.detectChanges();
 
-    setTimeout(() => {
+    return new Promise(resolve => setTimeout(resolve, 100)).then(() => {
       expect(userService.updateUser).toHaveBeenCalledWith(result);
       expect(pendingService.clear).toHaveBeenCalled();
       expect(pendingService.clearActiveDialog).toHaveBeenCalled();
-      done();
-    }, 50);
+    });
   });
 });
