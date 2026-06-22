@@ -16,7 +16,7 @@ const products: Product[] = productsJson.map(p => ({
   rating: { rate: 4.5, count: 100 },
 }));
 
-const mockOrders = [];
+const mockOrders: { id: number; [key: string]: unknown }[] = [];
 
 let nextOrderId = 1;
 
@@ -69,7 +69,7 @@ export const handlers = [
 
   // --- Orders ---
   http.post('/api/orders', async ({ request }) => {
-    const orderData = await request.json();
+    const orderData = (await request.json()) as Record<string, unknown>;
     const order = { ...orderData, id: nextOrderId++ };
     mockOrders.push(order);
     return HttpResponse.json(order, { status: 201 });
