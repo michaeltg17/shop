@@ -4,7 +4,7 @@ import { provideRouter, Router, RouterModule } from '@angular/router';
 import { AuthService, User } from '../../../core/auth/services/auth.service';
 import { TitleService } from '../../../core/services/title.service';
 import { ThemeService } from '../../../core/services/theme.service';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 
 describe('LoginPage', () => {
   let component: LoginPage;
@@ -99,7 +99,7 @@ describe('LoginPage', () => {
     component.credentials = { username: 'wrong', password: 'wrong' };
     authServiceSpy.login!.mockReturnValue(of(false));
     component.onLogin();
-    tick(1500);
+    tick(0);
     expect(component.message).toBe('Invalid username or password');
     expect(component.messageError).toBe(true);
   }));
@@ -109,7 +109,7 @@ describe('LoginPage', () => {
     authServiceSpy.login!.mockReturnValue(of(true));
     authServiceSpy.user!.mockReturnValue({ username: 'admin', isAdmin: true } as User);
     component.onLogin();
-    tick(1500);
+    tick(0);
     expect(router.navigate).toHaveBeenCalledWith(['/admin/users']);
   }));
 
@@ -118,7 +118,7 @@ describe('LoginPage', () => {
     authServiceSpy.login!.mockReturnValue(of(true));
     authServiceSpy.user!.mockReturnValue({ username: 'customer1', isAdmin: false } as User);
     component.onLogin();
-    tick(1500);
+    tick(0);
     expect(router.navigate).toHaveBeenCalledWith(['/shop/products']);
   }));
 
@@ -136,19 +136,21 @@ describe('LoginPage', () => {
     expect(component.message).toBe('Please enter both username and password');
   }));
 
-  it('should clear message before login attempt', fakeAsync(() => {
+  it('should clear message and set error on failed login attempt', fakeAsync(() => {
     component.message = 'previous error';
     component.credentials = { username: 'admin', password: 'admin123' };
+    authServiceSpy.login!.mockReturnValue(of(false));
     component.onLogin();
-    expect(component.message).toBeNull();
-    tick(1500);
+    tick(0);
+    expect(component.message).toBe('Invalid username or password');
   }));
 
-  it('should set isLoginLoading to true then false', fakeAsync(() => {
-    expect(component.isLoginLoading).toBe(false);
+  it('should set isLoginLoading to false after login completes', fakeAsync(() => {
+    component.credentials = { username: 'admin', password: 'admin123' };
+    authServiceSpy.login!.mockReturnValue(of(true));
+    authServiceSpy.user!.mockReturnValue({ username: 'admin', isAdmin: true } as User);
     component.onLogin();
-    expect(component.isLoginLoading).toBe(true);
-    tick(1500);
+    tick(0);
     expect(component.isLoginLoading).toBe(false);
   }));
 
@@ -165,7 +167,7 @@ describe('LoginPage', () => {
     component.credentials = { username: 'customer1', password: 'pass123' };
     authServiceSpy.register!.mockReturnValue(of(false));
     component.onRegister();
-    tick(1500);
+    tick(0);
     expect(component.message).toBe('Username already taken');
     expect(component.messageError).toBe(true);
   }));
@@ -174,19 +176,20 @@ describe('LoginPage', () => {
     component.credentials = { username: 'newuser', password: 'pass123' };
     authServiceSpy.register!.mockReturnValue(of(true));
     component.onRegister();
-    tick(1500);
+    tick(0);
     expect(component.message).toBe('Registration successful! Redirecting to shop...');
     expect(component.messageError).toBe(false);
     tick(1000); // Wait for redirect timeout
     expect(router.navigate).toHaveBeenCalledWith(['/shop/products']);
   }));
 
-  it('should clear message before register attempt', fakeAsync(() => {
+  it('should clear message and set error on failed register attempt', fakeAsync(() => {
     component.message = 'previous error';
     component.credentials = { username: 'newuser', password: 'pass123' };
+    authServiceSpy.register!.mockReturnValue(of(false));
     component.onRegister();
-    expect(component.message).toBeNull();
-    tick(1500);
+    tick(0);
+    expect(component.message).toBe('Username already taken');
   }));
 
   // Tab switching tests

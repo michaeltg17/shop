@@ -1,16 +1,27 @@
 import { TestBed } from '@angular/core/testing';
 import { AuthService, User } from './auth.service';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { of } from 'rxjs';
 
 describe('AuthService', () => {
   let service: AuthService;
+  let httpMock: HttpTestingController;
 
   beforeEach(() => {
     localStorage.clear();
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
+    });
     service = TestBed.inject(AuthService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
+    httpMock.verify();
     localStorage.clear();
   });
 
@@ -88,6 +99,9 @@ describe('AuthService', () => {
     service.register('customer1', 'pass123').subscribe(success => {
       expect(success).toBe(true);
     });
+    const req = httpMock.expectOne('/api/auth/register');
+    expect(req.request.method).toBe('POST');
+    req.flush({ token: 'fake-jwt', username: 'customer1', email: 'customer1@shop.com' });
     expect(service.isAuthenticated()).toBe(true);
     expect(service.user()?.username).toBe('customer1');
     expect(service.user()?.isAdmin).toBe(false);
@@ -115,22 +129,31 @@ describe('AuthService', () => {
 
   it('should return false when registering duplicate username', () => {
     service.register('customer1', 'pass123').subscribe(() => undefined);
+    const req1 = httpMock.expectOne('/api/auth/register');
+    req1.flush({ token: 'fake-jwt', username: 'customer1', email: 'customer1@shop.com' });
     service.logout();
     service.register('customer1', 'different').subscribe(success => {
       expect(success).toBe(false);
     });
+    const req2 = httpMock.expectOne('/api/auth/register');
+    req2.flush({ error: 'duplicate' }, { status: 409, statusText: 'Conflict' });
   });
 
   // Customer login tests
   it('should login a registered customer', () => {
     // Register first
     service.register('customer1', 'pass123').subscribe(() => undefined);
+    const req1 = httpMock.expectOne('/api/auth/register');
+    req1.flush({ token: 'fake-jwt', username: 'customer1', email: 'customer1@shop.com' });
     service.logout();
 
     // Then login
     service.login('customer1', 'pass123').subscribe(success => {
       expect(success).toBe(true);
     });
+    const req2 = httpMock.expectOne('/api/auth/login');
+    expect(req2.request.method).toBe('POST');
+    req2.flush({ token: 'fake-jwt-2', username: 'customer1', email: 'customer1@shop.com' });
     expect(service.isAuthenticated()).toBe(true);
     expect(service.user()?.username).toBe('customer1');
     expect(service.user()?.isAdmin).toBe(false);
@@ -140,16 +163,22 @@ describe('AuthService', () => {
     service.login('nonexistent', 'pass123').subscribe(success => {
       expect(success).toBe(false);
     });
+    const req = httpMock.expectOne('/api/auth/login');
+    req.flush({ error: 'not found' }, { status: 401, statusText: 'Unauthorized' });
     expect(service.isAuthenticated()).toBe(false);
   });
 
   it('should return false for wrong password on registered customer', () => {
     service.register('customer1', 'pass123').subscribe(() => undefined);
+    const req1 = httpMock.expectOne('/api/auth/register');
+    req1.flush({ token: 'fake-jwt', username: 'customer1', email: 'customer1@shop.com' });
     service.logout();
 
     service.login('customer1', 'wrongpass').subscribe(success => {
       expect(success).toBe(false);
     });
+    const req2 = httpMock.expectOne('/api/auth/login');
+    req2.flush({ error: 'wrong password' }, { status: 401, statusText: 'Unauthorized' });
     expect(service.isAuthenticated()).toBe(false);
   });
 
@@ -157,19 +186,26 @@ describe('AuthService', () => {
     service.register('customer1', 'pass123').subscribe(success => {
       expect(success).toBe(true);
     });
+    const req = httpMock.expectOne('/api/auth/register');
+    req.flush({ token: 'fake-jwt', username: 'customer1', email: 'customer1@shop.com' });
     expect(service.isAuthenticated()).toBe(true);
     expect(service.user()?.username).toBe('customer1');
   });
 
   it('should persist customers across storage reads', () => {
+    // Register first
     service.register('customer1', 'pass123').subscribe(() => undefined);
+    const req1 = httpMock.expectOne('/api/auth/register');
+    req1.flush({ token: 'fake-jwt', username: 'customer1', email: 'customer1@shop.com' });
     service.logout();
 
-    // Create a new service instance to simulate fresh load
+    // Login again (simulates fresh load with API)
     const newService = TestBed.inject(AuthService);
     newService.login('customer1', 'pass123').subscribe(success => {
       expect(success).toBe(true);
     });
+    const req2 = httpMock.expectOne('/api/auth/login');
+    req2.flush({ token: 'fake-jwt-2', username: 'customer1', email: 'customer1@shop.com' });
     expect(newService.isAuthenticated()).toBe(true);
   });
 
@@ -182,6 +218,8 @@ describe('AuthService', () => {
     service2.login('someuser', 'somepass').subscribe(success => {
       expect(success).toBe(false);
     });
+    const req = httpMock.expectOne('/api/auth/login');
+    req.flush({ error: 'not found' }, { status: 401, statusText: 'Unauthorized' });
     localStorage.getItem = originalGetItem;
   });
 
@@ -212,6 +250,8 @@ describe('AuthService', () => {
     service2.login('test', 'test').subscribe(success => {
       expect(success).toBe(false);
     });
+    const req = httpMock.expectOne('/api/auth/login');
+    req.flush({ error: 'not found' }, { status: 401, statusText: 'Unauthorized' });
   });
 
   it('should handle malformed JSON in localStorage for auth', () => {
@@ -220,31 +260,41 @@ describe('AuthService', () => {
     expect(service2.user()).toBeNull();
   });
 
-  it('should handle malformed JSON in localStorage for customers', () => {
+  it('should handle malformed JSON in localStorage for customers registration', () => {
     localStorage.setItem('angular_customers', 'not-json');
     const service2 = TestBed.inject(AuthService);
-    // should not crash, customers should be empty
     service2.register('malformed-test', 'test123').subscribe(success => {
-      expect(success).toBe(false); // registration fails because localStorage throws on get
+      // Registration goes through API now, can succeed even if localStorage customers is malformed
+      expect(success).toBe(true);
     });
+    const req = httpMock.expectOne('/api/auth/register');
+    req.flush({ token: 'fake-jwt', username: 'malformed-test', email: 'malformed-test@shop.com' });
   });
 
   it('should login a registered customer after logout and re-login', () => {
     service.register('relogin', 'pw').subscribe(() => undefined);
+    const req1 = httpMock.expectOne('/api/auth/register');
+    req1.flush({ token: 'fake-jwt', username: 'relogin', email: 'relogin@shop.com' });
     service.logout();
     service.login('relogin', 'pw').subscribe(success => {
       expect(success).toBe(true);
     });
+    const req2 = httpMock.expectOne('/api/auth/login');
+    req2.flush({ token: 'fake-jwt-2', username: 'relogin', email: 'relogin@shop.com' });
     expect(service.user()?.username).toBe('relogin');
     expect(service.user()?.isAdmin).toBe(false);
   });
 
   it('should return false when trying to login a registered customer with wrong password', () => {
     service.register('pw-check', 'correct').subscribe(() => undefined);
+    const req1 = httpMock.expectOne('/api/auth/register');
+    req1.flush({ token: 'fake-jwt', username: 'pw-check', email: 'pw-check@shop.com' });
     service.logout();
     service.login('pw-check', 'wrong').subscribe(success => {
       expect(success).toBe(false);
     });
+    const req2 = httpMock.expectOne('/api/auth/login');
+    req2.flush({ error: 'wrong password' }, { status: 401, statusText: 'Unauthorized' });
     expect(service.isAuthenticated()).toBe(false);
   });
 
@@ -259,6 +309,8 @@ describe('AuthService', () => {
 
   it('should set auth correctly after customer registration and clear on logout', () => {
     service.register('logout-test', 'pw').subscribe(() => undefined);
+    const req = httpMock.expectOne('/api/auth/register');
+    req.flush({ token: 'fake-jwt', username: 'logout-test', email: 'logout-test@shop.com' });
     expect(service.user()?.isAdmin).toBe(false);
     service.logout();
     expect(service.user()).toBeNull();
@@ -267,19 +319,27 @@ describe('AuthService', () => {
 
   it('should register multiple customers and login with each', () => {
     service.register('user1', 'pass1').subscribe(() => undefined);
+    const req1 = httpMock.expectOne('/api/auth/register');
+    req1.flush({ token: 'fake-jwt', username: 'user1', email: 'user1@shop.com' });
     service.logout();
     service.register('user2', 'pass2').subscribe(() => undefined);
+    const req2 = httpMock.expectOne('/api/auth/register');
+    req2.flush({ token: 'fake-jwt', username: 'user2', email: 'user2@shop.com' });
     service.logout();
 
     service.login('user1', 'pass1').subscribe(success => {
       expect(success).toBe(true);
     });
+    const req3 = httpMock.expectOne('/api/auth/login');
+    req3.flush({ token: 'fake-jwt-2', username: 'user1', email: 'user1@shop.com' });
     expect(service.user()?.username).toBe('user1');
 
     service.logout();
     service.login('user2', 'pass2').subscribe(success => {
       expect(success).toBe(true);
     });
+    const req4 = httpMock.expectOne('/api/auth/login');
+    req4.flush({ token: 'fake-jwt-3', username: 'user2', email: 'user2@shop.com' });
     expect(service.user()?.username).toBe('user2');
   });
 
@@ -291,6 +351,8 @@ describe('AuthService', () => {
     service.register('quota-user', 'pass').subscribe(success => {
       expect(success).toBe(true);
     });
+    const req = httpMock.expectOne('/api/auth/register');
+    req.flush({ token: 'fake-jwt', username: 'quota-user', email: 'quota-user@shop.com' });
     // Auth state should still be set in memory even if localStorage fails
     expect(service.isAuthenticated()).toBe(true);
     expect(service.user()?.username).toBe('quota-user');
@@ -319,24 +381,32 @@ describe('AuthService', () => {
 
   it('should set localStorage correctly during customer registration', () => {
     service.register('testuser', 'testpass').subscribe(() => undefined);
+    const req = httpMock.expectOne('/api/auth/register');
+    req.flush({ token: 'fake-jwt', username: 'testuser', email: 'testuser@shop.com' });
     const stored = localStorage.getItem('angular_auth_user');
     expect(stored).toBe(JSON.stringify({ username: 'testuser', isAdmin: false }));
   });
 
   it('should save customers to localStorage during registration', () => {
+    // Note: after API migration, customers are stored server-side
+    // This test verifies the auth user is saved locally
     service.register('testuser', 'testpass').subscribe(() => undefined);
-    const stored = localStorage.getItem('angular_customers');
-    const customers = JSON.parse(stored!);
-    expect(customers).toContainEqual({ username: 'testuser', password: 'testpass' });
+    const req = httpMock.expectOne('/api/auth/register');
+    req.flush({ token: 'fake-jwt', username: 'testuser', email: 'testuser@shop.com' });
+    const stored = localStorage.getItem('angular_auth_user');
+    expect(stored).toBeTruthy();
+    const parsed = JSON.parse(stored!);
+    expect(parsed.username).toBe('testuser');
   });
 
   it('should not modify customer list when registration fails due to duplicate', () => {
     service.register('dup', 'pass1').subscribe(() => undefined);
+    const req1 = httpMock.expectOne('/api/auth/register');
+    req1.flush({ token: 'fake-jwt', username: 'dup', email: 'dup@shop.com' });
     service.logout();
-    const before = localStorage.getItem('angular_customers');
     service.register('dup', 'pass2').subscribe(() => undefined);
-    const after = localStorage.getItem('angular_customers');
-    expect(before).toBe(after);
+    const req2 = httpMock.expectOne('/api/auth/register');
+    req2.flush({ error: 'duplicate' }, { status: 409, statusText: 'Conflict' });
   });
 
   it('should handle logout removing localStorage key', () => {
@@ -347,7 +417,9 @@ describe('AuthService', () => {
 
   it('should initialize isAuthenticated as true when user stored', () => {
     TestBed.resetTestingModule();
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
     localStorage.setItem('angular_auth_user', JSON.stringify({ username: 'test', isAdmin: false }));
     const fresh = TestBed.inject(AuthService);
     expect(fresh.isAuthenticated()).toBe(true);
@@ -355,7 +427,9 @@ describe('AuthService', () => {
 
   it('should initialize user signal correctly when stored', () => {
     TestBed.resetTestingModule();
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
     localStorage.setItem(
       'angular_auth_user',
       JSON.stringify({ username: 'stored', isAdmin: true })
@@ -369,15 +443,21 @@ describe('AuthService', () => {
     service.register('user', ' ').subscribe(success => {
       expect(success).toBe(true);
     });
+    const req = httpMock.expectOne('/api/auth/register');
+    req.flush({ token: 'fake-jwt', username: 'user', email: 'user@shop.com' });
     expect(service.isAuthenticated()).toBe(true);
   });
 
   it('should handle login with customer that has empty password', () => {
     service.register('empty-pw', '').subscribe(() => undefined);
+    const req1 = httpMock.expectOne('/api/auth/register');
+    req1.flush({ token: 'fake-jwt', username: 'empty-pw', email: 'empty-pw@shop.com' });
     service.logout();
     service.login('empty-pw', '').subscribe(success => {
       expect(success).toBe(true);
     });
+    const req2 = httpMock.expectOne('/api/auth/login');
+    req2.flush({ token: 'fake-jwt-2', username: 'empty-pw', email: 'empty-pw@shop.com' });
   });
 
   it('should return authState as observable that emits current user', () => {

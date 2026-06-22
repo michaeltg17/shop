@@ -5,6 +5,8 @@ import { CartService } from '../../cart.service';
 import { CartItem } from '../../cart-item';
 import { Product } from '../../../products/product';
 import { signal } from '@angular/core';
+import { of } from 'rxjs';
+import { OrderResponse } from '../../../orders/order.service';
 
 describe('CartPage', () => {
   let component: CartPage;
@@ -44,6 +46,7 @@ describe('CartPage', () => {
       toggleItemSelection: jest.fn(),
       selectAllItems: jest.fn(),
       selectedItemCount: signal(0),
+      placeOrder: jest.fn(() => of({ id: 1, total: 100 } as OrderResponse)),
     } as Partial<CartService> as CartService;
 
     await TestBed.configureTestingModule({

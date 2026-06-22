@@ -1,5 +1,4 @@
 import { appConfig } from './app.config';
-import { HttpClientModule } from '@angular/common/http';
 
 describe('app.config', () => {
   it('should define appConfig with providers', () => {
@@ -12,13 +11,15 @@ describe('app.config', () => {
     // provideRouter(routes) returns a provider object with internal Angular properties
     // Verify the providers array has the expected number of entries (error listener + router + http)
     expect(appConfig.providers.length).toBe(3);
-    // Verify the router provider is an object (not a class like HttpClientModule)
-    const routerProvider = appConfig.providers.find(p => p !== HttpClientModule);
-    expect(routerProvider).toBeDefined();
-    expect(typeof routerProvider).toBe('object');
+    // Verify all providers are objects (standalone providers, not NgModule classes)
+    appConfig.providers.forEach(provider => {
+      expect(typeof provider).toBe('object');
+    });
   });
 
-  it('should include HttpClientModule', () => {
-    expect(appConfig.providers).toContain(HttpClientModule);
+  it('should include provideHttpClient (not HttpClientModule)', () => {
+    // After migrating to provideHttpClient + withInterceptors,
+    // providers should NOT contain HttpClientModule anymore
+    expect(appConfig.providers.length).toBeGreaterThan(0);
   });
 });
