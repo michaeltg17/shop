@@ -46,7 +46,7 @@ jobs:
           context: ui
           push: false
           load: true
-          tags: angular-ci:latest
+          tags: shop-ci:latest
           cache-from: type=gha,scope=ci
           cache-to: type=gha,mode=max,scope=ci
           file: ui/Dockerfile.ci

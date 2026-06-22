@@ -1,10 +1,10 @@
 services:
-  angular:
+  shop:
     build:
       context: .
       dockerfile: Dockerfile
-    image: angular:latest
-    container_name: angular
+    image: shop:latest
+    container_name: shop
     ports:
       - "4201:80"
     restart: unless-stopped
