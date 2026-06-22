@@ -1,10 +1,5 @@
 # dev24-7 Worker State
 
-Status: Waiting for CI on PR #108
-Issue: #106 reactor UI to use API
-Branch: feature/reactor-ui-api
-PR: #108 (https://github.com/michaeltg17/shop/pull/108)
-Last fix: order.service.spec.ts — req.method → req.request.method
-Commit: f5f377d pushed 2026-06-22 08:53 CEST
-CI: Running — monitoring
-Last updated: 2026-06-22 08:54 CEST
+Status: STALE — heartbeat cleared (last activity too old)
+Cleared at: 2026-06-22 07:49:13 UTC
+Notes: Worker appears stuck; next run will start fresh.
