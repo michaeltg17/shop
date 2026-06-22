@@ -60,6 +60,7 @@ jobs:
         uses: jpb06/coverage-badges-action@main
         with:
           branches: main
+          coveragePaths: ui/coverage/coverage-summary.json
 
       - name: Validate Docker image builds
         if: github.event_name == 'pull_request'
