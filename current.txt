@@ -1,18 +1,16 @@
 # dev24-7 Worker State
 
-Status: WORKING — PR #108 ESLint fix pushed, waiting for CI (2nd attempt)
-Updated: 2026-06-22 08:35 CEST
+Status: WORKING — PR #108 ESLint fix #2 pushed, waiting for CI
+Updated: 2026-06-22 08:40 CEST
 Branch: feature/reactor-ui-api
 PR: #108 (https://github.com/michaeltg17/shop/pull/108)
 Task: #106 - reactor ui to use api and add needed endpoints for it
 
-What happened:
-- Merge conflicts resolved (f986231)
-- CI fail #1: prettier formatting → fixed (1fa760f)
-- CI fail #2: ESLint @typescript-eslint/no-explicit-any in auth.interceptor.spec.ts
-  → replaced all 'as any' with MockHandler type (4b0d5b9)
-- Pushed fix, waiting for CI again
+CI failures so far:
+1. Prettier formatting in order.service.spec.ts → fixed
+2. ESLint 'as any' in auth.interceptor.spec.ts → fixed with MockHandler
+3. ESLint unused import + type vs interface → fixed (150fad9)
 
 Next steps:
-1. Check CI status — if green → merge PR, move issue #106 to Done
+1. Check CI — if green → merge PR, move #106 to Done
 2. Pick next task (#109 or #110)

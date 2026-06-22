@@ -11,6 +11,7 @@ import { AuthService } from '../services/auth.service';
 describe('AuthInterceptor', () => {
   interface MockHandler {
     handle: (req: HttpRequest<unknown>) => HttpEvent;
+  }
 
   let authService: AuthService;
   let httpMock: HttpTestingController;
