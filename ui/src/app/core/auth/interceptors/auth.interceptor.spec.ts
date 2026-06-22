@@ -4,12 +4,13 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { AuthInterceptor } from './auth.interceptor';
 import { AuthService } from '../services/auth.service';
-import { HttpRequest } from '@angular/common/http';
 
 describe('AuthInterceptor', () => {
+  type MockHandler = { handle: (req: HttpRequest<unknown>) => HttpEvent };
+
   let authService: AuthService;
   let httpMock: HttpTestingController;
 
@@ -45,7 +46,7 @@ describe('AuthInterceptor', () => {
     const httpReq = new HttpRequest('GET', '/test', {});
     const nextHandle = jest.fn(() => 'response');
 
-    interceptor.intercept(httpReq, { handle: nextHandle } as any);
+    interceptor.intercept(httpReq, { handle: nextHandle } as MockHandler);
 
     const clonedReq = nextHandle.mock.calls[0][0] as HttpRequest<unknown>;
     expect(clonedReq.headers.get('Authorization')).toBe('Bearer test-jwt-token');
@@ -57,7 +58,7 @@ describe('AuthInterceptor', () => {
     const httpReq = new HttpRequest('GET', '/test', {});
     const nextHandle = jest.fn(() => 'response');
 
-    interceptor.intercept(httpReq, { handle: nextHandle } as any);
+    interceptor.intercept(httpReq, { handle: nextHandle } as MockHandler);
 
     const clonedReq = nextHandle.mock.calls[0][0] as HttpRequest<unknown>;
     expect(clonedReq.headers.get('Authorization')).toBeNull();
@@ -68,7 +69,7 @@ describe('AuthInterceptor', () => {
     const httpReq = new HttpRequest('GET', '/test', {});
     const nextHandle = jest.fn(() => 'mock-response');
 
-    const result = interceptor.intercept(httpReq, { handle: nextHandle } as any);
+    const result = interceptor.intercept(httpReq, { handle: nextHandle } as MockHandler);
 
     expect(nextHandle).toHaveBeenCalled();
     expect(result).toBe('mock-response');
@@ -83,7 +84,7 @@ describe('AuthInterceptor', () => {
     const httpReq = new HttpRequest('GET', '/test', {});
     const nextHandle = jest.fn(() => 'response');
 
-    interceptor.intercept(httpReq, { handle: nextHandle } as any);
+    interceptor.intercept(httpReq, { handle: nextHandle } as MockHandler);
 
     const clonedReq = nextHandle.mock.calls[0][0] as HttpRequest<unknown>;
     expect(clonedReq.headers.get('Authorization')).toBe('Bearer customer-jwt');
@@ -98,7 +99,7 @@ describe('AuthInterceptor', () => {
     const httpReq = new HttpRequest('GET', '/original', {});
     const nextHandle = jest.fn(() => 'response');
 
-    interceptor.intercept(httpReq, { handle: nextHandle } as any);
+    interceptor.intercept(httpReq, { handle: nextHandle } as MockHandler);
 
     const clonedReq = nextHandle.mock.calls[0][0] as HttpRequest<unknown>;
     expect(clonedReq.url).toBe('/original');
@@ -112,7 +113,7 @@ describe('AuthInterceptor', () => {
     const httpReq = new HttpRequest('GET', '/test', {});
     const nextHandle = jest.fn(() => 'response');
 
-    interceptor.intercept(httpReq, { handle: nextHandle } as any);
+    interceptor.intercept(httpReq, { handle: nextHandle } as MockHandler);
 
     const clonedReq = nextHandle.mock.calls[0][0] as HttpRequest<unknown>;
     expect(clonedReq.headers.get('Authorization')).toBeNull();
@@ -127,7 +128,7 @@ describe('AuthInterceptor', () => {
     const httpReq = new HttpRequest('POST', '/api/data', { key: 'value' });
     const nextHandle = jest.fn(() => 'response');
 
-    interceptor.intercept(httpReq, { handle: nextHandle } as any);
+    interceptor.intercept(httpReq, { handle: nextHandle } as MockHandler);
 
     const clonedReq = nextHandle.mock.calls[0][0] as HttpRequest<unknown>;
     expect(clonedReq.method).toBe('POST');
@@ -144,9 +145,9 @@ describe('AuthInterceptor', () => {
     const httpReq = new HttpRequest('POST', '/api/data', body);
     const nextHandle = jest.fn(() => 'response');
 
-    interceptor.intercept(httpReq, { handle: nextHandle } as any);
+    interceptor.intercept(httpReq, { handle: nextHandle } as MockHandler);
 
     const clonedReq = nextHandle.mock.calls[0][0] as HttpRequest<unknown>;
-    expect((clonedReq as any).body).toEqual(body);
+    expect(clonedReq.body).toEqual(body);
   });
 });

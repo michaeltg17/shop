@@ -1,18 +1,18 @@
 # dev24-7 Worker State
 
-Status: WORKING — PR #108 conflicts resolved, CI in progress
-Updated: 2026-06-22 08:19 CEST
+Status: WORKING — PR #108 CI fix pushed, waiting for CI
+Updated: 2026-06-22 08:26 CEST
 Branch: feature/reactor-ui-api
 PR: #108 (https://github.com/michaeltg17/shop/pull/108)
 Task: #106 - reactor ui to use api and add needed endpoints for it
 
 What happened:
-- PR #108 was OPEN but CONFLICTING (DIRTY merge state)
-- Resolved merge conflicts in Program.cs and ProductsEndpointsTests.cs
-- Committed fix (f986231) and pushed to feature/reactor-ui-api
-- Next: wait for CI, then merge PR
+- Resolved merge conflicts (Program.cs, ProductsEndpointsTests.cs)
+- CI failed: prettier formatting issue in order.service.spec.ts
+- Fixed with prettier --write, committed 1fa760f, pushed
+- Next: wait for CI, merge if green
 
 Next steps:
 1. Check CI status on PR #108
-2. If CI passes → merge PR, move issue #106 to Done
-3. Pick next task (issue #109 or #110)
+2. If green → merge PR, move issue #106 to Done on board
+3. Pick next task (#109 or #110)
