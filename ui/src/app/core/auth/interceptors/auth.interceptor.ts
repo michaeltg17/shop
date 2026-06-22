@@ -1,5 +1,6 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
@@ -12,11 +13,11 @@ const DEV_BASIC_AUTH = 'Basic dGVzdGVyOn08NW9UOld6MT9EUiROUmp3fmRq';
 })
 export class AuthInterceptor implements HttpInterceptor {
   private readonly authService = inject(AuthService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly doc = inject(DOCUMENT, { optional: true });
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const isDevServer = this.isDevServer(req);
-
-    if (isDevServer) {
+    if (isPlatformBrowser(this.platformId) && this.isDevServer()) {
       // Dev server: send Basic Auth for nginx reverse proxy.
       // If the user also has a JWT token, send it via X-Authorization header so the
       // API can authenticate the user after nginx passes the request.
@@ -47,20 +48,13 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   /**
-   * Check if the request is targeting the dev server.
-   * Handles both absolute URLs (in browser) and relative URLs (in tests).
+   * Check if the app is currently running on the dev server.
+   * Uses window.location.hostname from the browser environment.
    */
-  private isDevServer(req: HttpRequest<unknown>): boolean {
-    // Try urlWithObject first (available when base href is set or absolute URL)
-    try {
-      if (req.urlWithObject) {
-        return req.urlWithObject.hostname.endsWith('statikk.mooo.com');
-      }
-    } catch {
-      // urlWithObject may throw if URL parsing fails
+  private isDevServer(): boolean {
+    if (this.doc?.location?.hostname) {
+      return this.doc.location.hostname.endsWith('statikk.mooo.com');
     }
-
-    // Fallback: check the raw URL string
-    return req.url.includes('statikk.mooo.com');
+    return false;
   }
 }
