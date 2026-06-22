@@ -5,7 +5,13 @@ import { UserService } from '../../user.service';
 import { UserDialog } from '../user-dialog/user-dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router, RouterState, Event as RouterEvent } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterState,
+  Event as RouterEvent,
+} from '@angular/router';
 import { PendingChangesService } from '../../../../core/services/pending-changes.service';
 import { of, Subject } from 'rxjs';
 import { User } from '../../user';
@@ -881,7 +887,14 @@ describe('UsersTable', () => {
   });
 
   it('should call addUser after dialog closes with result', () => {
-    const result = { id: 2, firstName: 'New', lastName: 'User', email: 'new@test.com', phoneNumber: '', isActive: true };
+    const result = {
+      id: 2,
+      firstName: 'New',
+      lastName: 'User',
+      email: 'new@test.com',
+      phoneNumber: '',
+      isActive: true,
+    };
     const dialogRefMock = {
       afterClosed: () => of(result),
       close: jest.fn(),
