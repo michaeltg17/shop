@@ -1,0 +1,943 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1782102359590" clover="3.2.0">
+  <project timestamp="1782102359590" name="All files">
+    <metrics statements="724" coveredstatements="698" conditionals="143" coveredconditionals="127" methods="166" coveredmethods="157" elements="1033" coveredelements="982" complexity="0" loc="724" ncloc="724" packages="25" files="46" classes="46"/>
+    <package name="app">
+      <metrics statements="21" coveredstatements="21" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="app.config.ts" path="/tmp/Angular/ui/src/app/app.config.ts">
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+      </file>
+      <file name="app.html" path="/tmp/Angular/ui/src/app/app.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+      </file>
+      <file name="app.routes.ts" path="/tmp/Angular/ui/src/app/app.routes.ts">
+        <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="7" count="2" type="stmt"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="13" count="2" type="stmt"/>
+      </file>
+      <file name="app.ts" path="/tmp/Angular/ui/src/app/app.ts">
+        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.core.auth.guards">
+      <metrics statements="15" coveredstatements="15" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
+      <file name="auth.guard.ts" path="/tmp/Angular/ui/src/app/core/auth/guards/auth.guard.ts">
+        <metrics statements="9" coveredstatements="9" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="8" count="3" type="stmt"/>
+        <line num="9" count="3" type="stmt"/>
+        <line num="10" count="3" type="stmt"/>
+        <line num="13" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
+      </file>
+      <file name="pending-changes.guard.ts" path="/tmp/Angular/ui/src/app/core/auth/guards/pending-changes.guard.ts">
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="11" count="3" type="stmt"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="18" count="2" type="stmt"/>
+        <line num="21" count="2" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.core.auth.interceptors">
+      <metrics statements="8" coveredstatements="8" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+      <file name="auth.interceptor.ts" path="/tmp/Angular/ui/src/app/core/auth/interceptors/auth.interceptor.ts">
+        <metrics statements="8" coveredstatements="8" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="9" count="6" type="stmt"/>
+        <line num="12" count="6" type="stmt"/>
+        <line num="14" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="15" count="1" type="stmt"/>
+        <line num="20" count="6" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.core.auth.services">
+      <metrics statements="52" coveredstatements="49" conditionals="13" coveredconditionals="13" methods="13" coveredmethods="13"/>
+      <file name="auth.service.ts" path="/tmp/Angular/ui/src/app/core/auth/services/auth.service.ts">
+        <metrics statements="52" coveredstatements="49" conditionals="13" coveredconditionals="13" methods="13" coveredmethods="13"/>
+        <line num="1" count="8" type="stmt"/>
+        <line num="2" count="8" type="stmt"/>
+        <line num="3" count="8" type="stmt"/>
+        <line num="4" count="8" type="stmt"/>
+        <line num="31" count="8" type="stmt"/>
+        <line num="32" count="60" type="stmt"/>
+        <line num="33" count="60" type="stmt"/>
+        <line num="34" count="60" type="stmt"/>
+        <line num="36" count="60" type="stmt"/>
+        <line num="37" count="60" type="stmt"/>
+        <line num="40" count="3" type="stmt"/>
+        <line num="45" count="27" type="cond" truecount="4" falsecount="0"/>
+        <line num="46" count="12" type="stmt"/>
+        <line num="47" count="12" type="stmt"/>
+        <line num="48" count="12" type="stmt"/>
+        <line num="52" count="15" type="stmt"/>
+        <line num="54" count="6" type="stmt"/>
+        <line num="55" count="6" type="stmt"/>
+        <line num="56" count="6" type="stmt"/>
+        <line num="57" count="6" type="stmt"/>
+        <line num="59" count="9" type="stmt"/>
+        <line num="68" count="23" type="cond" truecount="4" falsecount="0"/>
+        <line num="69" count="3" type="stmt"/>
+        <line num="73" count="20" type="cond" truecount="2" falsecount="0"/>
+        <line num="74" count="1" type="stmt"/>
+        <line num="77" count="19" type="stmt"/>
+        <line num="79" count="19" type="stmt"/>
+        <line num="81" count="17" type="stmt"/>
+        <line num="82" count="17" type="stmt"/>
+        <line num="83" count="17" type="stmt"/>
+        <line num="84" count="17" type="stmt"/>
+        <line num="86" count="2" type="stmt"/>
+        <line num="91" count="14" type="stmt"/>
+        <line num="92" count="14" type="stmt"/>
+        <line num="93" count="14" type="stmt"/>
+        <line num="94" count="14" type="stmt"/>
+        <line num="98" count="7" type="stmt"/>
+        <line num="99" count="7" type="stmt"/>
+        <line num="101" count="0" type="stmt"/>
+        <line num="106" count="60" type="stmt"/>
+        <line num="107" count="60" type="stmt"/>
+        <line num="109" count="0" type="stmt"/>
+        <line num="114" count="63" type="stmt"/>
+        <line num="115" count="63" type="stmt"/>
+        <line num="116" count="63" type="cond" truecount="2" falsecount="0"/>
+        <line num="118" count="0" type="stmt"/>
+        <line num="123" count="35" type="stmt"/>
+        <line num="124" count="35" type="stmt"/>
+        <line num="128" count="35" type="stmt"/>
+        <line num="129" count="35" type="stmt"/>
+        <line num="133" count="23" type="stmt"/>
+        <line num="134" count="23" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.core.models">
+      <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="dialogMode.ts" path="/tmp/Angular/ui/src/app/core/models/dialogMode.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="2" count="4" type="stmt"/>
+      </file>
+      <file name="theme.ts" path="/tmp/Angular/ui/src/app/core/models/theme.ts">
+        <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="7" type="stmt"/>
+        <line num="3" count="7" type="stmt"/>
+        <line num="19" count="7" type="stmt"/>
+        <line num="22" count="7" type="stmt"/>
+        <line num="26" count="18" type="stmt"/>
+        <line num="27" count="18" type="stmt"/>
+        <line num="29" count="18" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.core.services">
+      <metrics statements="58" coveredstatements="58" conditionals="8" coveredconditionals="8" methods="13" coveredmethods="13"/>
+      <file name="pending-changes.service.ts" path="/tmp/Angular/ui/src/app/core/services/pending-changes.service.ts">
+        <metrics statements="33" coveredstatements="33" conditionals="6" coveredconditionals="6" methods="7" coveredmethods="7"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="5" count="6" type="stmt"/>
+        <line num="6" count="13" type="stmt"/>
+        <line num="7" count="13" type="stmt"/>
+        <line num="8" count="13" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="17" count="6" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="25" count="9" type="stmt"/>
+        <line num="27" count="9" type="stmt"/>
+        <line num="28" count="9" type="cond" truecount="2" falsecount="0"/>
+        <line num="29" count="8" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="35" count="1" type="stmt"/>
+        <line num="39" count="7" type="stmt"/>
+        <line num="46" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="47" count="4" type="stmt"/>
+        <line num="48" count="4" type="stmt"/>
+        <line num="49" count="4" type="stmt"/>
+        <line num="50" count="4" type="stmt"/>
+        <line num="54" count="4" type="stmt"/>
+        <line num="55" count="4" type="stmt"/>
+        <line num="58" count="4" type="stmt"/>
+        <line num="59" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="60" count="3" type="stmt"/>
+        <line num="61" count="3" type="stmt"/>
+        <line num="62" count="3" type="stmt"/>
+        <line num="63" count="3" type="stmt"/>
+        <line num="64" count="3" type="stmt"/>
+        <line num="68" count="3" type="stmt"/>
+        <line num="70" count="4" type="stmt"/>
+      </file>
+      <file name="theme.service.ts" path="/tmp/Angular/ui/src/app/core/services/theme.service.ts">
+        <metrics statements="22" coveredstatements="22" conditionals="2" coveredconditionals="2" methods="5" coveredmethods="5"/>
+        <line num="1" count="7" type="stmt"/>
+        <line num="2" count="7" type="stmt"/>
+        <line num="7" count="7" type="stmt"/>
+        <line num="8" count="18" type="stmt"/>
+        <line num="9" count="18" type="stmt"/>
+        <line num="12" count="6" type="stmt"/>
+        <line num="13" count="6" type="stmt"/>
+        <line num="14" count="6" type="stmt"/>
+        <line num="18" count="4" type="stmt"/>
+        <line num="19" count="4" type="stmt"/>
+        <line num="20" count="4" type="stmt"/>
+        <line num="24" count="7" type="stmt"/>
+        <line num="25" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="26" count="5" type="stmt"/>
+        <line num="27" count="5" type="stmt"/>
+        <line num="30" count="2" type="stmt"/>
+        <line num="31" count="2" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="38" count="16" type="stmt"/>
+        <line num="39" count="16" type="stmt"/>
+        <line num="40" count="16" type="stmt"/>
+        <line num="44" count="10" type="stmt"/>
+      </file>
+      <file name="title.service.ts" path="/tmp/Angular/ui/src/app/core/services/title.service.ts">
+        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="6" count="6" type="stmt"/>
+        <line num="7" count="9" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.features.cart">
+      <metrics statements="38" coveredstatements="38" conditionals="11" coveredconditionals="9" methods="31" coveredmethods="31"/>
+      <file name="cart.service.ts" path="/tmp/Angular/ui/src/app/features/cart/cart.service.ts">
+        <metrics statements="38" coveredstatements="38" conditionals="11" coveredconditionals="9" methods="31" coveredmethods="31"/>
+        <line num="1" count="5" type="stmt"/>
+        <line num="5" count="5" type="stmt"/>
+        <line num="10" count="5" type="stmt"/>
+        <line num="11" count="29" type="stmt"/>
+        <line num="13" count="29" type="stmt"/>
+        <line num="15" count="29" type="stmt"/>
+        <line num="16" count="29" type="stmt"/>
+        <line num="17" count="29" type="stmt"/>
+        <line num="18" count="3" type="stmt"/>
+        <line num="19" count="4" type="stmt"/>
+        <line num="20" count="3" type="stmt"/>
+        <line num="24" count="39" type="stmt"/>
+        <line num="25" count="39" type="stmt"/>
+        <line num="27" count="39" type="cond" truecount="2" falsecount="0"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="30" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="34" count="38" type="stmt"/>
+        <line num="39" count="5" type="stmt"/>
+        <line num="43" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="44" count="2" type="stmt"/>
+        <line num="45" count="2" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
+        <line num="49" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="54" count="9" type="stmt"/>
+        <line num="55" count="9" type="stmt"/>
+        <line num="56" count="16" type="cond" truecount="2" falsecount="0"/>
+        <line num="62" count="6" type="stmt"/>
+        <line num="66" count="30" type="stmt"/>
+        <line num="70" count="3" type="stmt"/>
+        <line num="71" count="4" type="stmt"/>
+        <line num="72" count="3" type="stmt"/>
+        <line num="76" count="12" type="stmt"/>
+        <line num="80" count="1" type="stmt"/>
+        <line num="84" count="5" type="stmt"/>
+        <line num="85" count="5" type="stmt"/>
+        <line num="86" count="5" type="stmt"/>
+        <line num="95" count="5" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.features.cart.components.cart-page">
+      <metrics statements="50" coveredstatements="48" conditionals="6" coveredconditionals="6" methods="13" coveredmethods="12"/>
+      <file name="cart-page.html" path="/tmp/Angular/ui/src/app/features/cart/components/cart-page/cart-page.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+      </file>
+      <file name="cart-page.ts" path="/tmp/Angular/ui/src/app/features/cart/components/cart-page/cart-page.ts">
+        <metrics statements="49" coveredstatements="47" conditionals="6" coveredconditionals="6" methods="13" coveredmethods="12"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="7" count="3" type="stmt"/>
+        <line num="8" count="3" type="stmt"/>
+        <line num="9" count="3" type="stmt"/>
+        <line num="10" count="3" type="stmt"/>
+        <line num="11" count="3" type="stmt"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="13" count="3" type="stmt"/>
+        <line num="14" count="3" type="stmt"/>
+        <line num="35" count="3" type="stmt"/>
+        <line num="36" count="24" type="stmt"/>
+        <line num="37" count="24" type="stmt"/>
+        <line num="38" count="24" type="stmt"/>
+        <line num="40" count="24" type="stmt"/>
+        <line num="41" count="24" type="stmt"/>
+        <line num="43" count="24" type="stmt"/>
+        <line num="45" count="24" type="stmt"/>
+        <line num="48" count="24" type="stmt"/>
+        <line num="49" count="28" type="stmt"/>
+        <line num="50" count="28" type="cond" truecount="2" falsecount="0"/>
+        <line num="55" count="10" type="stmt"/>
+        <line num="59" count="6" type="stmt"/>
+        <line num="63" count="11" type="stmt"/>
+        <line num="67" count="1" type="stmt"/>
+        <line num="71" count="2" type="stmt"/>
+        <line num="72" count="2" type="stmt"/>
+        <line num="73" count="2" type="stmt"/>
+        <line num="77" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="78" count="2" type="stmt"/>
+        <line num="79" count="2" type="stmt"/>
+        <line num="82" count="1" type="stmt"/>
+        <line num="86" count="4" type="stmt"/>
+        <line num="87" count="4" type="stmt"/>
+        <line num="91" count="4" type="stmt"/>
+        <line num="92" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="93" count="2" type="stmt"/>
+        <line num="96" count="2" type="stmt"/>
+        <line num="99" count="2" type="stmt"/>
+        <line num="101" count="2" type="stmt"/>
+        <line num="103" count="2" type="stmt"/>
+        <line num="104" count="2" type="stmt"/>
+        <line num="105" count="2" type="stmt"/>
+        <line num="108" count="2" type="stmt"/>
+        <line num="111" count="0" type="stmt"/>
+        <line num="112" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.features.orders">
+      <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="order.service.ts" path="/tmp/Angular/ui/src/app/features/orders/order.service.ts">
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="2" count="6" type="stmt"/>
+        <line num="29" count="6" type="stmt"/>
+        <line num="30" count="34" type="stmt"/>
+        <line num="31" count="34" type="stmt"/>
+        <line num="34" count="9" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.features.products">
+      <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="product.service.ts" path="/tmp/Angular/ui/src/app/features/products/product.service.ts">
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="4" type="stmt"/>
+        <line num="2" count="4" type="stmt"/>
+        <line num="9" count="4" type="stmt"/>
+        <line num="10" count="4" type="stmt"/>
+        <line num="11" count="4" type="stmt"/>
+        <line num="14" count="3" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.features.products.components.products-page">
+      <metrics statements="27" coveredstatements="27" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="6"/>
+      <file name="products-page.html" path="/tmp/Angular/ui/src/app/features/products/components/products-page/products-page.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+      </file>
+      <file name="products-page.ts" path="/tmp/Angular/ui/src/app/features/products/components/products-page/products-page.ts">
+        <metrics statements="26" coveredstatements="26" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="6"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="7" count="3" type="stmt"/>
+        <line num="8" count="3" type="stmt"/>
+        <line num="9" count="3" type="stmt"/>
+        <line num="19" count="3" type="stmt"/>
+        <line num="20" count="19" type="stmt"/>
+        <line num="21" count="19" type="stmt"/>
+        <line num="22" count="19" type="stmt"/>
+        <line num="24" count="19" type="stmt"/>
+        <line num="25" count="19" type="stmt"/>
+        <line num="26" count="19" type="stmt"/>
+        <line num="29" count="17" type="stmt"/>
+        <line num="33" count="23" type="stmt"/>
+        <line num="34" count="23" type="stmt"/>
+        <line num="36" count="23" type="stmt"/>
+        <line num="38" count="21" type="stmt"/>
+        <line num="39" count="21" type="stmt"/>
+        <line num="42" count="2" type="stmt"/>
+        <line num="43" count="2" type="stmt"/>
+        <line num="49" count="3" type="stmt"/>
+        <line num="53" count="4" type="stmt"/>
+        <line num="54" count="4" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.features.users">
+      <metrics statements="42" coveredstatements="42" conditionals="6" coveredconditionals="5" methods="16" coveredmethods="16"/>
+      <file name="user.service.ts" path="/tmp/Angular/ui/src/app/features/users/user.service.ts">
+        <metrics statements="42" coveredstatements="42" conditionals="6" coveredconditionals="5" methods="16" coveredmethods="16"/>
+        <line num="1" count="4" type="stmt"/>
+        <line num="3" count="4" type="stmt"/>
+        <line num="4" count="4" type="stmt"/>
+        <line num="5" count="4" type="stmt"/>
+        <line num="15" count="4" type="stmt"/>
+        <line num="16" count="14" type="stmt"/>
+        <line num="17" count="14" type="stmt"/>
+        <line num="18" count="14" type="stmt"/>
+        <line num="19" count="14" type="stmt"/>
+        <line num="20" count="14" type="stmt"/>
+        <line num="24" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="28" count="4" type="stmt"/>
+        <line num="29" count="4" type="stmt"/>
+        <line num="31" count="4" type="stmt"/>
+        <line num="35" count="3" type="stmt"/>
+        <line num="36" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="40" count="3" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="44" count="1" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="49" count="4" type="stmt"/>
+        <line num="54" count="2" type="stmt"/>
+        <line num="58" count="1" type="stmt"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="62" count="1" type="stmt"/>
+        <line num="63" count="1" type="stmt"/>
+        <line num="70" count="2" type="stmt"/>
+        <line num="74" count="1" type="stmt"/>
+        <line num="75" count="1" type="stmt"/>
+        <line num="76" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="77" count="1" type="stmt"/>
+        <line num="78" count="1" type="stmt"/>
+        <line num="79" count="1" type="stmt"/>
+        <line num="83" count="1" type="stmt"/>
+        <line num="84" count="1" type="stmt"/>
+        <line num="91" count="2" type="stmt"/>
+        <line num="95" count="1" type="stmt"/>
+        <line num="96" count="3" type="stmt"/>
+        <line num="99" count="1" type="stmt"/>
+        <line num="100" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.features.users.components.user-dialog">
+      <metrics statements="45" coveredstatements="45" conditionals="27" coveredconditionals="27" methods="8" coveredmethods="8"/>
+      <file name="user-dialog.html" path="/tmp/Angular/ui/src/app/features/users/components/user-dialog/user-dialog.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="4" type="stmt"/>
+      </file>
+      <file name="user-dialog.ts" path="/tmp/Angular/ui/src/app/features/users/components/user-dialog/user-dialog.ts">
+        <metrics statements="44" coveredstatements="44" conditionals="27" coveredconditionals="27" methods="8" coveredmethods="8"/>
+        <line num="1" count="4" type="stmt"/>
+        <line num="2" count="4" type="stmt"/>
+        <line num="3" count="4" type="stmt"/>
+        <line num="4" count="4" type="stmt"/>
+        <line num="5" count="4" type="stmt"/>
+        <line num="6" count="4" type="stmt"/>
+        <line num="7" count="4" type="stmt"/>
+        <line num="8" count="4" type="stmt"/>
+        <line num="10" count="4" type="stmt"/>
+        <line num="26" count="4" type="stmt"/>
+        <line num="27" count="45" type="stmt"/>
+        <line num="28" count="45" type="stmt"/>
+        <line num="29" count="45" type="stmt"/>
+        <line num="31" count="45" type="stmt"/>
+        <line num="32" count="45" type="stmt"/>
+        <line num="34" count="45" type="cond" truecount="2" falsecount="0"/>
+        <line num="39" count="45" type="cond" truecount="2" falsecount="0"/>
+        <line num="44" count="45" type="cond" truecount="2" falsecount="0"/>
+        <line num="49" count="45" type="cond" truecount="2" falsecount="0"/>
+        <line num="53" count="45" type="stmt"/>
+        <line num="61" count="45" type="cond" truecount="2" falsecount="0"/>
+        <line num="62" count="9" type="stmt"/>
+        <line num="63" count="9" type="stmt"/>
+        <line num="64" count="9" type="stmt"/>
+        <line num="65" count="9" type="stmt"/>
+        <line num="66" count="9" type="stmt"/>
+        <line num="69" count="45" type="stmt"/>
+        <line num="71" count="45" type="stmt"/>
+        <line num="73" count="29" type="cond" truecount="4" falsecount="0"/>
+        <line num="74" count="29" type="stmt"/>
+        <line num="75" count="29" type="stmt"/>
+        <line num="79" count="45" type="stmt"/>
+        <line num="80" count="45" type="stmt"/>
+        <line num="81" count="45" type="stmt"/>
+        <line num="82" count="45" type="stmt"/>
+        <line num="86" count="47" type="cond" truecount="3" falsecount="0"/>
+        <line num="90" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="91" count="2" type="stmt"/>
+        <line num="94" count="4" type="stmt"/>
+        <line num="95" count="4" type="stmt"/>
+        <line num="106" count="2" type="stmt"/>
+        <line num="110" count="184" type="stmt"/>
+        <line num="111" count="46" type="stmt"/>
+        <line num="116" count="6" type="cond" truecount="4" falsecount="0"/>
+      </file>
+    </package>
+    <package name="app.features.users.components.users-table">
+      <metrics statements="126" coveredstatements="105" conditionals="38" coveredconditionals="25" methods="28" coveredmethods="20"/>
+      <file name="users-table.html" path="/tmp/Angular/ui/src/app/features/users/components/users-table/users-table.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+      </file>
+      <file name="users-table.ts" path="/tmp/Angular/ui/src/app/features/users/components/users-table/users-table.ts">
+        <metrics statements="125" coveredstatements="104" conditionals="38" coveredconditionals="25" methods="28" coveredmethods="20"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="11" count="3" type="stmt"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="14" count="3" type="stmt"/>
+        <line num="15" count="3" type="stmt"/>
+        <line num="16" count="3" type="stmt"/>
+        <line num="17" count="3" type="stmt"/>
+        <line num="21" count="3" type="stmt"/>
+        <line num="22" count="3" type="stmt"/>
+        <line num="23" count="3" type="stmt"/>
+        <line num="24" count="3" type="stmt"/>
+        <line num="25" count="3" type="stmt"/>
+        <line num="26" count="3" type="stmt"/>
+        <line num="27" count="3" type="stmt"/>
+        <line num="28" count="3" type="stmt"/>
+        <line num="37" count="3" type="stmt"/>
+        <line num="38" count="55" type="stmt"/>
+        <line num="39" count="55" type="stmt"/>
+        <line num="40" count="55" type="stmt"/>
+        <line num="41" count="55" type="stmt"/>
+        <line num="42" count="55" type="stmt"/>
+        <line num="43" count="55" type="stmt"/>
+        <line num="44" count="55" type="stmt"/>
+        <line num="46" count="55" type="stmt"/>
+        <line num="55" count="55" type="stmt"/>
+        <line num="56" count="55" type="stmt"/>
+        <line num="57" count="55" type="stmt"/>
+        <line num="58" count="55" type="stmt"/>
+        <line num="59" count="55" type="stmt"/>
+        <line num="61" count="55" type="stmt"/>
+        <line num="62" count="55" type="stmt"/>
+        <line num="63" count="55" type="stmt"/>
+        <line num="65" count="55" type="stmt"/>
+        <line num="66" count="57" type="stmt"/>
+        <line num="67" count="57" type="cond" truecount="2" falsecount="0"/>
+        <line num="68" count="2" type="stmt"/>
+        <line num="72" count="55" type="stmt"/>
+        <line num="73" count="59" type="stmt"/>
+        <line num="74" count="59" type="stmt"/>
+        <line num="77" count="55" type="stmt"/>
+        <line num="78" count="59" type="stmt"/>
+        <line num="79" count="59" type="stmt"/>
+        <line num="81" count="59" type="cond" truecount="1" falsecount="1"/>
+        <line num="83" count="59" type="stmt"/>
+        <line num="85" count="59" type="cond" truecount="2" falsecount="0"/>
+        <line num="87" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="88" count="0" type="stmt"/>
+        <line num="89" count="0" type="stmt"/>
+        <line num="90" count="0" type="stmt"/>
+        <line num="91" count="0" type="stmt"/>
+        <line num="92" count="0" type="stmt"/>
+        <line num="93" count="0" type="stmt"/>
+        <line num="94" count="0" type="stmt"/>
+        <line num="95" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="98" count="0" type="stmt"/>
+        <line num="101" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="103" count="0" type="stmt"/>
+        <line num="104" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="106" count="0" type="stmt"/>
+        <line num="107" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="108" count="0" type="stmt"/>
+        <line num="109" count="0" type="stmt"/>
+        <line num="110" count="0" type="stmt"/>
+        <line num="111" count="0" type="stmt"/>
+        <line num="112" count="0" type="stmt"/>
+        <line num="113" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="118" count="55" type="stmt"/>
+        <line num="120" count="0" type="stmt"/>
+        <line num="122" count="55" type="stmt"/>
+        <line num="128" count="55" type="stmt"/>
+        <line num="129" count="55" type="stmt"/>
+        <line num="130" count="0" type="stmt"/>
+        <line num="133" count="55" type="stmt"/>
+        <line num="134" count="55" type="stmt"/>
+        <line num="135" count="55" type="stmt"/>
+        <line num="136" count="55" type="stmt"/>
+        <line num="140" count="56" type="stmt"/>
+        <line num="144" count="3" type="stmt"/>
+        <line num="150" count="3" type="stmt"/>
+        <line num="151" count="3" type="stmt"/>
+        <line num="152" count="3" type="stmt"/>
+        <line num="153" count="3" type="stmt"/>
+        <line num="154" count="3" type="stmt"/>
+        <line num="155" count="3" type="stmt"/>
+        <line num="157" count="3" type="stmt"/>
+        <line num="161" count="4" type="stmt"/>
+        <line num="167" count="4" type="stmt"/>
+        <line num="168" count="4" type="stmt"/>
+        <line num="169" count="4" type="stmt"/>
+        <line num="170" count="4" type="stmt"/>
+        <line num="171" count="4" type="stmt"/>
+        <line num="172" count="4" type="stmt"/>
+        <line num="174" count="4" type="stmt"/>
+        <line num="178" count="4" type="stmt"/>
+        <line num="184" count="4" type="stmt"/>
+        <line num="185" count="4" type="stmt"/>
+        <line num="186" count="4" type="stmt"/>
+        <line num="187" count="4" type="stmt"/>
+        <line num="188" count="4" type="stmt"/>
+        <line num="189" count="4" type="stmt"/>
+        <line num="191" count="4" type="stmt"/>
+        <line num="196" count="13" type="cond" truecount="2" falsecount="0"/>
+        <line num="197" count="12" type="stmt"/>
+        <line num="204" count="12" type="cond" truecount="2" falsecount="0"/>
+        <line num="205" count="11" type="stmt"/>
+        <line num="206" count="11" type="cond" truecount="2" falsecount="0"/>
+        <line num="207" count="4" type="stmt"/>
+        <line num="209" count="7" type="stmt"/>
+        <line num="216" count="11" type="cond" truecount="2" falsecount="0"/>
+        <line num="217" count="8" type="stmt"/>
+        <line num="218" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="219" count="3" type="stmt"/>
+        <line num="220" count="3" type="stmt"/>
+        <line num="225" count="8" type="stmt"/>
+        <line num="229" count="2" type="stmt"/>
+        <line num="233" count="2" type="stmt"/>
+        <line num="237" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="238" count="2" type="stmt"/>
+        <line num="242" count="5" type="stmt"/>
+        <line num="249" count="5" type="stmt"/>
+        <line num="253" count="5" type="stmt"/>
+        <line num="254" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="256" count="4" type="stmt"/>
+        <line num="258" count="4" type="stmt"/>
+        <line num="259" count="4" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.features.users.components.users-table.user-cell">
+      <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="user-cell.html" path="/tmp/Angular/ui/src/app/features/users/components/users-table/user-cell/user-cell.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="4" type="stmt"/>
+      </file>
+      <file name="user-cell.ts" path="/tmp/Angular/ui/src/app/features/users/components/users-table/user-cell/user-cell.ts">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="4" type="stmt"/>
+        <line num="2" count="4" type="stmt"/>
+        <line num="12" count="4" type="stmt"/>
+        <line num="13" count="35" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.shared.components.base-table">
+      <metrics statements="50" coveredstatements="50" conditionals="8" coveredconditionals="8" methods="9" coveredmethods="9"/>
+      <file name="base-table.html" path="/tmp/Angular/ui/src/app/shared/components/base-table/base-table.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="4" type="stmt"/>
+      </file>
+      <file name="base-table.ts" path="/tmp/Angular/ui/src/app/shared/components/base-table/base-table.ts">
+        <metrics statements="49" coveredstatements="49" conditionals="8" coveredconditionals="8" methods="9" coveredmethods="9"/>
+        <line num="1" count="4" type="stmt"/>
+        <line num="11" count="4" type="stmt"/>
+        <line num="12" count="4" type="stmt"/>
+        <line num="13" count="4" type="stmt"/>
+        <line num="14" count="4" type="stmt"/>
+        <line num="15" count="4" type="stmt"/>
+        <line num="16" count="4" type="stmt"/>
+        <line num="17" count="4" type="stmt"/>
+        <line num="18" count="4" type="stmt"/>
+        <line num="19" count="4" type="stmt"/>
+        <line num="20" count="4" type="stmt"/>
+        <line num="21" count="4" type="stmt"/>
+        <line num="60" count="4" type="stmt"/>
+        <line num="62" count="83" type="stmt"/>
+        <line num="63" count="83" type="stmt"/>
+        <line num="64" count="83" type="stmt"/>
+        <line num="65" count="83" type="stmt"/>
+        <line num="66" count="83" type="stmt"/>
+        <line num="67" count="83" type="stmt"/>
+        <line num="68" count="83" type="stmt"/>
+        <line num="69" count="83" type="stmt"/>
+        <line num="70" count="83" type="stmt"/>
+        <line num="71" count="83" type="stmt"/>
+        <line num="72" count="83" type="stmt"/>
+        <line num="73" count="83" type="stmt"/>
+        <line num="74" count="83" type="stmt"/>
+        <line num="75" count="83" type="stmt"/>
+        <line num="76" count="83" type="stmt"/>
+        <line num="79" count="83" type="stmt"/>
+        <line num="80" count="83" type="stmt"/>
+        <line num="81" count="83" type="stmt"/>
+        <line num="82" count="83" type="stmt"/>
+        <line num="83" count="83" type="stmt"/>
+        <line num="90" count="387" type="stmt"/>
+        <line num="93" count="111" type="stmt"/>
+        <line num="94" count="111" type="stmt"/>
+        <line num="95" count="111" type="stmt"/>
+        <line num="99" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="100" count="2" type="stmt"/>
+        <line num="102" count="4" type="stmt"/>
+        <line num="107" count="83" type="stmt"/>
+        <line num="108" count="83" type="stmt"/>
+        <line num="112" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="113" count="7" type="stmt"/>
+        <line num="114" count="7" type="stmt"/>
+        <line num="118" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="119" count="1" type="stmt"/>
+        <line num="123" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="124" count="2" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.shared.components.cart-icon">
+      <metrics statements="20" coveredstatements="20" conditionals="2" coveredconditionals="2" methods="5" coveredmethods="5"/>
+      <file name="cart-icon.html" path="/tmp/Angular/ui/src/app/shared/components/cart-icon/cart-icon.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="5" type="stmt"/>
+      </file>
+      <file name="cart-icon.ts" path="/tmp/Angular/ui/src/app/shared/components/cart-icon/cart-icon.ts">
+        <metrics statements="19" coveredstatements="19" conditionals="2" coveredconditionals="2" methods="5" coveredmethods="5"/>
+        <line num="1" count="5" type="stmt"/>
+        <line num="2" count="5" type="stmt"/>
+        <line num="3" count="5" type="stmt"/>
+        <line num="4" count="5" type="stmt"/>
+        <line num="5" count="5" type="stmt"/>
+        <line num="15" count="5" type="stmt"/>
+        <line num="16" count="40" type="stmt"/>
+        <line num="18" count="40" type="stmt"/>
+        <line num="21" count="40" type="stmt"/>
+        <line num="22" count="40" type="stmt"/>
+        <line num="26" count="38" type="stmt"/>
+        <line num="30" count="48" type="stmt"/>
+        <line num="31" count="48" type="stmt"/>
+        <line num="32" count="48" type="cond" truecount="2" falsecount="0"/>
+        <line num="33" count="8" type="stmt"/>
+        <line num="34" count="7" type="stmt"/>
+        <line num="35" count="11" type="stmt"/>
+        <line num="39" count="40" type="stmt"/>
+        <line num="42" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.shared.components.confirmation-dialog">
+      <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+      <file name="confirmation-dialog.html" path="/tmp/Angular/ui/src/app/shared/components/confirmation-dialog/confirmation-dialog.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="4" type="stmt"/>
+      </file>
+      <file name="confirmation-dialog.ts" path="/tmp/Angular/ui/src/app/shared/components/confirmation-dialog/confirmation-dialog.ts">
+        <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="1" count="4" type="stmt"/>
+        <line num="2" count="4" type="stmt"/>
+        <line num="3" count="4" type="stmt"/>
+        <line num="20" count="4" type="stmt"/>
+        <line num="21" count="4" type="stmt"/>
+        <line num="22" count="4" type="stmt"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.shared.components.theme-selector">
+      <metrics statements="15" coveredstatements="15" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="theme-selector.html" path="/tmp/Angular/ui/src/app/shared/components/theme-selector/theme-selector.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="6" type="stmt"/>
+      </file>
+      <file name="theme-selector.ts" path="/tmp/Angular/ui/src/app/shared/components/theme-selector/theme-selector.ts">
+        <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="6" type="stmt"/>
+        <line num="2" count="6" type="stmt"/>
+        <line num="3" count="6" type="stmt"/>
+        <line num="4" count="6" type="stmt"/>
+        <line num="5" count="6" type="stmt"/>
+        <line num="6" count="6" type="stmt"/>
+        <line num="7" count="6" type="stmt"/>
+        <line num="8" count="6" type="stmt"/>
+        <line num="9" count="6" type="stmt"/>
+        <line num="25" count="6" type="stmt"/>
+        <line num="26" count="33" type="stmt"/>
+        <line num="27" count="33" type="stmt"/>
+        <line num="28" count="33" type="stmt"/>
+        <line num="31" count="33" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.shared.layouts.admin-layout">
+      <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="admin-layout.html" path="/tmp/Angular/ui/src/app/shared/layouts/admin-layout/admin-layout.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+      </file>
+      <file name="admin-layout.ts" path="/tmp/Angular/ui/src/app/shared/layouts/admin-layout/admin-layout.ts">
+        <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="7" count="3" type="stmt"/>
+        <line num="15" count="3" type="stmt"/>
+        <line num="16" count="2" type="stmt"/>
+        <line num="17" count="2" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.shared.layouts.ecommerce-layout">
+      <metrics statements="12" coveredstatements="12" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="ecommerce-layout.html" path="/tmp/Angular/ui/src/app/shared/layouts/ecommerce-layout/ecommerce-layout.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+      </file>
+      <file name="ecommerce-layout.ts" path="/tmp/Angular/ui/src/app/shared/layouts/ecommerce-layout/ecommerce-layout.ts">
+        <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="7" count="3" type="stmt"/>
+        <line num="8" count="3" type="stmt"/>
+        <line num="16" count="3" type="stmt"/>
+        <line num="17" count="2" type="stmt"/>
+        <line num="18" count="2" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.shared.pages.contact-page">
+      <metrics statements="15" coveredstatements="15" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="5"/>
+      <file name="contact-page.html" path="/tmp/Angular/ui/src/app/shared/pages/contact-page/contact-page.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+      </file>
+      <file name="contact-page.ts" path="/tmp/Angular/ui/src/app/shared/pages/contact-page/contact-page.ts">
+        <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="5"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="22" count="3" type="stmt"/>
+        <line num="23" count="8" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="37" count="33" type="stmt"/>
+        <line num="40" count="33" type="stmt"/>
+        <line num="43" count="33" type="stmt"/>
+        <line num="46" count="33" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.shared.pages.login-page">
+      <metrics statements="80" coveredstatements="80" conditionals="20" coveredconditionals="20" methods="9" coveredmethods="9"/>
+      <file name="login-page.html" path="/tmp/Angular/ui/src/app/shared/pages/login-page/login-page.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+      </file>
+      <file name="login-page.ts" path="/tmp/Angular/ui/src/app/shared/pages/login-page/login-page.ts">
+        <metrics statements="79" coveredstatements="79" conditionals="20" coveredconditionals="20" methods="9" coveredmethods="9"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="7" count="3" type="stmt"/>
+        <line num="8" count="3" type="stmt"/>
+        <line num="9" count="3" type="stmt"/>
+        <line num="10" count="3" type="stmt"/>
+        <line num="11" count="3" type="stmt"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="13" count="3" type="stmt"/>
+        <line num="14" count="3" type="stmt"/>
+        <line num="38" count="3" type="stmt"/>
+        <line num="39" count="24" type="stmt"/>
+        <line num="40" count="24" type="stmt"/>
+        <line num="41" count="24" type="stmt"/>
+        <line num="46" count="24" type="stmt"/>
+        <line num="47" count="24" type="stmt"/>
+        <line num="48" count="24" type="stmt"/>
+        <line num="50" count="24" type="stmt"/>
+        <line num="51" count="24" type="stmt"/>
+        <line num="52" count="24" type="stmt"/>
+        <line num="56" count="27" type="stmt"/>
+        <line num="57" count="27" type="cond" truecount="2" falsecount="0"/>
+        <line num="58" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="61" count="1" type="stmt"/>
+        <line num="67" count="8" type="stmt"/>
+        <line num="68" count="8" type="stmt"/>
+        <line num="69" count="8" type="stmt"/>
+        <line num="72" count="8" type="cond" truecount="4" falsecount="0"/>
+        <line num="73" count="3" type="stmt"/>
+        <line num="74" count="3" type="stmt"/>
+        <line num="75" count="3" type="stmt"/>
+        <line num="76" count="3" type="stmt"/>
+        <line num="79" count="5" type="stmt"/>
+        <line num="82" count="5" type="stmt"/>
+        <line num="83" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="84" count="3" type="stmt"/>
+        <line num="85" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="86" count="2" type="stmt"/>
+        <line num="88" count="1" type="stmt"/>
+        <line num="91" count="2" type="stmt"/>
+        <line num="92" count="2" type="stmt"/>
+        <line num="98" count="4" type="stmt"/>
+        <line num="99" count="4" type="stmt"/>
+        <line num="100" count="4" type="stmt"/>
+        <line num="103" count="4" type="cond" truecount="4" falsecount="0"/>
+        <line num="104" count="1" type="stmt"/>
+        <line num="105" count="1" type="stmt"/>
+        <line num="106" count="1" type="stmt"/>
+        <line num="107" count="1" type="stmt"/>
+        <line num="110" count="3" type="stmt"/>
+        <line num="113" count="3" type="stmt"/>
+        <line num="114" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="115" count="1" type="stmt"/>
+        <line num="116" count="1" type="stmt"/>
+        <line num="117" count="1" type="stmt"/>
+        <line num="118" count="1" type="stmt"/>
+        <line num="121" count="2" type="stmt"/>
+        <line num="122" count="2" type="stmt"/>
+        <line num="128" count="1" type="stmt"/>
+        <line num="129" count="1" type="stmt"/>
+        <line num="130" count="1" type="stmt"/>
+        <line num="131" count="1" type="stmt"/>
+        <line num="132" count="1" type="stmt"/>
+        <line num="136" count="1" type="stmt"/>
+        <line num="137" count="1" type="stmt"/>
+        <line num="138" count="1" type="stmt"/>
+        <line num="139" count="1" type="stmt"/>
+        <line num="140" count="1" type="stmt"/>
+        <line num="144" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="145" count="1" type="stmt"/>
+        <line num="147" count="1" type="stmt"/>
+        <line num="149" count="2" type="stmt"/>
+        <line num="150" count="2" type="stmt"/>
+        <line num="151" count="2" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.shared.pages.user-page">
+      <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="user-page.html" path="/tmp/Angular/ui/src/app/shared/pages/user-page/user-page.html">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+      </file>
+      <file name="user-page.ts" path="/tmp/Angular/ui/src/app/shared/pages/user-page/user-page.ts">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="3" type="stmt"/>
+        <line num="11" count="3" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.shared.utils">
+      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="stringUtils.ts" path="/tmp/Angular/ui/src/app/shared/utils/stringUtils.ts">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="8" type="stmt"/>
+        <line num="2" count="41" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>

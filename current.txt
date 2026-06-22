@@ -1,0 +1,5 @@
+# dev24-7 Worker State
+
+Status: STALE — heartbeat cleared (last activity too old)
+Cleared at: 2026-06-22 08:17 CEST (2026-06-22 06:17 UTC)
+Notes: Worker appears stuck; next run will start fresh.
