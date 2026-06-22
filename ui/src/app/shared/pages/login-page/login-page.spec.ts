@@ -4,7 +4,7 @@ import { provideRouter, Router, RouterModule } from '@angular/router';
 import { AuthService, User } from '../../../core/auth/services/auth.service';
 import { TitleService } from '../../../core/services/title.service';
 import { ThemeService } from '../../../core/services/theme.service';
-import { of, Observable } from 'rxjs';
+import { of } from 'rxjs';
 
 describe('LoginPage', () => {
   let component: LoginPage;
