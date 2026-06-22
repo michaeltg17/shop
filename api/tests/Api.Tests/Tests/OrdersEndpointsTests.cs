@@ -92,11 +92,11 @@ public class OrdersEndpointsTests : IAsyncDisposable
     }
 
     [Fact]
-    public async Task GetOrderById_WhenNotExists_ReturnsNotFound()
+    public async Task GetOrderById_WhenNotExists_ReturnsProblemDetails404()
     {
         var response = await _client.GetAsync("/api/orders/999");
 
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        await AssertProblemDetailsHelper.AssertProblemDetailsAsync(response, HttpStatusCode.NotFound);
     }
 
     public async ValueTask DisposeAsync()

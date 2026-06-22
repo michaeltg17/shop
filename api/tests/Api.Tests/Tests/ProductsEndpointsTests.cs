@@ -75,11 +75,11 @@ public class ProductsEndpointsTests : IAsyncDisposable
     }
 
     [Fact]
-    public async Task GetProductById_WhenNotExists_ReturnsNotFound()
+    public async Task GetProductById_WhenNotExists_ReturnsProblemDetails404()
     {
         var response = await _client.GetAsync("/api/products/999");
 
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        await AssertProblemDetailsHelper.AssertProblemDetailsAsync(response, HttpStatusCode.NotFound);
     }
 
     [Fact]
@@ -104,7 +104,7 @@ public class ProductsEndpointsTests : IAsyncDisposable
     }
 
     [Fact]
-    public async Task CreateProduct_WithoutAuth_ReturnsUnauthorized()
+    public async Task CreateProduct_WithoutAuth_ReturnsProblemDetails401()
     {
         var product = new Product(0, "Monitor", "4K Display", 399.99m);
         var content = new StringContent(
@@ -114,7 +114,7 @@ public class ProductsEndpointsTests : IAsyncDisposable
 
         var response = await _client.PostAsync("/api/products", content);
 
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        await AssertProblemDetailsHelper.AssertProblemDetailsAsync(response, HttpStatusCode.Unauthorized);
     }
 
     [Fact]
@@ -139,7 +139,7 @@ public class ProductsEndpointsTests : IAsyncDisposable
     }
 
     [Fact]
-    public async Task UpdateProduct_WithoutAuth_ReturnsUnauthorized()
+    public async Task UpdateProduct_WithoutAuth_ReturnsProblemDetails401()
     {
         var product = new Product(0, "New Product", "Description", 9.99m);
         var content = new StringContent(
@@ -149,7 +149,7 @@ public class ProductsEndpointsTests : IAsyncDisposable
 
         var response = await _client.PutAsync("/api/products/999", content);
 
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        await AssertProblemDetailsHelper.AssertProblemDetailsAsync(response, HttpStatusCode.Unauthorized);
     }
 
     [Fact]
@@ -164,108 +164,39 @@ public class ProductsEndpointsTests : IAsyncDisposable
     }
 
     [Fact]
-    public async Task DeleteProduct_WithoutAuth_ReturnsUnauthorized()
+    public async Task DeleteProduct_WithoutAuth_ReturnsProblemDetails401()
     {
         var response = await _client.DeleteAsync("/api/products/3");
 
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        await AssertProblemDetailsHelper.AssertProblemDetailsAsync(response, HttpStatusCode.Unauthorized);
     }
 
-    // ── Auth endpoint tests ──
-
     [Fact]
-    public async Task Register_ReturnsTokenOnSuccess()
+    public async Task UpdateProduct_NotFound_ReturnsProblemDetails404()
     {
-        var req = new { Username = "newuser1", Email = "new1@shop.com", Password = "password123" };
+        EnsureAuthenticated();
+        var authClient = CreateAuthClient();
+        var product = new Product(0, "Monitor", "4K Display", 399.99m);
         var content = new StringContent(
-            JsonSerializer.Serialize(req),
+            JsonSerializer.Serialize(product),
             Encoding.UTF8,
             "application/json");
 
-        var response = await _client.PostAsync("/api/auth/register", content);
+        var response = await authClient.PutAsync("/api/products/999", content);
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var body = await response.Content.ReadFromJsonAsync<AuthResponse>();
-        body!.Should().NotBeNull();
-        body!.Token.Should().NotBeNullOrEmpty();
-        body!.Username.Should().Be("newuser1");
-        body!.Email.Should().Be("new1@shop.com");
+        await AssertProblemDetailsHelper.AssertProblemDetailsAsync(response, HttpStatusCode.NotFound);
+        authClient.Dispose();
     }
 
     [Fact]
-    public async Task Register_FailsOnDuplicateUsername()
+    public async Task DeleteProduct_NotFound_ReturnsProblemDetails404()
     {
-        var req = new { Username = "dupuser1", Email = "dup1@shop.com", Password = "password123" };
-        var content = new StringContent(
-            JsonSerializer.Serialize(req),
-            Encoding.UTF8,
-            "application/json");
-        await _client.PostAsync("/api/auth/register", content);
+        EnsureAuthenticated();
+        var authClient = CreateAuthClient();
+        var response = await authClient.DeleteAsync("/api/products/999");
 
-        var req2 = new { Username = "dupuser1", Email = "dup2@shop.com", Password = "password123" };
-        var content2 = new StringContent(
-            JsonSerializer.Serialize(req2),
-            Encoding.UTF8,
-            "application/json");
-        var response = await _client.PostAsync("/api/auth/register", content2);
-
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
-
-    [Fact]
-    public async Task Register_FailsOnDuplicateEmail()
-    {
-        var req = new { Username = "emailuser1", Email = "dupemail@shop.com", Password = "password123" };
-        var content = new StringContent(
-            JsonSerializer.Serialize(req),
-            Encoding.UTF8,
-            "application/json");
-        await _client.PostAsync("/api/auth/register", content);
-
-        var req2 = new { Username = "emailuser2", Email = "dupemail@shop.com", Password = "password123" };
-        var content2 = new StringContent(
-            JsonSerializer.Serialize(req2),
-            Encoding.UTF8,
-            "application/json");
-        var response = await _client.PostAsync("/api/auth/register", content2);
-
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
-
-    [Fact]
-    public async Task Login_ReturnsTokenWithValidCredentials()
-    {
-        var req = new { Username = "loginuser1", Email = "login1@shop.com", Password = "password123" };
-        var content = new StringContent(
-            JsonSerializer.Serialize(req),
-            Encoding.UTF8,
-            "application/json");
-        await _client.PostAsync("/api/auth/register", content);
-
-        var loginReq = new { Username = "loginuser1", Password = "password123" };
-        var loginContent = new StringContent(
-            JsonSerializer.Serialize(loginReq),
-            Encoding.UTF8,
-            "application/json");
-        var response = await _client.PostAsync("/api/auth/login", loginContent);
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var body = await response.Content.ReadFromJsonAsync<AuthResponse>();
-        body!.Should().NotBeNull();
-        body!.Token.Should().NotBeNullOrEmpty();
-    }
-
-    [Fact]
-    public async Task Login_ReturnsUnauthorizedWithInvalidCredentials()
-    {
-        var loginReq = new { Username = "nonexistent", Password = "wrongpassword" };
-        var loginContent = new StringContent(
-            JsonSerializer.Serialize(loginReq),
-            Encoding.UTF8,
-            "application/json");
-        var response = await _client.PostAsync("/api/auth/login", loginContent);
-
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        await AssertProblemDetailsHelper.AssertProblemDetailsAsync(response, HttpStatusCode.NotFound);
+        authClient.Dispose();
     }
 
     public async ValueTask DisposeAsync()

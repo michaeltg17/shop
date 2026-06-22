@@ -67,7 +67,7 @@ public class UsersEndpointsTests : IAsyncDisposable
     }
 
     [Fact]
-    public async Task UpdateUser_WhenNotExists_ReturnsNotFound()
+    public async Task UpdateUser_WhenNotExists_ReturnsProblemDetails404()
     {
         var user = new AdminUser(999, "Nobody", "Here", "nobody@nowhere.com", "", false);
         var content = new StringContent(
@@ -77,7 +77,7 @@ public class UsersEndpointsTests : IAsyncDisposable
 
         var response = await _client.PutAsync("/api/users/999", content);
 
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        await AssertProblemDetailsHelper.AssertProblemDetailsAsync(response, HttpStatusCode.NotFound);
     }
 
     [Fact]
