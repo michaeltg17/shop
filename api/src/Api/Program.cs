@@ -4,6 +4,7 @@ using Api.Models;
 using Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -79,7 +80,7 @@ int nextOrderId = 1;
 
 // ── Auth endpoints ──
 
-app.MapPost("/api/auth/register", (RegisterRequest request, IAuthService authService) =>
+app.MapPost("/api/auth/register", ([FromBody] RegisterRequest request, IAuthService authService) =>
 {
     try
     {
@@ -92,7 +93,7 @@ app.MapPost("/api/auth/register", (RegisterRequest request, IAuthService authSer
     }
 });
 
-app.MapPost("/api/auth/login", (LoginRequest request, IAuthService authService) =>
+app.MapPost("/api/auth/login", ([FromBody] LoginRequest request, IAuthService authService) =>
 {
     var result = authService.Login(request);
     if (result == null)
@@ -114,7 +115,7 @@ app.MapGet("/api/products/{id}", (int id) =>
     .WithName("GetProduct");
 
 // POST /api/products (requires auth)
-app.MapPost("/api/products", (Product product, IAuthService authService) =>
+app.MapPost("/api/products", ([FromBody] Product product, IAuthService authService) =>
 {
     var newProduct = product with { Id = Interlocked.Increment(ref nextProductId) };
     products.TryAdd(newProduct.Id, newProduct);
@@ -122,7 +123,7 @@ app.MapPost("/api/products", (Product product, IAuthService authService) =>
 }).RequireAuthorization();
 
 // PUT /api/products/{id} (requires auth)
-app.MapPut("/api/products/{id}", (int id, Product product) =>
+app.MapPut("/api/products/{id}", (int id, [FromBody] Product product) =>
 {
     if (!products.ContainsKey(id))
         return Results.NotFound();
@@ -148,7 +149,7 @@ app.MapGet("/api/users", () =>
     users.Values.ToList());
 
 // POST /api/users
-app.MapPost("/api/users", (AdminUser user) =>
+app.MapPost("/api/users", ([FromBody] AdminUser user) =>
 {
     var newUser = user with { Id = Interlocked.Increment(ref nextUserId) };
     users.TryAdd(newUser.Id, newUser);
@@ -156,7 +157,7 @@ app.MapPost("/api/users", (AdminUser user) =>
 });
 
 // PUT /api/users/{id}
-app.MapPut("/api/users/{id}", (int id, AdminUser user) =>
+app.MapPut("/api/users/{id}", (int id, [FromBody] AdminUser user) =>
 {
     if (!users.ContainsKey(id))
         return Results.NotFound();
@@ -167,7 +168,7 @@ app.MapPut("/api/users/{id}", (int id, AdminUser user) =>
 });
 
 // DELETE /api/users (bulk delete by IDs)
-app.MapDelete("/api/users", (List<int> ids) =>
+app.MapDelete("/api/users", ([FromBody] List<int> ids) =>
 {
     foreach (var id in ids)
     {
@@ -179,7 +180,7 @@ app.MapDelete("/api/users", (List<int> ids) =>
 // ── Order endpoints ──
 
 // POST /api/orders
-app.MapPost("/api/orders", (OrderRequest orderRequest) =>
+app.MapPost("/api/orders", ([FromBody] OrderRequest orderRequest) =>
 {
     var total = orderRequest.Items.Sum(i => i.Price * i.Quantity);
     var order = new Order(

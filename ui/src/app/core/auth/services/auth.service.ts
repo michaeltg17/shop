@@ -63,7 +63,7 @@ export class AuthService {
   register(
     username: string,
     password: string,
-    email: string = `${username}@shop.com`
+    email = `${username}@shop.com`
   ): Observable<boolean> {
     if (!username || !password) {
       return of(false);

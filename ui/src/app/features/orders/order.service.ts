@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -27,10 +27,8 @@ export interface OrderResponse {
   providedIn: 'root',
 })
 export class OrderService {
-  private readonly http = HttpClient;
+  private readonly http = inject(HttpClient);
   private readonly ordersUrl = 'api/orders';
-
-  constructor(private readonly http: HttpClient) {}
 
   createOrder(request: OrderRequest): Observable<OrderResponse> {
     return this.http.post<OrderResponse>(this.ordersUrl, request);
