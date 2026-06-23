@@ -44,6 +44,56 @@ describe('OrderService', () => {
     expect(service).toBeTruthy();
   });
 
+  describe('getOrders', () => {
+    it('should GET from api/orders and return an array of orders', () => {
+      service.getOrders().subscribe(response => {
+        expect(response).toEqual([mockOrderResponse]);
+        expect(response.length).toBe(1);
+      });
+
+      const req = httpMock.expectOne('api/orders');
+      expect(req.request.method).toBe('GET');
+      req.flush([mockOrderResponse]);
+    });
+
+    it('should return an empty array when no orders exist', () => {
+      service.getOrders().subscribe(response => {
+        expect(response).toEqual([]);
+      });
+
+      const req = httpMock.expectOne('api/orders');
+      req.flush([]);
+    });
+  });
+
+  describe('getOrder', () => {
+    it('should GET from api/orders/{id} and return a single order', () => {
+      service.getOrder(1).subscribe(response => {
+        expect(response).toEqual(mockOrderResponse);
+        expect(response.id).toBe(1);
+      });
+
+      const req = httpMock.expectOne('api/orders/1');
+      expect(req.request.method).toBe('GET');
+      req.flush(mockOrderResponse);
+    });
+
+    it('should handle not found error', () => {
+      service.getOrder(999).subscribe({
+        next: () => fail('should have errored'),
+        error: err => {
+          expect(err.status).toBe(404);
+        },
+      });
+
+      const req = httpMock.expectOne('api/orders/999');
+      req.flush(
+        { error: 'Not found' },
+        { status: 404, statusText: 'Not Found' }
+      );
+    });
+  });
+
   describe('createOrder', () => {
     it('should POST to api/orders and return the created order', () => {
       service.createOrder(mockOrderRequest).subscribe(response => {
