@@ -6,17 +6,12 @@ using Api.Endpoints.ProductsEndpoints;
 using Api.Endpoints.UsersEndpoints;
 using Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
-}
+builder.Services.AddOpenApi();
 
 // DB
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -48,11 +43,7 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.MapOpenApi();
 
 app.UseAuthentication();
 app.UseAuthorization();
