@@ -4,6 +4,7 @@ import { UserPage } from './shared/pages/user-page/user-page';
 import { ProductsPage } from './features/products/components/products-page/products-page';
 import { ContactPage } from './shared/pages/contact-page/contact-page';
 import { CartPage } from './features/cart/components/cart-page/cart-page';
+import { OrdersPage } from './features/orders/components/orders-page/orders-page';
 import { PendingChangesGuard } from './core/auth/guards/pending-changes.guard';
 import { LoginPage } from './shared/pages/login-page/login-page';
 import { AuthGuard } from './core/auth/guards/auth.guard';
@@ -54,6 +55,7 @@ export const routes: Routes = [
     children: [
       { path: 'products', component: ProductsPage },
       { path: 'cart', component: CartPage },
+      { path: 'orders', component: OrdersPage },
       { path: 'contact', component: ContactPage },
     ],
   },

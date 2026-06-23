@@ -4,6 +4,7 @@ import { UserPage } from './shared/pages/user-page/user-page';
 import { ProductsPage } from './features/products/components/products-page/products-page';
 import { ContactPage } from './shared/pages/contact-page/contact-page';
 import { CartPage } from './features/cart/components/cart-page/cart-page';
+import { OrdersPage } from './features/orders/components/orders-page/orders-page';
 import { LoginPage } from './shared/pages/login-page/login-page';
 import { PendingChangesGuard } from './core/auth/guards/pending-changes.guard';
 import { AuthGuard } from './core/auth/guards/auth.guard';
@@ -116,6 +117,13 @@ describe('app.routes', () => {
     const route = shopRoute?.children?.find(c => c.path === 'cart');
     expect(route).toBeDefined();
     expect(route?.component).toBe(CartPage);
+  });
+
+  it('should have orders route nested under shop', () => {
+    const shopRoute = routes.find(r => r.path === 'shop');
+    const route = shopRoute?.children?.find(c => c.path === 'orders');
+    expect(route).toBeDefined();
+    expect(route?.component).toBe(OrdersPage);
   });
 
   it('should have contact route nested under shop', () => {

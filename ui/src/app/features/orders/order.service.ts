@@ -30,6 +30,14 @@ export class OrderService {
   private readonly http = inject(HttpClient);
   private readonly ordersUrl = 'api/orders';
 
+  getOrders(): Observable<OrderResponse[]> {
+    return this.http.get<OrderResponse[]>(this.ordersUrl);
+  }
+
+  getOrder(id: number): Observable<OrderResponse> {
+    return this.http.get<OrderResponse>(`${this.ordersUrl}/${id}`);
+  }
+
   createOrder(request: OrderRequest): Observable<OrderResponse> {
     return this.http.post<OrderResponse>(this.ordersUrl, request);
   }
