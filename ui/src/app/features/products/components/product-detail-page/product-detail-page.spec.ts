@@ -1,4 +1,4 @@
-import { ComponentRef, ComponentFixture, overrideComponent, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProductDetailPage } from './product-detail-page';
 import { ProductService } from '../../product.service';
 import { ReviewsService } from '../../reviews.service';
@@ -9,7 +9,7 @@ import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { Router } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { of, Subject } from 'rxjs';
+import { of } from 'rxjs';
 
 describe('ProductDetailPage', () => {
   let component: ProductDetailPage;
