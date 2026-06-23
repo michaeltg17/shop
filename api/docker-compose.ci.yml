@@ -4,4 +4,4 @@ services:
       context: .
       dockerfile: Dockerfile.ci
     image: shop-api-ci:latest
-    command: ["/bin/bash", "/src/run-ci.sh"]
+    command: ["/bin/bash", "/app/run-ci.sh"]
