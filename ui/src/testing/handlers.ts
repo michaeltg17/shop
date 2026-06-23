@@ -67,6 +67,16 @@ export const handlers = [
     return product ? HttpResponse.json(product) : new HttpResponse(null, { status: 404 });
   }),
 
+  // --- Product Reviews ---
+  http.get('/api/products/:id/reviews', ({ params }) => {
+    return HttpResponse.json([]);
+  }),
+
+  http.post('/api/products/:id/reviews', async ({ request }) => {
+    const reviewData = (await request.json()) as Record<string, unknown>;
+    return HttpResponse.json({ ...reviewData, id: Date.now() }, { status: 201 });
+  }),
+
   // --- Orders ---
   http.post('/api/orders', async ({ request }) => {
     const orderData = (await request.json()) as Record<string, unknown>;

@@ -1,17 +1,16 @@
 # dev24-7 Worker State
 
-Status: WORKING — Implementing cart service with localStorage caching
-Task: #119 - implement cart service with cache or something
-Branch: feature/gh-119-cart-cache
-PR: not yet opened
-Board: #119 moved to "In progress"
+Status: IN PROGRESS
+Task: gh-124 - feat: add product detail page with images, description, reviews
+Branch: feature/gh-124-product-detail-page
+Started: 2026-06-23 07:03 UTC
+Last Update: 2026-06-23 07:10 UTC
 
-Plan:
-1. Add localStorage persistence to CartService (save/load cart items)
-2. Add restoreFromStorage() method
-3. Add persist() method called on cart changes
-4. Update tests for persistence behavior
-5. Commit, push, open PR
-6. Wait for CI
+Completed:
+- Created ProductDetailPage component (TS, HTML, SCSS)
+- Added route shop/products/:id
+- Updated products page to link to detail page
+- Added MSW handlers for product reviews
+- Created unit spec for ProductDetailPage
 
-Started: 2026-06-23 03:43 CET
+Next: Build, commit, push, open PR

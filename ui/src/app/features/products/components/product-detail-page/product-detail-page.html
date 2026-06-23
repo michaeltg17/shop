@@ -1,0 +1,165 @@
+<div class="product-detail-page">
+  @if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Loading product details...</p>
+  </div>
+  } @else if (error()) {
+  <div class="error-container">
+    <mat-icon error>error_outline</mat-icon>
+    <p>{{ error() }}</p>
+    <button mat-raised-button color="primary" (click)="goBack()">Back to Products</button>
+  </div>
+  } @else if (product()) {
+  <button mat-icon-button (click)="goBack()" class="back-button" aria-label="Back to products">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+
+  <div class="detail-container">
+    <!-- Image Gallery Section -->
+    <div class="gallery-section">
+      <div class="main-image">
+        <img [src]="getImages()[selectedImageIndex()] ?? ''" [alt]="product()!.title" />
+      </div>
+      <div class="thumbnails">
+        @for (img of getImages(); track img; let i = $index) {
+        <div class="thumbnail" [class.active]="i === selectedImageIndex()" (click)="selectImage(i)">
+          <img [src]="img" [alt]="'Thumbnail ' + (i + 1)" />
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Product Info Section -->
+    <div class="info-section">
+      <h1 class="product-title">{{ product()!.title }}</h1>
+
+      <div class="rating-summary">
+        @if (product()!.rating) {
+        <div class="stars">
+          @for (s of getRatingStars(product()!.rating.rate); track s) {
+          <mat-icon>star</mat-icon>
+          } @for (s of getRatingEmptyStars(product()!.rating.rate); track s) {
+          <mat-icon>star_border</mat-icon>
+          }
+        </div>
+        <span class="rating-text">
+          {{ product()!.rating.rate }} ({{ product()!.rating.count }} reviews)
+        </span>
+        }
+      </div>
+
+      <p class="product-price">${{ product()!.price | number:'1.2-2' }}</p>
+
+      <mat-divider></mat-divider>
+
+      <div class="product-description">
+        <h3>Description</h3>
+        <p>{{ product()!.description }}</p>
+      </div>
+
+      <div class="product-specs">
+        <h3>Specifications</h3>
+        <ul>
+          <li><strong>Category:</strong> {{ product()!.category }}</li>
+          <li><strong>Product ID:</strong> #{{ product()!.id }}</li>
+        </ul>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="actions">
+        <button mat-raised-button color="primary" (click)="addToCart()" class="add-to-cart-btn">
+          <mat-icon>shopping_cart</mat-icon>
+          Add to Cart
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <div class="reviews-section">
+    <h2>Customer Reviews</h2>
+
+    <!-- Review Form -->
+    <mat-card class="review-form-card">
+      <h3>Write a Review</h3>
+      <div class="form-group">
+        <label>Rating</label>
+        <div class="rating-input" (click)="newRating() < 5 ? newRating.update(r => r + 1) : null">
+          @for (s of getStars(newRating()); track s) {
+          <mat-icon class="star-active">star</mat-icon>
+          } @for (s of getEmptyStars(newRating()); track s) {
+          <mat-icon class="star-inactive">star_border</mat-icon>
+          }
+        </div>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="outline">
+          <mat-label>Title</mat-label>
+          <input matInput [formControl]="newTitleControl" placeholder="Give your review a title" />
+          @if (newTitleControl.hasError('required')) {
+          <mat-error>Title is required</mat-error>
+          } @if (newTitleControl.hasError('maxlength')) {
+          <mat-error>Max 100 characters</mat-error>
+          }
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="outline">
+          <mat-label>Comment</mat-label>
+          <textarea
+            matInput
+            [formControl]="newCommentControl"
+            rows="4"
+            placeholder="Write your review"
+          ></textarea>
+          @if (newCommentControl.hasError('required')) {
+          <mat-error>Comment is required</mat-error>
+          } @if (newCommentControl.hasError('maxlength')) {
+          <mat-error>Max 500 characters</mat-error>
+          }
+        </mat-form-field>
+      </div>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="submitReview()"
+        [disabled]="submittingReview() || newTitleControl.invalid || newCommentControl.invalid"
+      >
+        {{ submittingReview() ? 'Submitting...' : 'Submit Review' }}
+      </button>
+    </mat-card>
+
+    <!-- Existing Reviews -->
+    @if (reviews().length > 0) {
+    <div class="reviews-list">
+      @for (review of reviews(); track review.id) {
+      <mat-card class="review-card">
+        <div class="review-header">
+          <div class="review-meta">
+            <span class="review-author">{{ review.author }}</span>
+            <span class="review-date">{{ formatReviewDate(review.createdAt) }}</span>
+          </div>
+          <div class="review-rating">
+            @for (s of getStars(review.rating); track s) {
+            <mat-icon>star</mat-icon>
+            } @for (s of getEmptyStars(review.rating); track s) {
+            <mat-icon>star_border</mat-icon>
+            }
+          </div>
+        </div>
+        <h4 class="review-title">{{ review.title }}</h4>
+        <p class="review-comment">{{ review.comment }}</p>
+      </mat-card>
+      }
+    </div>
+    } @else {
+    <div class="no-reviews">
+      <mat-icon>rate_review</mat-icon>
+      <p>No reviews yet. Be the first to review this product!</p>
+    </div>
+    }
+  </div>
+  }
+</div>

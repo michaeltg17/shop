@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../product.service';
 import { Product } from '../../product';
 import { CommonModule } from '@angular/common';
@@ -11,7 +12,14 @@ import { CartService } from '../../../cart/cart.service';
 @Component({
   selector: 'app-products-page',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatSnackBarModule],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    MatSnackBarModule,
+    RouterLink,
+  ],
   templateUrl: './products-page.html',
   styleUrls: ['./products-page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
