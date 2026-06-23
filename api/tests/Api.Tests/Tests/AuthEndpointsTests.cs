@@ -25,7 +25,7 @@ public class AuthEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task Register_ReturnsTokenOnSuccess()
     {
-        var req = new { Username = "newuser1", Email = "new1@shop.com", Password = "password123" };
+        var req = new { Email = "new1@shop.com", Password = "password123" };
         var content = new StringContent(
             JsonSerializer.Serialize(req),
             Encoding.UTF8,
@@ -35,43 +35,22 @@ public class AuthEndpointsTests : IAsyncDisposable
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var body = await response.Content.ReadFromJsonAsync<AuthResponse>();
-        body!.Should().NotBeNull();
+        body.Should().NotBeNull();
         body!.Token.Should().NotBeNullOrEmpty();
-        body!.Username.Should().Be("newuser1");
-        body!.Email.Should().Be("new1@shop.com");
-    }
-
-    [Fact]
-    public async Task Register_DuplicateUsername_ReturnsProblemDetails400()
-    {
-        var req = new { Username = "pduser1", Email = "pd1@shop.com", Password = "password123" };
-        var content = new StringContent(
-            JsonSerializer.Serialize(req),
-            Encoding.UTF8,
-            "application/json");
-        await _client.PostAsync("/api/auth/register", content);
-
-        var req2 = new { Username = "pduser1", Email = "pd2@shop.com", Password = "password123" };
-        var content2 = new StringContent(
-            JsonSerializer.Serialize(req2),
-            Encoding.UTF8,
-            "application/json");
-        var response = await _client.PostAsync("/api/auth/register", content2);
-
-        await AssertProblemDetailsHelper.AssertProblemDetailsAsync(response, HttpStatusCode.BadRequest);
+        body.Email.Should().Be("new1@shop.com");
     }
 
     [Fact]
     public async Task Register_DuplicateEmail_ReturnsProblemDetails400()
     {
-        var req = new { Username = "pduser2", Email = "pdemail@shop.com", Password = "password123" };
+        var req = new { Email = "dup1@shop.com", Password = "password123" };
         var content = new StringContent(
             JsonSerializer.Serialize(req),
             Encoding.UTF8,
             "application/json");
         await _client.PostAsync("/api/auth/register", content);
 
-        var req2 = new { Username = "pduser3", Email = "pdemail@shop.com", Password = "password123" };
+        var req2 = new { Email = "dup1@shop.com", Password = "password456" };
         var content2 = new StringContent(
             JsonSerializer.Serialize(req2),
             Encoding.UTF8,
@@ -82,9 +61,9 @@ public class AuthEndpointsTests : IAsyncDisposable
     }
 
     [Fact]
-    public async Task Register_ShortPassword_ReturnsProblemDetails400()
+    public async Task Register_WeakPassword_ReturnsProblemDetails400()
     {
-        var req = new { Username = "pduser4", Email = "pd4@shop.com", Password = "short" };
+        var req = new { Email = "weak@shop.com", Password = "short" };
         var content = new StringContent(
             JsonSerializer.Serialize(req),
             Encoding.UTF8,
@@ -98,14 +77,14 @@ public class AuthEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task Login_ReturnsTokenWithValidCredentials()
     {
-        var req = new { Username = "loginuser1", Email = "login1@shop.com", Password = "password123" };
+        var req = new { Email = "login1@shop.com", Password = "password123" };
         var content = new StringContent(
             JsonSerializer.Serialize(req),
             Encoding.UTF8,
             "application/json");
         await _client.PostAsync("/api/auth/register", content);
 
-        var loginReq = new { Username = "loginuser1", Password = "password123" };
+        var loginReq = new { Email = "login1@shop.com", Password = "password123" };
         var loginContent = new StringContent(
             JsonSerializer.Serialize(loginReq),
             Encoding.UTF8,
@@ -114,14 +93,14 @@ public class AuthEndpointsTests : IAsyncDisposable
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var body = await response.Content.ReadFromJsonAsync<AuthResponse>();
-        body!.Should().NotBeNull();
+        body.Should().NotBeNull();
         body!.Token.Should().NotBeNullOrEmpty();
     }
 
     [Fact]
     public async Task Login_InvalidCredentials_ReturnsProblemDetails401()
     {
-        var loginReq = new { Username = "nonexistent", Password = "wrongpassword" };
+        var loginReq = new { Email = "nonexistent@shop.com", Password = "wrongpassword" };
         var loginContent = new StringContent(
             JsonSerializer.Serialize(loginReq),
             Encoding.UTF8,

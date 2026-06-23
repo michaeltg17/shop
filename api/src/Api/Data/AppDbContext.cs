@@ -1,13 +1,13 @@
 using Api.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<IdentityUser>
 {
     public DbSet<Product> Products => Set<Product>();
-    public DbSet<User> Users => Set<User>();
-    public DbSet<AdminUser> AdminUsers => Set<AdminUser>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
 
@@ -39,31 +39,6 @@ public class AppDbContext : DbContext
                 new Product { Id = 1, Name = "Laptop", Description = "High-performance laptop", Price = 999.99m, Category = "Electronics", Image = "https://placehold.co/400x300/3b82f6/white?text=Laptop" },
                 new Product { Id = 2, Name = "Mouse", Description = "Wireless ergonomic mouse", Price = 29.99m, Category = "Electronics", Image = "https://placehold.co/400x300/ef4444/white?text=Mouse" },
                 new Product { Id = 3, Name = "Keyboard", Description = "Mechanical keyboard", Price = 79.99m, Category = "Electronics", Image = "https://placehold.co/400x300/22c55e/white?text=Keyboard" }
-            );
-        });
-
-        modelBuilder.Entity<User>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Username).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
-            entity.Property(e => e.PasswordHash).IsRequired();
-            entity.HasIndex(e => e.Username).IsUnique();
-            entity.HasIndex(e => e.Email).IsUnique();
-        });
-
-        modelBuilder.Entity<AdminUser>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.LastName).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Email).HasMaxLength(255);
-            entity.Property(e => e.PhoneNumber).HasMaxLength(20);
-
-            entity.HasData(
-                new AdminUser { Id = 1, FirstName = "Michael", LastName = "Garcia", Email = "michael@example.com", PhoneNumber = "+1-555-0101", IsActive = true },
-                new AdminUser { Id = 2, FirstName = "Sarah", LastName = "Johnson", Email = "sarah@example.com", PhoneNumber = "+1-555-0102", IsActive = true },
-                new AdminUser { Id = 3, FirstName = "James", LastName = "Wilson", Email = "james@example.com", PhoneNumber = "+1-555-0103", IsActive = false }
             );
         });
 

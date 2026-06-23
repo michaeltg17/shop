@@ -24,14 +24,14 @@ public class ProductsEndpointsTests : IAsyncDisposable
 
     private async Task<string> GetAuthTokenAsync()
     {
-        var registerReq = new { Username = "authtest", Email = "authtest@shop.com", Password = "password123" };
+        var registerReq = new { Email = "authtest@shop.com", Password = "password123" };
         var content = new StringContent(
             JsonSerializer.Serialize(registerReq),
             Encoding.UTF8,
             "application/json");
         await _client.PostAsync("/api/auth/register", content);
 
-        var loginReq = new { Username = "authtest", Password = "password123" };
+        var loginReq = new { Email = "authtest@shop.com", Password = "password123" };
         var loginContent = new StringContent(
             JsonSerializer.Serialize(loginReq),
             Encoding.UTF8,
@@ -56,7 +56,7 @@ public class ProductsEndpointsTests : IAsyncDisposable
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var bodies = await response.Content.ReadFromJsonAsync<List<Product>>();
-        bodies!.Should().HaveCount(3);
+        bodies.Should().HaveCount(3);
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class ProductsEndpointsTests : IAsyncDisposable
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var body = await response.Content.ReadFromJsonAsync<Product>();
-        body!.Should().NotBeNull();
+        body.Should().NotBeNull();
         body!.Id.Should().Be(1);
     }
 
@@ -92,7 +92,7 @@ public class ProductsEndpointsTests : IAsyncDisposable
 
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         var body = await response.Content.ReadFromJsonAsync<Product>();
-        body!.Should().NotBeNull();
+        body.Should().NotBeNull();
         body!.Id.Should().BeGreaterThan(0);
         body!.Name.Should().Be("Monitor");
         authClient.Dispose();
@@ -116,9 +116,9 @@ public class ProductsEndpointsTests : IAsyncDisposable
     public async Task UpdateProduct_WithAuth_WhenExists_ReturnsUpdatedProduct()
     {
         var authClient = await CreateAuthClientAsync();
-        var product = new Product { Name = "Updated Laptop", Description = "Updated description", Price = 1099.99m };
+        var req = new { Name = "Updated Laptop", Description = "Updated description", Price = 1099.99m, Category = "Electronics", Image = "" };
         var content = new StringContent(
-            JsonSerializer.Serialize(product),
+            JsonSerializer.Serialize(req),
             Encoding.UTF8,
             "application/json");
 
@@ -126,7 +126,7 @@ public class ProductsEndpointsTests : IAsyncDisposable
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var body = await response.Content.ReadFromJsonAsync<Product>();
-        body!.Should().NotBeNull();
+        body.Should().NotBeNull();
         body!.Id.Should().Be(1);
         body!.Name.Should().Be("Updated Laptop");
         authClient.Dispose();
@@ -135,9 +135,9 @@ public class ProductsEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task UpdateProduct_WithoutAuth_ReturnsProblemDetails401()
     {
-        var product = new Product { Name = "New Product", Description = "Description", Price = 9.99m };
+        var req = new { Name = "New Product", Description = "Description", Price = 9.99m, Category = "", Image = "" };
         var content = new StringContent(
-            JsonSerializer.Serialize(product),
+            JsonSerializer.Serialize(req),
             Encoding.UTF8,
             "application/json");
 
@@ -168,9 +168,9 @@ public class ProductsEndpointsTests : IAsyncDisposable
     public async Task UpdateProduct_NotFound_ReturnsProblemDetails404()
     {
         var authClient = await CreateAuthClientAsync();
-        var product = new Product { Name = "Monitor", Description = "4K Display", Price = 399.99m };
+        var req = new { Name = "Monitor", Description = "4K Display", Price = 399.99m, Category = "Electronics", Image = "" };
         var content = new StringContent(
-            JsonSerializer.Serialize(product),
+            JsonSerializer.Serialize(req),
             Encoding.UTF8,
             "application/json");
 

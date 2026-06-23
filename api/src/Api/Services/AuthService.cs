@@ -1,9 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Api.Data;
 using Api.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Services;
@@ -12,18 +11,19 @@ public interface IAuthService
 {
     Task<AuthResponse> RegisterAsync(RegisterRequest request);
     Task<AuthResponse?> LoginAsync(LoginRequest request);
-    Task<User?> GetUserByUsernameAsync(string username);
 }
 
 public class AuthService : IAuthService
 {
-    private readonly AppDbContext _context;
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly string _jwtSecret;
     private readonly TimeSpan _tokenExpiry;
 
-    public AuthService(AppDbContext context, IConfiguration configuration)
+    public AuthService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
     {
-        _context = context;
+        _userManager = userManager;
+        _roleManager = roleManager;
         _jwtSecret = configuration["Jwt:Secret"]
             ?? throw new InvalidOperationException("Jwt:Secret configuration is required");
         _tokenExpiry = TimeSpan.FromHours(
@@ -33,60 +33,64 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
     {
-        if (await _context.Users.AnyAsync(u => u.Username == request.Username.ToLowerInvariant()))
-            throw new InvalidOperationException("Username already taken");
-
-        var emailKey = request.Email.ToLowerInvariant();
-        if (await _context.Users.AnyAsync(u => u.Email == emailKey))
+        if (await _userManager.FindByEmailAsync(request.Email!) != null)
             throw new InvalidOperationException("Email already registered");
 
-        if (request.Password.Length < 8)
-            throw new InvalidOperationException("Password must be at least 8 characters");
+        var user = new IdentityUser { Email = request.Email, UserName = request.Email };
+        var result = await _userManager.CreateAsync(user, request.Password!);
 
-        var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-        var user = new User
+        if (!result.Succeeded)
         {
-            Username = request.Username,
-            Email = request.Email,
-            PasswordHash = passwordHash
-        };
+            var firstError = result.Errors.First();
+            if (firstError.Code == "DuplicateEmail")
+                throw new InvalidOperationException("Email already registered");
+            throw new InvalidOperationException(firstError.Description);
+        }
 
-        await _context.Users.AddAsync(user);
-        await _context.SaveChangesAsync();
+        await _userManager.AddToRoleAsync(user, "Customer");
 
         var token = GenerateJwtToken(user);
-        return new AuthResponse(token, user.Username, user.Email);
+        return new AuthResponse(token, user.Email!);
     }
 
     public async Task<AuthResponse?> LoginAsync(LoginRequest request)
     {
-        var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Username == request.Username.ToLowerInvariant());
+        var user = await _userManager.FindByEmailAsync(request.Email!);
 
         if (user == null)
             return null;
 
-        if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        if (await _userManager.IsLockedOutAsync(user))
             return null;
 
+        var passwordValid = await _userManager.CheckPasswordAsync(user, request.Password!);
+        if (!passwordValid)
+        {
+            await _userManager.AccessFailedAsync(user);
+            return null;
+        }
+
+        await _userManager.ResetAccessFailedCountAsync(user);
+
         var token = GenerateJwtToken(user);
-        return new AuthResponse(token, user.Username, user.Email);
+        var roles = await _userManager.GetRolesAsync(user);
+        return new AuthResponse(token, user.Email!);
     }
 
-    public async Task<User?> GetUserByUsernameAsync(string username)
-        => await _context.Users.FirstOrDefaultAsync(u => u.Username == username.ToLowerInvariant());
-
-    private string GenerateJwtToken(User user)
+    private string GenerateJwtToken(IdentityUser user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var claims = new[]
+        var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Email, user.Email!),
         };
+
+        var roles = _userManager.GetRolesAsync(user).Result.ToList();
+        foreach (var role in roles)
+            claims.Add(new Claim(ClaimTypes.Role, role));
 
         var token = new JwtSecurityToken(
             issuer: "shop-api",

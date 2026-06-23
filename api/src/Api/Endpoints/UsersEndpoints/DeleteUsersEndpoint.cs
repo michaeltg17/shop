@@ -1,5 +1,4 @@
 using Api.Data;
-using Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -10,13 +9,18 @@ public static class DeleteUsersEndpoint
 {
     public static IEndpointRouteBuilder MapDeleteUsersEndpoint(this IEndpointRouteBuilder app)
     {
-        app.MapDelete("/api/users", async ([FromBody] List<int> ids, [FromServices] AppDbContext context) =>
+        app.MapDelete("/api/users", async ([FromBody] List<string> ids, [FromServices] AppDbContext context) =>
         {
-            var users = await context.AdminUsers.Where(u => ids.Contains(u.Id)).ToListAsync();
-            context.AdminUsers.RemoveRange(users);
+            var users = await context.Users!
+                .Where(u => ids.Contains(u.Id))
+                .ToListAsync();
+
+            context.Users!.RemoveRange(users);
             await context.SaveChangesAsync();
+
             return Results.NoContent();
-        });
+        })
+        .RequireAuthorization("Admin");
 
         return app;
     }

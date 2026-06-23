@@ -23,69 +23,45 @@ public class UsersEndpointsTests : IAsyncDisposable
     }
 
     [Fact]
-    public async Task GetUsers_ReturnsAllUsers()
+    public async Task GetUsers_WithoutAuth_ReturnsUnauthorized()
     {
         var response = await _client.GetAsync("/api/users");
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var bodies = await response.Content.ReadFromJsonAsync<List<AdminUser>>();
-        bodies!.Should().HaveCount(3);
+        await AssertProblemDetailsHelper.AssertProblemDetailsAsync(response, HttpStatusCode.Unauthorized);
     }
 
     [Fact]
-    public async Task CreateUser_ReturnsCreatedUser()
+    public async Task CreateUser_WithoutAuth_ReturnsUnauthorized()
     {
-        var user = new AdminUser { FirstName = "Alice", LastName = "Smith", Email = "alice@shop.com", PhoneNumber = "+1-555-0200", IsActive = true };
+        var req = new { Email = "new@shop.com", Password = "Password1!", Role = "Customer" };
         var content = new StringContent(
-            JsonSerializer.Serialize(user),
+            JsonSerializer.Serialize(req),
             Encoding.UTF8,
             "application/json");
 
         var response = await _client.PostAsync("/api/users", content);
 
-        response.StatusCode.Should().Be(HttpStatusCode.Created);
-        var body = await response.Content.ReadFromJsonAsync<AdminUser>();
-        body!.Should().NotBeNull();
-        body!.Id.Should().BeGreaterThan(3);
-        body!.FirstName.Should().Be("Alice");
+        await AssertProblemDetailsHelper.AssertProblemDetailsAsync(response, HttpStatusCode.Unauthorized);
     }
 
     [Fact]
-    public async Task UpdateUser_WhenExists_ReturnsUpdatedUser()
+    public async Task UpdateUser_WithoutAuth_ReturnsUnauthorized()
     {
-        var user = new AdminUser { Id = 1, FirstName = "Michael", LastName = "Updated", Email = "michael@updated.com", PhoneNumber = "+1-555-9999", IsActive = true };
+        var req = new { Email = "updated@shop.com", IsActive = true };
         var content = new StringContent(
-            JsonSerializer.Serialize(user),
-            Encoding.UTF8,
-            "application/json");
-
-        var response = await _client.PutAsync("/api/users/1", content);
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var body = await response.Content.ReadFromJsonAsync<AdminUser>();
-        body!.Should().NotBeNull();
-        body!.Id.Should().Be(1);
-        body!.LastName.Should().Be("Updated");
-    }
-
-    [Fact]
-    public async Task UpdateUser_WhenNotExists_ReturnsProblemDetails404()
-    {
-        var user = new AdminUser { FirstName = "Nobody", LastName = "Here", Email = "nobody@nowhere.com", PhoneNumber = "", IsActive = false };
-        var content = new StringContent(
-            JsonSerializer.Serialize(user),
+            JsonSerializer.Serialize(req),
             Encoding.UTF8,
             "application/json");
 
         var response = await _client.PutAsync("/api/users/999", content);
 
-        await AssertProblemDetailsHelper.AssertProblemDetailsAsync(response, HttpStatusCode.NotFound);
+        await AssertProblemDetailsHelper.AssertProblemDetailsAsync(response, HttpStatusCode.Unauthorized);
     }
 
     [Fact]
-    public async Task DeleteUsers_Bulk_RemovesSpecifiedUsers()
+    public async Task DeleteUsers_WithoutAuth_ReturnsUnauthorized()
     {
-        var ids = new List<int> { 1, 2 };
+        var ids = new List<string> { "some-guid" };
         var content = new StringContent(
             JsonSerializer.Serialize(ids),
             Encoding.UTF8,
@@ -96,12 +72,8 @@ public class UsersEndpointsTests : IAsyncDisposable
             Content = content
         };
         var response = await _client.SendAsync(request);
-        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
-        var getUsersResponse = await _client.GetAsync("/api/users");
-        var remainingUsers = await getUsersResponse.Content.ReadFromJsonAsync<List<AdminUser>>();
-        remainingUsers!.Should().HaveCount(1);
-        remainingUsers[0].Id.Should().Be(3);
+        await AssertProblemDetailsHelper.AssertProblemDetailsAsync(response, HttpStatusCode.Unauthorized);
     }
 
     public async ValueTask DisposeAsync()
