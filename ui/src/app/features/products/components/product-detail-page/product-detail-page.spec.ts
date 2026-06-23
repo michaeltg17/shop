@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of } from 'rxjs';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ProductDetailPage', () => {
   let component: ProductDetailPage;
@@ -51,7 +50,7 @@ describe('ProductDetailPage', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProductDetailPage, NoopAnimationsModule],
+      imports: [ProductDetailPage],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
