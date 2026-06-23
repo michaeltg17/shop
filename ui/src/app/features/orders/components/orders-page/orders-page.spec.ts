@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { OrdersPage } from './orders-page';
 import { OrderResponse } from '../../order.service';
 
@@ -34,7 +35,7 @@ describe('OrdersPage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [OrdersPage],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(OrdersPage);
@@ -59,7 +60,7 @@ describe('OrdersPage', () => {
 
     fixture.detectChanges();
     expect(component.orders().length).toBe(2);
-    expect(component.loading()).toBeFalse();
+    expect(component.loading()).toBe(false);
   });
 
   it('should set error state on load failure', () => {
@@ -70,7 +71,7 @@ describe('OrdersPage', () => {
 
     fixture.detectChanges();
     expect(component.error()).toBeTruthy();
-    expect(component.loading()).toBeFalse();
+    expect(component.loading()).toBe(false);
   });
 
   it('should display empty state when no orders', () => {
@@ -113,7 +114,7 @@ describe('OrdersPage', () => {
 
     // Click retry
     component.loadOrders();
-    expect(component.loading()).toBeTrue();
+    expect(component.loading()).toBe(true);
     expect(component.error()).toBeNull();
 
     const req2 = httpMock.expectOne('api/orders');
@@ -121,7 +122,7 @@ describe('OrdersPage', () => {
     fixture.detectChanges();
 
     expect(component.orders().length).toBe(2);
-    expect(component.loading()).toBeFalse();
+    expect(component.loading()).toBe(false);
     expect(component.error()).toBeNull();
   });
 
