@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,10 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  OrderService,
-  OrderResponse,
-} from '../../order.service';
+import { OrderService, OrderResponse } from '../../order.service';
 
 @Component({
   selector: 'app-orders-page',
@@ -52,7 +43,7 @@ export class OrdersPage implements OnInit {
     this.error.set(null);
 
     this.orderService.getOrders().subscribe({
-      next: (orders) => {
+      next: orders => {
         this.orders.set(orders);
         this.loading.set(false);
       },

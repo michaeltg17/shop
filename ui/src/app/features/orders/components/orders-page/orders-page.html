@@ -13,18 +13,14 @@
   <div class="empty-state">
     <mat-icon class="empty-icon">shopping_cart</mat-icon>
     <p>No orders yet</p>
-    <button mat-raised-button color="primary" routerLink="/shop/products">
-      Browse Products
-    </button>
+    <button mat-raised-button color="primary" routerLink="/shop/products">Browse Products</button>
   </div>
   } @else {
   <div class="orders-list">
     @for (order of orders(); track order.id) {
     <mat-card class="order-card">
       <mat-card-header>
-        <div mat-card-avatar class="order-id">
-          #{{ order.id }}
-        </div>
+        <div mat-card-avatar class="order-id">#{{ order.id }}</div>
         <mat-card-title>Order #{{ order.id }}</mat-card-title>
         <mat-card-subtitle>{{ formatDate(order.createdAt) }}</mat-card-subtitle>
       </mat-card-header>
@@ -42,9 +38,7 @@
             <span class="item-details">
               {{ item.quantity }} × {{ formatCurrency(item.price) }}
             </span>
-            <span class="item-subtotal">
-              {{ formatCurrency(item.price * item.quantity) }}
-            </span>
+            <span class="item-subtotal"> {{ formatCurrency(item.price * item.quantity) }} </span>
           </div>
           }
         </div>
