@@ -13,9 +13,7 @@ api/
     Services/
       AuthService.cs     JWT + bcrypt + EF queries
     Data/
-      AppDbContext.cs    EF Core DbContext + entity configuration
-      DatabaseSeeder.cs  Seed data on first startup
-      DbExtensions.cs    Auto-migrate + seed helper
+      AppDbContext.cs    Data/
       Migrations/        EF Core migrations
   tests/Api.Tests/
     Tests/
@@ -24,6 +22,8 @@ api/
       OrdersEndpointsTests.cs
       AuthEndpointsTests.cs
     Helpers/
+      AssertProblemDetailsHelper.cs
+      TestBase.cs
 
 ## Key Design Decisions
 
@@ -52,9 +52,10 @@ Every error response must include: type (URI), title, status (int), detail.
 ### Database
 
 - PostgreSQL via EF Core. ConnectionStrings:DefaultConnection required
-- Scoped AppDbContext. Migrations committed to git, auto-applied via app.InitializeDb()
-
-Unique: Users.Username, Users.Email. Indexed: Products.Category.
+- Data is persisted
+- Seed data is managed via EF Core `HasData` in migrations. Applied as part of `dotnet ef database update`
+- API applies **no** migrations or seeding at startup — that is a separate deployment concern
+- Unique: Users.Username, Users.Email. Indexed: Products.Category.
 
 ## Endpoints
 
@@ -98,14 +99,14 @@ Unique: Users.Username, Users.Email. Indexed: Products.Category.
 
 Hard rule: All API tests must use WebApplicationFactory<Program> with real HTTP.
 
-- WebApplicationFactory<Program> + HttpClient - real requests, middleware, auth
-- Register/login via actual endpoints for JWT tokens
-- No Moq, NSubstitute, fake mocks, DelegatingHandler fakes
+- PostgreSQL for tests (same provider as production).
+- Each test class gets its own factory instance.
+- Tests self-migrate via TestBase.Migrate() in the constructor.
 
-FluentAssertions. xUnit. Each test class gets its own factory instance.
+FluentAssertions. xUnit.
 
 ## Commands
 
 dotnet test
 
-dotnet ef migrations add <Name> --project src/Api/Api.csproj --output-dir Data/Migrations
+dotnet ef migrations add <Name> --project src/Api/Api.csproj --output-dir src/Api/Data/Migrations

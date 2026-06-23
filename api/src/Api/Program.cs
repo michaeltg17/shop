@@ -48,8 +48,6 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-app.InitializeDb();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

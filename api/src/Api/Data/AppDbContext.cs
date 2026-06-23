@@ -34,6 +34,12 @@ public class AppDbContext : DbContext
                 rating.Property(r => r.Rate).HasColumnName("RatingRate");
                 rating.Property(r => r.Count).HasColumnName("RatingCount");
             });
+
+            entity.HasData(
+                new Product { Id = 1, Name = "Laptop", Description = "High-performance laptop", Price = 999.99m, Category = "Electronics", Image = "https://placehold.co/400x300/3b82f6/white?text=Laptop" },
+                new Product { Id = 2, Name = "Mouse", Description = "Wireless ergonomic mouse", Price = 29.99m, Category = "Electronics", Image = "https://placehold.co/400x300/ef4444/white?text=Mouse" },
+                new Product { Id = 3, Name = "Keyboard", Description = "Mechanical keyboard", Price = 79.99m, Category = "Electronics", Image = "https://placehold.co/400x300/22c55e/white?text=Keyboard" }
+            );
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -53,6 +59,12 @@ public class AppDbContext : DbContext
             entity.Property(e => e.LastName).IsRequired().HasMaxLength(100);
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.PhoneNumber).HasMaxLength(20);
+
+            entity.HasData(
+                new AdminUser { Id = 1, FirstName = "Michael", LastName = "Garcia", Email = "michael@example.com", PhoneNumber = "+1-555-0101", IsActive = true },
+                new AdminUser { Id = 2, FirstName = "Sarah", LastName = "Johnson", Email = "sarah@example.com", PhoneNumber = "+1-555-0102", IsActive = true },
+                new AdminUser { Id = 3, FirstName = "James", LastName = "Wilson", Email = "james@example.com", PhoneNumber = "+1-555-0103", IsActive = false }
+            );
         });
 
         modelBuilder.Entity<Order>(entity =>
