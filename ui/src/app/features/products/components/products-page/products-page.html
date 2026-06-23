@@ -9,15 +9,19 @@
   <div class="products-grid">
     @for (product of products(); track product.id) {
     <mat-card class="product-card">
-      @if (product.image) {
-      <img mat-card-image [src]="product.image" [alt]="product.title" />
-      }
-      <mat-card-content>
-        <h2 class="product-title">{{ product.title }}</h2>
-        <p class="product-description">{{ product.description }}</p>
-        <p class="product-price">${{ product.price }}</p>
+      <a routerLink="/shop/products/{{ product.id }}" class="product-link">
+        @if (product.image) {
+        <img mat-card-image [src]="product.image" [alt]="product.title" />
+        }
+        <mat-card-content>
+          <h2 class="product-title">{{ product.title }}</h2>
+          <p class="product-description">{{ product.description }}</p>
+          <p class="product-price">${{ product.price }}</p>
+        </mat-card-content>
+      </a>
+      <mat-card-actions>
         <button (click)="addToCart(product)" class="btn btn-primary">Add to Cart</button>
-      </mat-card-content>
+      </mat-card-actions>
     </mat-card>
     }
   </div>

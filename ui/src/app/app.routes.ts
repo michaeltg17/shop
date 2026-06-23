@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { UsersTable } from './features/users/components/users-table/users-table';
 import { UserPage } from './shared/pages/user-page/user-page';
 import { ProductsPage } from './features/products/components/products-page/products-page';
+import { ProductDetailPage } from './features/products/components/product-detail-page/product-detail-page';
 import { ContactPage } from './shared/pages/contact-page/contact-page';
 import { CartPage } from './features/cart/components/cart-page/cart-page';
 import { OrdersPage } from './features/orders/components/orders-page/orders-page';
@@ -54,6 +55,7 @@ export const routes: Routes = [
     component: EcommerceLayout,
     children: [
       { path: 'products', component: ProductsPage },
+      { path: 'products/:id', component: ProductDetailPage },
       { path: 'cart', component: CartPage },
       { path: 'orders', component: OrdersPage },
       { path: 'contact', component: ContactPage },

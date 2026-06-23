@@ -28,6 +28,16 @@
     max-width: 300px;
     margin: 0 auto;
 
+    .product-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+
+      &:hover {
+        opacity: 0.85;
+      }
+    }
+
     img {
       width: 100%;
       height: 200px;

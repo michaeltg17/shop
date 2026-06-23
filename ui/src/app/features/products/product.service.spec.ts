@@ -80,4 +80,28 @@ describe('ProductService', () => {
 
     expect(receivedProducts).toEqual([]);
   });
+
+  it('should load a single product by id', () => {
+    const mockProduct: Product = {
+      id: 1,
+      title: 'Test Product',
+      description: 'Test Description',
+      price: 10.99,
+      category: 'Test Category',
+      image: 'https://example.com/image.jpg',
+      rating: { rate: 4.5, count: 10 },
+    };
+
+    let receivedProduct: Product | undefined;
+
+    service.loadProductById(1).subscribe(product => {
+      receivedProduct = product;
+    });
+
+    const req = httpMock.expectOne('api/products/1');
+    expect(req.request.method).toBe('GET');
+    req.flush(mockProduct);
+
+    expect(receivedProduct).toEqual(mockProduct);
+  });
 });
