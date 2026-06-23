@@ -4,6 +4,8 @@ import { CartItem } from './cart-item';
 import { Product } from '../products/product';
 import { OrderService, OrderRequest, OrderResponse } from '../orders/order.service';
 
+const CART_STORAGE_KEY = 'angular-shop-cart';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -20,6 +22,29 @@ export class CartService {
       .reduce((sum, item) => sum + item.quantity, 0)
   );
 
+  constructor() {
+    this.restoreFromStorage();
+  }
+
+  private persist(): void {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(this.cartItems()));
+    } catch {
+      // Silently fail if localStorage is unavailable (e.g., private browsing)
+    }
+  }
+
+  restoreFromStorage(): void {
+    try {
+      const stored = localStorage.getItem(CART_STORAGE_KEY);
+      if (stored) {
+        this.cartItems.set(JSON.parse(stored));
+      }
+    } catch {
+      // Silently fail if localStorage is unavailable or data is corrupted
+    }
+  }
+
   addToCart(product: Product, quantity = 1) {
     const current = this.cartItems();
     const existingItem = current.find(item => item.product.id === product.id);
@@ -33,10 +58,13 @@ export class CartService {
     } else {
       this.cartItems.update(items => [...items, { product, quantity, selected: true }]);
     }
+
+    this.persist();
   }
 
   removeFromCart(productId: number) {
     this.cartItems.update(items => items.filter(item => item.product.id !== productId));
+    this.persist();
   }
 
   updateQuantity(productId: number, quantity: number) {
@@ -48,6 +76,7 @@ export class CartService {
     this.cartItems.update(items =>
       items.map(item => (item.product.id === productId ? { ...item, quantity } : item))
     );
+    this.persist();
   }
 
   toggleItemSelection(productId: number) {
@@ -56,14 +85,17 @@ export class CartService {
         item.product.id === productId ? { ...item, selected: !item.selected } : item
       )
     );
+    this.persist();
   }
 
   selectAllItems(selected: boolean) {
     this.cartItems.update(items => items.map(item => ({ ...item, selected })));
+    this.persist();
   }
 
   clearCart() {
     this.cartItems.set([]);
+    this.persist();
   }
 
   getSubtotal(): number {

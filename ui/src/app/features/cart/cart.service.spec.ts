@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { CartService } from './cart.service';
 import { Product } from '../products/product';
 
+const CART_STORAGE_KEY = 'angular-shop-cart';
+
 const mockProduct: Product = {
   id: 1,
   title: 'Test Product',
@@ -26,6 +28,8 @@ describe('CartService', () => {
   let service: CartService;
 
   beforeEach(() => {
+    // Clear localStorage before each test to avoid cross-test pollution
+    localStorage.removeItem(CART_STORAGE_KEY);
     TestBed.configureTestingModule({});
     service = TestBed.inject(CartService);
     service.clearCart();
@@ -217,6 +221,98 @@ describe('CartService', () => {
 
       service.toggleItemSelection(mockProduct2.id);
       expect(service.selectedItemCount()).toBe(2);
+    });
+  });
+
+  describe('persistence', () => {
+    beforeEach(() => {
+      // Ensure clean localStorage state before each persistence test
+      localStorage.removeItem(CART_STORAGE_KEY);
+    });
+
+    it('should save cart to localStorage when adding items', () => {
+      service.addToCart(mockProduct, 3);
+      const stored = localStorage.getItem(CART_STORAGE_KEY);
+      expect(stored).toBeTruthy();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.length).toBe(1);
+      expect(parsed[0].product.id).toBe(1);
+      expect(parsed[0].quantity).toBe(3);
+    });
+
+    it('should save cart to localStorage when removing items', () => {
+      service.addToCart(mockProduct);
+      service.addToCart(mockProduct2);
+      service.removeFromCart(mockProduct.id);
+      const stored = localStorage.getItem(CART_STORAGE_KEY);
+      const parsed = JSON.parse(stored!);
+      expect(parsed.length).toBe(1);
+      expect(parsed[0].product.id).toBe(2);
+    });
+
+    it('should save cart to localStorage when updating quantity', () => {
+      service.addToCart(mockProduct, 1);
+      service.updateQuantity(mockProduct.id, 7);
+      const stored = localStorage.getItem(CART_STORAGE_KEY);
+      const parsed = JSON.parse(stored!);
+      expect(parsed[0].quantity).toBe(7);
+    });
+
+    it('should save cart to localStorage when toggling selection', () => {
+      service.addToCart(mockProduct);
+      service.toggleItemSelection(mockProduct.id);
+      const stored = localStorage.getItem(CART_STORAGE_KEY);
+      const parsed = JSON.parse(stored!);
+      expect(parsed[0].selected).toBe(false);
+    });
+
+    it('should save cart to localStorage when selecting all', () => {
+      service.addToCart(mockProduct);
+      service.addToCart(mockProduct2);
+      service.toggleItemSelection(mockProduct.id);
+      service.selectAllItems(true);
+      const stored = localStorage.getItem(CART_STORAGE_KEY);
+      const parsed = JSON.parse(stored!);
+      expect(parsed.every((item: CartItem) => item.selected)).toBe(true);
+    });
+
+    it('should clear localStorage when clearing cart', () => {
+      service.addToCart(mockProduct);
+      service.clearCart();
+      const stored = localStorage.getItem(CART_STORAGE_KEY);
+      const parsed = JSON.parse(stored!);
+      expect(parsed.length).toBe(0);
+    });
+
+    it('should restore cart from localStorage on construction', () => {
+      // Pre-populate localStorage as if from a previous session
+      const cartData = [{ product: mockProduct, quantity: 5, selected: true }];
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartData));
+
+      // Create a new service instance — it should auto-restore
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({});
+      const newService = TestBed.inject(CartService);
+      expect(newService.cartItems$().length).toBe(1);
+      expect(newService.cartItems$()[0].product.id).toBe(1);
+      expect(newService.cartItems$()[0].quantity).toBe(5);
+    });
+
+    it('should handle corrupted localStorage data gracefully', () => {
+      localStorage.setItem(CART_STORAGE_KEY, 'this is not valid json {{{');
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({});
+      const newService = TestBed.inject(CartService);
+      expect(newService.cartItems$().length).toBe(0);
+    });
+
+    it('should handle empty localStorage gracefully', () => {
+      // localStorage is already cleared in beforeEach
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({});
+      const newService = TestBed.inject(CartService);
+      expect(newService.cartItems$().length).toBe(0);
     });
   });
 });
