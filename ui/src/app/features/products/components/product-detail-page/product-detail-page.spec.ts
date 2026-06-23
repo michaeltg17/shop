@@ -14,6 +14,8 @@ import { of } from 'rxjs';
 describe('ProductDetailPage', () => {
   let component: ProductDetailPage;
   let fixture: ComponentFixture<ProductDetailPage>;
+  let cartService: { addToCart: jest.Mock };
+  let snackBar: { open: jest.Mock };
 
   const mockProduct: Product = {
     id: 1,
@@ -40,15 +42,17 @@ describe('ProductDetailPage', () => {
     addReview: jest.fn(),
   };
 
-  const mockCartService = {
-    addToCart: jest.fn(),
-  };
-
-  const mockSnackBar = {
-    open: jest.fn(),
-  };
-
   beforeEach(async () => {
+    TestBed.resetTestingModule();
+
+    cartService = {
+      addToCart: jest.fn(),
+    };
+
+    snackBar = {
+      open: jest.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [ProductDetailPage],
       providers: [
@@ -61,8 +65,8 @@ describe('ProductDetailPage', () => {
           },
         },
         { provide: ReviewsService, useValue: mockReviewsService },
-        { provide: CartService, useValue: mockCartService },
-        { provide: MatSnackBar, useValue: mockSnackBar },
+        { provide: CartService, useValue: cartService },
+        { provide: MatSnackBar, useValue: snackBar },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
       ],
@@ -78,7 +82,8 @@ describe('ProductDetailPage', () => {
 
   it('should load product on init', () => {
     component.ngOnInit();
-    expect(component.loading()).toBeTrue();
+    // loading is set to true synchronously in ngOnInit before the async HTTP call
+    expect(component.loading()).toBe(true);
     expect(component.error()).toBeNull();
   });
 
@@ -90,13 +95,15 @@ describe('ProductDetailPage', () => {
   it('should add product to cart', () => {
     component.product.set(mockProduct);
     component.addToCart();
-    expect(mockCartService.addToCart).toHaveBeenCalledWith(mockProduct, 1);
-    expect(mockSnackBar.open).toHaveBeenCalled();
+    expect(cartService.addToCart).toHaveBeenCalledWith(mockProduct, 1);
+    expect(snackBar.open).toHaveBeenCalled();
   });
 
   it('should not add to cart if no product', () => {
+    // product signal starts as null, no need to set it
     component.addToCart();
-    expect(mockCartService.addToCart).not.toHaveBeenCalled();
+    expect(cartService.addToCart).not.toHaveBeenCalled();
+    expect(snackBar.open).not.toHaveBeenCalled();
   });
 
   it('should select image', () => {

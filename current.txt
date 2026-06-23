@@ -1,16 +1,5 @@
 # dev24-7 Worker State
 
-Status: IN PROGRESS
-Task: gh-124 - feat: add product detail page with images, description, reviews
-Branch: feature/gh-124-product-detail-page
-Started: 2026-06-23 07:03 UTC
-Last Update: 2026-06-23 07:10 UTC
-
-Completed:
-- Created ProductDetailPage component (TS, HTML, SCSS)
-- Added route shop/products/:id
-- Updated products page to link to detail page
-- Added MSW handlers for product reviews
-- Created unit spec for ProductDetailPage
-
-Next: Build, commit, push, open PR
+Status: STALE — heartbeat cleared (last activity too old)
+Cleared at: 2026-06-23 06:27:06 UTC
+Notes: Worker appears stuck; next run will start fresh.
