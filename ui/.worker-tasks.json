@@ -1,9 +1,0 @@
-{
-  "updated": "2026-06-21T03:14:00+02:00",
-  "issues": [
-    {"number": 94, "title": "remove customers page or rename it to users and show the users"},
-    {"number": 93, "title": "remove carriers page"},
-    {"number": 92, "title": "the login page doesnt have the look and feel of the app and the navbar is gone and so, make it look like the products one but for login"},
-    {"number": 90, "title": "use https://fakestoreapi.com/docs"}
-  ]
-}

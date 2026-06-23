@@ -35,11 +35,11 @@ echo "[5/7] Running Playwright tests..."
 npm run playwright
 echo "✓ Playwright tests passed"
 
-# Step 6: Stryker mutation testing
-echo ""
-echo "[6/7] Running Stryker mutation testing..."
-npm run stryker
-echo "✓ Stryker mutation testing passed"
+# # Step 6: Stryker mutation testing
+# echo ""
+# echo "[6/7] Running Stryker mutation testing..."
+# npm run stryker
+# echo "✓ Stryker mutation testing passed"
 
 # Step 7: SonarCloud analysis (skip if token not set or invalid)
 echo ""

@@ -5,17 +5,23 @@ echo "========================================="
 echo "  Running CI Pipeline in Docker"
 echo "========================================="
 
-# Step 1: Build
+# Step 1: Restore
 echo ""
-echo "[1/2] Building..."
-dotnet build src/Api/Api.csproj
-echo "✓ Build successful"
+echo "[1/3] Restoring packages..."
+dotnet restore
+echo "Restore successful"
 
-# Step 2: Tests
+# Step 2: Build
 echo ""
-echo "[2/2] Running tests..."
+echo "[2/3] Building..."
+dotnet build src/Api/Api.csproj
+echo "Build successful"
+
+# Step 3: Tests (self-migrate via TestBase.Migrate in constructors)
+echo ""
+echo "[3/3] Running tests..."
 dotnet test tests/Api.Tests/Api.Tests.csproj --verbosity normal
-echo "✓ Tests passed"
+echo "Tests passed"
 
 echo ""
 echo "========================================="
