@@ -2,13 +2,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
-# Copy project file for layer caching
-COPY src/Api/Api.csproj ./
-RUN dotnet restore
+COPY . .
+RUN dotnet restore Shop.slnx
 
-# Copy source and publish
-COPY src/Api/ .
-RUN dotnet publish -c Release -o /out
+# Publish release
+RUN dotnet publish src/Api/Api.csproj -c Release -o /out
 
 # Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
