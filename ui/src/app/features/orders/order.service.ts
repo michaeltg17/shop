@@ -12,6 +12,14 @@ export interface OrderItem {
 export interface OrderRequest {
   items: OrderItem[];
   shipping: number;
+  customerId?: number | null;
+  shippingName?: string;
+  shippingAddressLine1?: string;
+  shippingAddressLine2?: string;
+  shippingCity?: string;
+  shippingState?: string;
+  shippingZip?: string;
+  shippingCountry?: string;
 }
 
 export interface OrderResponse {
@@ -21,6 +29,14 @@ export interface OrderResponse {
   shipping: number;
   status: string;
   createdAt: string;
+  customerId?: number | null;
+  shippingName?: string;
+  shippingAddressLine1?: string;
+  shippingAddressLine2?: string;
+  shippingCity?: string;
+  shippingState?: string;
+  shippingZip?: string;
+  shippingCountry?: string;
 }
 
 @Injectable({

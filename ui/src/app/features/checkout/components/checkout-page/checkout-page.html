@@ -1,0 +1,50 @@
+<div class="checkout-page">
+  <h1 class="page-title">Checkout</h1>
+
+  <!-- Step indicator -->
+  <div class="step-indicator">
+    @for (label of stepLabels; track label; let i = $index) {
+    <div
+      class="step-item"
+      [class.completed]="currentStep() > i"
+      [class.active]="currentStep() === i"
+    >
+      <div class="step-circle">{{ i + 1 }}</div>
+      <span class="step-label">{{ label }}</span>
+    </div>
+    @if (i < stepLabels.length - 1) {
+    <div class="step-connector" [class.completed]="currentStep() > i"></div>
+    } }
+  </div>
+
+  <!-- Step content -->
+  <mat-card class="checkout-content">
+    @if (currentStep() === 0) {
+    <app-shipping-step />
+    } @else if (currentStep() === 1) {
+    <app-payment-step />
+    } @else if (currentStep() === 2) {
+    <app-review-step />
+    }
+  </mat-card>
+
+  <!-- Navigation buttons -->
+  <div class="checkout-actions">
+    @if (currentStep() > 0) {
+    <button mat-raised-button (click)="back()">
+      <mat-icon>arrow_back</mat-icon>
+      Back
+    </button>
+    } @if (currentStep() < 2) {
+    <button mat-raised-button color="primary" (click)="next()" [disabled]="false" class="next-btn">
+      Continue
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+    } @if (currentStep() === 2) {
+    <button mat-raised-button color="primary" (click)="placeOrder()" class="place-order-btn">
+      <mat-icon>shopping_cart_checkout</mat-icon>
+      Place Order
+    </button>
+    }
+  </div>
+</div>

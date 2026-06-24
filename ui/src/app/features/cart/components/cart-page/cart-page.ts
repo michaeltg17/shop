@@ -38,8 +38,6 @@ export class CartPage {
   private snackBar = inject(MatSnackBar);
 
   shipping = 5.99;
-  isCheckoutLoading = signal(false);
-
   cartItems = this.cartService.cartItems$;
 
   allSelected = signal(true);
@@ -96,23 +94,6 @@ export class CartPage {
       return;
     }
 
-    this.isCheckoutLoading.set(true);
-
-    this.cartService.placeOrder(this.shipping).subscribe({
-      next: order => {
-        this.cartService.clearCart();
-        this.isCheckoutLoading.set(false);
-        this.snackBar.open(`Order #${order.id} placed successfully!`, 'Close', {
-          duration: 4000,
-        });
-        this.router.navigate(['/shop']);
-      },
-      error: () => {
-        this.isCheckoutLoading.set(false);
-        this.snackBar.open('Failed to place order. Please try again.', 'Close', {
-          duration: 4000,
-        });
-      },
-    });
+    this.router.navigate(['/shop/checkout']);
   }
 }

@@ -49,6 +49,13 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
             entity.Property(e => e.Shipping).HasColumnType("decimal(18,2)");
             entity.Property(e => e.Status).IsRequired().HasMaxLength(50);
             entity.Property(e => e.CreatedAt).HasColumnType("timestamp with time zone");
+            entity.Property(e => e.ShippingName).HasMaxLength(100).HasDefaultValue("");
+            entity.Property(e => e.ShippingAddressLine1).HasMaxLength(255).HasDefaultValue("");
+            entity.Property(e => e.ShippingAddressLine2).HasMaxLength(255).HasDefaultValue("");
+            entity.Property(e => e.ShippingCity).HasMaxLength(100).HasDefaultValue("");
+            entity.Property(e => e.ShippingState).HasMaxLength(100).HasDefaultValue("");
+            entity.Property(e => e.ShippingZip).HasMaxLength(20).HasDefaultValue("");
+            entity.Property(e => e.ShippingCountry).HasMaxLength(100).HasDefaultValue("");
             entity.HasMany(e => e.Items).WithOne(i => i.Order!).HasForeignKey(i => i.OrderId).OnDelete(DeleteBehavior.Cascade);
         });
 

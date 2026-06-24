@@ -14,6 +14,7 @@ public static class CreateOrderEndpoint
             var total = orderRequest.Items.Sum(i => i.Price * i.Quantity);
             var order = new Order
             {
+                CustomerId = orderRequest.CustomerId,
                 Items = orderRequest.Items.Select(i => new OrderItem
                 {
                     ProductId = i.ProductId,
@@ -24,6 +25,13 @@ public static class CreateOrderEndpoint
                 Total = total,
                 Shipping = orderRequest.Shipping,
                 Status = "pending",
+                ShippingName = orderRequest.ShippingName,
+                ShippingAddressLine1 = orderRequest.ShippingAddressLine1,
+                ShippingAddressLine2 = orderRequest.ShippingAddressLine2,
+                ShippingCity = orderRequest.ShippingCity,
+                ShippingState = orderRequest.ShippingState,
+                ShippingZip = orderRequest.ShippingZip,
+                ShippingCountry = orderRequest.ShippingCountry,
                 CreatedAt = DateTime.UtcNow
             };
 

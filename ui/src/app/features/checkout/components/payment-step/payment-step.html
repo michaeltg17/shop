@@ -1,0 +1,88 @@
+<mat-card class="payment-step">
+  <div class="step-header">
+    <mat-icon class="step-icon">payment</mat-icon>
+    <h2>Payment</h2>
+  </div>
+
+  <div class="payment-methods">
+    <mat-radio-group [(ngModel)]="method" (ngModelChange)="update()">
+      <mat-radio-button value="placeholder" class="method-option">
+        <mat-icon>placeholder</mat-icon>
+        Test Mode (No real payment)
+      </mat-radio-button>
+      <mat-radio-button value="card" class="method-option">
+        <mat-icon>credit_card</mat-icon>
+        Credit / Debit Card
+      </mat-radio-button>
+      <mat-radio-button value="paypal" class="method-option">
+        <mat-icon>account_balance_wallet</mat-icon>
+        PayPal
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  @if (method === 'card') {
+  <form class="card-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Name on Card</mat-label>
+      <input
+        matInput
+        type="text"
+        [(ngModel)]="cardName"
+        name="cardName"
+        (ngModelChange)="update()"
+        placeholder="John Doe"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Card Number</mat-label>
+      <input
+        matInput
+        type="text"
+        [value]="cardNumber"
+        (input)="formatCardNumber($any($event).target.value)"
+        placeholder="4242 4242 4242 4242"
+        maxlength="19"
+      />
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Expiry</mat-label>
+        <input
+          matInput
+          type="text"
+          [value]="expiry"
+          (input)="formatExpiry($any($event).target.value)"
+          placeholder="MM/YY"
+          maxlength="5"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>CVV</mat-label>
+        <input
+          matInput
+          type="text"
+          [(ngModel)]="cvv"
+          name="cvv"
+          (ngModelChange)="update()"
+          placeholder="123"
+          maxlength="4"
+        />
+      </mat-form-field>
+    </div>
+  </form>
+  } @if (method === 'paypal') {
+  <div class="paypal-info">
+    <mat-icon class="info-icon">info</mat-icon>
+    <p>You will be redirected to PayPal to complete payment.</p>
+  </div>
+  } @if (method === 'placeholder') {
+  <div class="placeholder-info">
+    <mat-icon class="info-icon">science</mat-icon>
+    <p>This is a test order — no real payment will be processed.</p>
+  </div>
+  }
+</mat-card>

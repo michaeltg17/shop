@@ -1,0 +1,150 @@
+.confirmation-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px;
+
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 60px 0;
+
+    p {
+      color: #888;
+    }
+  }
+
+  .error-card,
+  .confirmation-card {
+    padding: 32px;
+    text-align: center;
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 1.6rem;
+    }
+
+    .error-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  .success-icon {
+    margin-bottom: 16px;
+
+    mat-icon {
+      font-size: 56px;
+      width: 56px;
+      height: 56px;
+      color: #4caf50;
+    }
+  }
+
+  .thank-you {
+    color: #666;
+    margin-bottom: 24px;
+  }
+
+  .order-info {
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 0.95rem;
+
+      .label {
+        color: #666;
+      }
+
+      .value {
+        font-weight: 500;
+      }
+
+      .status {
+        text-transform: capitalize;
+        color: #f57c00;
+      }
+
+      .total {
+        font-size: 1.2rem;
+        color: var(--mat-sys-primary, #3f51b5);
+        font-weight: 700;
+      }
+    }
+  }
+
+  .shipping-info {
+    text-align: left;
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 24px;
+
+    h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 8px;
+      font-size: 1rem;
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        color: var(--mat-sys-primary, #3f51b5);
+      }
+    }
+
+    p {
+      margin: 4px 0;
+      color: #555;
+    }
+  }
+
+  .items {
+    text-align: left;
+    margin-bottom: 24px;
+
+    h3 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+    }
+
+    .order-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+
+      .item-name {
+        flex: 1;
+        font-size: 0.95rem;
+      }
+
+      .item-qty {
+        color: #888;
+        font-size: 0.85rem;
+      }
+
+      .item-price {
+        font-weight: 500;
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 24px;
+  }
+}

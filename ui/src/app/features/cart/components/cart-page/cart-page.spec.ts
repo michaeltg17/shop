@@ -120,14 +120,13 @@ describe('CartPage', () => {
     expect(cartService.removeFromCart).toHaveBeenCalledWith(mockProduct.id);
   });
 
-  it('should checkout when cart has selected items', () => {
+  it('should navigate to checkout page when cart has selected items', () => {
     (cartService.getSelectedItems as jest.Mock).mockReturnValue([
       { product: mockProduct, quantity: 2, selected: true },
     ]);
     fixture.detectChanges();
     component.checkout();
-    expect(cartService.clearCart).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['/shop']);
+    expect(router.navigate).toHaveBeenCalledWith(['/shop/checkout']);
   });
 
   it('should not checkout when no items are selected', () => {
@@ -181,15 +180,13 @@ describe('CartPage', () => {
     });
   });
 
-  it('should show success snackbar on checkout', () => {
+  it('should navigate to checkout page with selected items', () => {
     (cartService.getSelectedItems as jest.Mock).mockReturnValue([
       { product: mockProduct, quantity: 1, selected: true },
     ]);
     fixture.detectChanges();
     component.checkout();
-    expect(snackBarOpenSpy).toHaveBeenCalledWith('Order #1 placed successfully!', 'Close', {
-      duration: 4000,
-    });
+    expect(router.navigate).toHaveBeenCalledWith(['/shop/checkout']);
   });
 
   it('should set allSelected to false when effect runs with items not all selected', () => {

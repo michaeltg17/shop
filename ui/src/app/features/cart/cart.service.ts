@@ -126,4 +126,35 @@ export class CartService {
 
     return this.orderService.createOrder(request);
   }
+
+  placeOrderWithShipping(
+    shippingCost: number,
+    shippingName: string,
+    addressLine1: string,
+    addressLine2: string,
+    city: string,
+    state: string,
+    zip: string,
+    country: string
+  ): Observable<OrderResponse> {
+    const selected = this.getSelectedItems();
+    const request: OrderRequest = {
+      items: selected.map(item => ({
+        productId: item.product.id,
+        productName: item.product.title,
+        price: item.product.price,
+        quantity: item.quantity,
+      })),
+      shipping: shippingCost,
+      shippingName,
+      shippingAddressLine1: addressLine1,
+      shippingAddressLine2: addressLine2,
+      shippingCity: city,
+      shippingState: state,
+      shippingZip: zip,
+      shippingCountry: country,
+    };
+
+    return this.orderService.createOrder(request);
+  }
 }

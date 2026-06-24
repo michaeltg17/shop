@@ -14,16 +14,32 @@ public class OrderItem
 public class Order
 {
     public int Id { get; set; }
+    public int? CustomerId { get; set; }
     public List<OrderItem> Items { get; set; } = new();
     public decimal Total { get; set; }
     public decimal Shipping { get; set; }
     public string Status { get; set; } = "";
+    public string ShippingName { get; set; } = "";
+    public string ShippingAddressLine1 { get; set; } = "";
+    public string ShippingAddressLine2 { get; set; } = "";
+    public string ShippingCity { get; set; } = "";
+    public string ShippingState { get; set; } = "";
+    public string ShippingZip { get; set; } = "";
+    public string ShippingCountry { get; set; } = "";
     public DateTime CreatedAt { get; set; }
 }
 
 public record OrderRequest(
     List<OrderItemRequest> Items,
-    decimal Shipping
+    decimal Shipping,
+    int? CustomerId = null,
+    string ShippingName = "",
+    string ShippingAddressLine1 = "",
+    string ShippingAddressLine2 = "",
+    string ShippingCity = "",
+    string ShippingState = "",
+    string ShippingZip = "",
+    string ShippingCountry = ""
 );
 
 public record OrderItemRequest(

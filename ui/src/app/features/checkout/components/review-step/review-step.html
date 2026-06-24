@@ -1,0 +1,66 @@
+<mat-card class="review-step">
+  <div class="step-header">
+    <mat-icon class="step-icon">receipt_long</mat-icon>
+    <h2>Order Review</h2>
+  </div>
+
+  <!-- Shipping -->
+  <div class="review-section">
+    <h3><mat-icon>local_shipping</mat-icon> Shipping Address</h3>
+    <mat-divider></mat-divider>
+    <div class="review-details">
+      <p><strong>{{ shipping.name }}</strong></p>
+      <p>{{ shipping.addressLine1 }}</p>
+      @if (shipping.addressLine2) {
+      <p>{{ shipping.addressLine2 }}</p>
+      }
+      <p>{{ shipping.city }}, {{ shipping.state }} {{ shipping.zip }}</p>
+      <p>{{ shipping.country }}</p>
+    </div>
+  </div>
+
+  <!-- Payment -->
+  <div class="review-section">
+    <h3><mat-icon>payment</mat-icon> Payment</h3>
+    <mat-divider></mat-divider>
+    <div class="review-details">
+      <p>Method: {{ paymentMethodLabel }}</p>
+    </div>
+  </div>
+
+  <!-- Items -->
+  <div class="review-section">
+    <h3><mat-icon>shopping_cart</mat-icon> Items ({{ selectedItems.length }})</h3>
+    <mat-divider></mat-divider>
+    <div class="review-items">
+      @for (item of selectedItems; track item.product.id) {
+      <div class="review-item">
+        <div class="review-item-info">
+          <span class="item-name">{{ item.product.title }}</span>
+          <span class="item-qty">× {{ item.quantity }}</span>
+        </div>
+        <span class="item-price"
+          >${{ (item.product.price * item.quantity) | number: '1.2-2' }}</span
+        >
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Totals -->
+  <div class="review-section review-totals">
+    <mat-divider></mat-divider>
+    <div class="summary-row">
+      <span>Subtotal</span>
+      <span>${{ subtotal | number: '1.2-2' }}</span>
+    </div>
+    <div class="summary-row">
+      <span>Shipping</span>
+      <span>${{ shippingCost | number: '1.2-2' }}</span>
+    </div>
+    <div class="summary-row total">
+      <span>Total</span>
+      <span>${{ total | number: '1.2-2' }}</span>
+    </div>
+  </div>
+</mat-card>

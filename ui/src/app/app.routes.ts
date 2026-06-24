@@ -6,6 +6,8 @@ import { ProductDetailPage } from './features/products/components/product-detail
 import { ContactPage } from './shared/pages/contact-page/contact-page';
 import { CartPage } from './features/cart/components/cart-page/cart-page';
 import { OrdersPage } from './features/orders/components/orders-page/orders-page';
+import { CheckoutPage } from './features/checkout/components/checkout-page/checkout-page';
+import { ConfirmationPage } from './features/checkout/components/confirmation-page/confirmation-page';
 import { PendingChangesGuard } from './core/auth/guards/pending-changes.guard';
 import { LoginPage } from './shared/pages/login-page/login-page';
 import { AuthGuard } from './core/auth/guards/auth.guard';
@@ -58,7 +60,9 @@ export const routes: Routes = [
       { path: 'products', redirectTo: '', pathMatch: 'full' },
       { path: 'products/:id', component: ProductDetailPage },
       { path: 'cart', component: CartPage },
-      { path: 'orders', component: OrdersPage },
+      { path: 'checkout', component: CheckoutPage, canActivate: [AuthGuard] },
+      { path: 'checkout/confirmation/:id', component: ConfirmationPage, canActivate: [AuthGuard] },
+      { path: 'orders', component: OrdersPage, canActivate: [AuthGuard] },
       { path: 'contact', component: ContactPage },
     ],
   },

@@ -6,6 +6,7 @@ import { catchError, map } from 'rxjs';
 export interface User {
   username: string;
   isAdmin: boolean;
+  id?: number;
 }
 
 export interface CustomerCredentials {
@@ -100,6 +101,35 @@ export class AuthService {
     } catch {
       return null;
     }
+  }
+
+  getUserId(): number | null {
+    const user = this.user();
+    if (user?.id) return user.id;
+
+    // Try to extract userId from JWT (NameIdentifier claim)
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const parts = token.split('.');
+      if (parts.length === 3) {
+        const payload = JSON.parse(atob(parts[1]));
+        const nid = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+        if (nid) {
+          const id = parseInt(nid, 10);
+          if (!isNaN(id)) {
+            // Store it on the user object for future sessions
+            if (user) {
+              this.setAuth({ ...user, id });
+            }
+            return id;
+          }
+        }
+      }
+    } catch {
+      // If decoding fails, return null
+    }
+    return null;
   }
 
   private hasStoredUser(): boolean {

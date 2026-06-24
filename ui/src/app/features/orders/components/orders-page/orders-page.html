@@ -59,6 +59,20 @@
             <span>{{ formatCurrency(order.total) }}</span>
           </div>
         </div>
+
+        @if (order.shippingName) {
+        <div class="order-shipping">
+          <mat-divider class="order-divider"></mat-divider>
+          <div class="shipping-info">
+            <span class="shipping-label">Shipping to:</span>
+            <span>{{ order.shippingName }}</span><br />
+            <span>{{ order.shippingAddressLine1 }}</span><br />
+            <span>{{ order.shippingCity }}, {{ order.shippingState }} {{ order.shippingZip }}</span
+            ><br />
+            <span>{{ order.shippingCountry }}</span>
+          </div>
+        </div>
+        }
       </mat-card-content>
     </mat-card>
     }

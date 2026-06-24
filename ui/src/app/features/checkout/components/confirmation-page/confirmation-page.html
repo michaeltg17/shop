@@ -1,0 +1,75 @@
+<div class="confirmation-page">
+  @if (loading) {
+  <div class="loading">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Loading order details...</p>
+  </div>
+  } @else if (error) {
+  <mat-card class="error-card">
+    <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+    <h2>Order Not Found</h2>
+    <p>We couldn't find the order you're looking for.</p>
+    <button mat-raised-button color="primary" (click)="continueShopping()">
+      Continue Shopping
+    </button>
+  </mat-card>
+  } @else if (order) {
+  <mat-card class="confirmation-card">
+    <div class="success-icon">
+      <mat-icon>check_circle</mat-icon>
+    </div>
+    <h2>Order Placed!</h2>
+    <p class="thank-you">Thank you for your purchase.</p>
+
+    <div class="order-info">
+      <div class="info-row">
+        <span class="label">Order Number</span>
+        <span class="value">#{{ order.id }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Status</span>
+        <span class="value status">{{ order.status }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Date</span>
+        <span class="value">{{ formattedDate }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Total</span>
+        <span class="value total">${{ order.total | number: '1.2-2' }}</span>
+      </div>
+    </div>
+
+    @if (order.shippingName) {
+    <div class="shipping-info">
+      <h3><mat-icon>local_shipping</mat-icon> Shipping to:</h3>
+      <p>{{ order.shippingName }}</p>
+      <p>{{ order.shippingAddressLine1 }}</p>
+      @if (order.shippingAddressLine2) {
+      <p>{{ order.shippingAddressLine2 }}</p>
+      }
+      <p>{{ order.shippingCity }}, {{ order.shippingState }} {{ order.shippingZip }}</p>
+      <p>{{ order.shippingCountry }}</p>
+    </div>
+    }
+
+    <div class="items">
+      <h3>Items ordered:</h3>
+      @for (item of order.items; track item.productId) {
+      <div class="order-item">
+        <span class="item-name">{{ item.productName }}</span>
+        <span class="item-qty">× {{ item.quantity }}</span>
+        <span class="item-price">${{ (item.price * item.quantity) | number: '1.2-2' }}</span>
+      </div>
+      }
+    </div>
+
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="continueShopping()">
+        Continue Shopping
+      </button>
+      <button mat-raised-button (click)="viewOrders()">View Orders</button>
+    </div>
+  </mat-card>
+  }
+</div>
