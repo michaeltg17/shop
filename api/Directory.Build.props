@@ -1,0 +1,8 @@
+<Project>
+  <!-- Microsoft.Bcl.TimeProvider is built into .NET 10; suppress transitive runtime DLL -->
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Bcl.TimeProvider" Condition="'$(PackageReference_Microsoft_Bcl_TimeProvider)' == ''">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>

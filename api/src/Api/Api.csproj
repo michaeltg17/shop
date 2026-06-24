@@ -18,8 +18,8 @@
     </PackageReference>
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.1.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
-    <!-- Bcl.TimeProvider is built into .NET 10; exclude transitive NuGet runtime DLL -->
-    <PackageReference Include="Microsoft.Bcl.TimeProvider" Version="8.0.1">
+    <!-- Bcl.TimeProvider is built into .NET 10; override transitive to exclude runtime -->
+    <PackageReference Update="Microsoft.Bcl.TimeProvider" Version="8.0.1">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9">
