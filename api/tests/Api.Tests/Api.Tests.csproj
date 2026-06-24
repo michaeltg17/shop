@@ -19,6 +19,14 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.9">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
+    <!-- EF Core Abstractions: also shared framework in .NET 10 -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="10.0.9">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <!-- EF Core Relational: also shared framework in .NET 10 -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.9">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
     <!-- EF Core InMemory: shared framework package in .NET 10, exclude runtime -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.9">
       <ExcludeAssets>runtime</ExcludeAssets>
