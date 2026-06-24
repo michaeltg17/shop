@@ -3,8 +3,6 @@ WORKDIR /app
 
 COPY src/Api/ src/Api/
 COPY tests/Api.Tests/ tests/Api.Tests/
-COPY Shop.slnx .
-COPY nuget.config . 2>/dev/null || true
 COPY run-ci.sh .
 
 CMD ["bash", "/app/run-ci.sh"]

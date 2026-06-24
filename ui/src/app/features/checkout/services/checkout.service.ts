@@ -72,9 +72,7 @@ export class CheckoutService {
     return true; // review step always proceedable
   }
 
-  get shippingTotal(): number {
-    return 5.99;
-  }
+  readonly shippingTotal = 5.99;
 
   get subtotal(): number {
     return this.cartService.getSubtotal();

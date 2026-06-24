@@ -5,13 +5,12 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CheckoutService, initialCheckoutState } from './checkout.service';
 import { CartService } from '../../cart/cart.service';
-import { OrderService } from '../../orders/order.service';
+
 import { AuthService } from '../../../core/auth/services/auth.service';
 
 describe('CheckoutService', () => {
   let service: CheckoutService;
   let cartService: CartService;
-  let orderService: OrderService;
   let router: Router;
   let snackBar: MatSnackBar;
   let httpMock: HttpTestingController;
@@ -65,7 +64,6 @@ describe('CheckoutService', () => {
 
     service = TestBed.inject(CheckoutService);
     cartService = TestBed.inject(CartService);
-    orderService = TestBed.inject(OrderService);
     router = TestBed.inject(Router);
     snackBar = TestBed.inject(MatSnackBar);
     httpMock = TestBed.inject(HttpTestingController);
