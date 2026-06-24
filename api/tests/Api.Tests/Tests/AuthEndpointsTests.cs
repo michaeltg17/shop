@@ -4,7 +4,6 @@ using System.Text;
 using System.Text.Json;
 using Api.Models;
 using Api.Tests.Helpers;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
@@ -33,11 +32,11 @@ public class AuthEndpointsTests : IAsyncDisposable
 
         var response = await _client.PostAsync("/api/auth/register", content);
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var body = await response.Content.ReadFromJsonAsync<AuthResponse>();
-        body.Should().NotBeNull();
-        body!.Token.Should().NotBeNullOrEmpty();
-        body.Email.Should().Be("new1@shop.com");
+        Assert.NotNull(body);
+        Assert.True(body!.Token.Length > 0);
+        Assert.Equal("new1@shop.com", body.Email);
     }
 
     [Fact]
@@ -91,10 +90,10 @@ public class AuthEndpointsTests : IAsyncDisposable
             "application/json");
         var response = await _client.PostAsync("/api/auth/login", loginContent);
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var body = await response.Content.ReadFromJsonAsync<AuthResponse>();
-        body.Should().NotBeNull();
-        body!.Token.Should().NotBeNullOrEmpty();
+        Assert.NotNull(body);
+        Assert.True(body!.Token.Length > 0);
     }
 
     [Fact]

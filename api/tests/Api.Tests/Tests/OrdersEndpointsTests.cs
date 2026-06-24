@@ -4,7 +4,6 @@ using System.Text;
 using System.Text.Json;
 using Api.Models;
 using Api.Tests.Helpers;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
@@ -41,13 +40,13 @@ public class OrdersEndpointsTests : IAsyncDisposable
 
         var response = await _client.PostAsync("/api/orders", content);
 
-        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         var body = await response.Content.ReadFromJsonAsync<Order>();
-        body!.Should().NotBeNull();
-        body!.Id.Should().BeGreaterThan(0);
-        body!.Items.Should().HaveCount(2);
-        body!.Status.Should().Be("pending");
-        body!.Total.Should().Be(1059.97m);
+        Assert.NotNull(body);
+        Assert.True(body!.Id > 0);
+        Assert.Equal(2, body!.Items.Count);
+        Assert.Equal("pending", body!.Status);
+        Assert.Equal(1059.97m, body!.Total);
     }
 
     [Fact]
@@ -68,9 +67,9 @@ public class OrdersEndpointsTests : IAsyncDisposable
 
         var response = await _client.GetAsync("/api/orders");
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var bodies = await response.Content.ReadFromJsonAsync<List<Order>>();
-        bodies.Should().NotBeEmpty();
+        Assert.NotEmpty(bodies!);
     }
 
     [Fact]
@@ -92,9 +91,9 @@ public class OrdersEndpointsTests : IAsyncDisposable
 
         var response = await _client.GetAsync($"/api/orders/{createdOrder!.Id}");
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var body = await response.Content.ReadFromJsonAsync<Order>();
-        body!.Id.Should().Be(createdOrder.Id);
+        Assert.Equal(createdOrder.Id, body!.Id);
     }
 
     [Fact]

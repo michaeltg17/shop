@@ -4,7 +4,6 @@ using System.Text;
 using System.Text.Json;
 using Api.Models;
 using Api.Tests.Helpers;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
@@ -54,9 +53,9 @@ public class ProductsEndpointsTests : IAsyncDisposable
     {
         var response = await _client.GetAsync("/api/products");
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var bodies = await response.Content.ReadFromJsonAsync<List<Product>>();
-        bodies.Should().HaveCount(3);
+        Assert.Equal(3, bodies!.Count);
     }
 
     [Fact]
@@ -64,10 +63,10 @@ public class ProductsEndpointsTests : IAsyncDisposable
     {
         var response = await _client.GetAsync("/api/products/1");
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var body = await response.Content.ReadFromJsonAsync<Product>();
-        body.Should().NotBeNull();
-        body!.Id.Should().Be(1);
+        Assert.NotNull(body);
+        Assert.Equal(1, body!.Id);
     }
 
     [Fact]
@@ -90,11 +89,11 @@ public class ProductsEndpointsTests : IAsyncDisposable
 
         var response = await authClient.PostAsync("/api/products", content);
 
-        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         var body = await response.Content.ReadFromJsonAsync<Product>();
-        body.Should().NotBeNull();
-        body!.Id.Should().BeGreaterThan(0);
-        body!.Name.Should().Be("Monitor");
+        Assert.NotNull(body);
+        Assert.True(body!.Id > 0);
+        Assert.Equal("Monitor", body!.Name);
         authClient.Dispose();
     }
 
@@ -124,11 +123,11 @@ public class ProductsEndpointsTests : IAsyncDisposable
 
         var response = await authClient.PutAsync("/api/products/1", content);
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var body = await response.Content.ReadFromJsonAsync<Product>();
-        body.Should().NotBeNull();
-        body!.Id.Should().Be(1);
-        body!.Name.Should().Be("Updated Laptop");
+        Assert.NotNull(body);
+        Assert.Equal(1, body!.Id);
+        Assert.Equal("Updated Laptop", body!.Name);
         authClient.Dispose();
     }
 
@@ -152,7 +151,7 @@ public class ProductsEndpointsTests : IAsyncDisposable
         var authClient = await CreateAuthClientAsync();
         var response = await authClient.DeleteAsync("/api/products/2");
 
-        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         authClient.Dispose();
     }
 
