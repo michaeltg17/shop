@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json;
 using Api.Models;
 using Api.Tests.Helpers;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 

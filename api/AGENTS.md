@@ -103,7 +103,7 @@ Hard rule: All API tests must use WebApplicationFactory<Program> with real HTTP.
 - Each test class gets its own factory instance.
 - Tests self-migrate via TestBase.Migrate() in the constructor.
 
-FluentAssertions. xUnit.
+AwesomeAssertions. xUnit.
 
 ## Commands
 
