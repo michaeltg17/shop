@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0
 WORKDIR /app
 
+COPY Shop.slnx .
 COPY src/Api/ src/Api/
 COPY tests/Api.Tests/ tests/Api.Tests/
 COPY run-ci.sh .
