@@ -9,7 +9,9 @@
     <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
     <h2>Order Not Found</h2>
     <p>We couldn't find the order you're looking for.</p>
-    <button mat-raised-button color="primary" (click)="continueShopping()">Continue Shopping</button>
+    <button mat-raised-button color="primary" (click)="continueShopping()">
+      Continue Shopping
+    </button>
   </mat-card>
   } @else if (order) {
   <mat-card class="confirmation-card">
@@ -66,9 +68,7 @@
       <button mat-raised-button color="primary" (click)="continueShopping()">
         Continue Shopping
       </button>
-      <button mat-raised-button (click)="viewOrders()">
-        View Orders
-      </button>
+      <button mat-raised-button (click)="viewOrders()">View Orders</button>
     </div>
   </mat-card>
   }

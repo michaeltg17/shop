@@ -37,14 +37,27 @@ export class CheckoutPage {
   next(): void {
     const s = this.checkoutService.getState();
     if (s.step === 0) {
-      if (!s.shipping.name.trim() || !s.shipping.addressLine1.trim() || !s.shipping.city.trim() || !s.shipping.state.trim() || !s.shipping.zip.trim() || !s.shipping.country.trim()) {
-        this.snackBar.open('Please fill in all required shipping fields', 'Close', { duration: 3000 });
+      if (
+        !s.shipping.name.trim() ||
+        !s.shipping.addressLine1.trim() ||
+        !s.shipping.city.trim() ||
+        !s.shipping.state.trim() ||
+        !s.shipping.zip.trim() ||
+        !s.shipping.country.trim()
+      ) {
+        this.snackBar.open('Please fill in all required shipping fields', 'Close', {
+          duration: 3000,
+        });
         return;
       }
     }
     if (s.step === 1) {
       if (s.payment.method === 'card') {
-        if (!s.payment.cardName.trim() || s.payment.cardNumber.replace(/\s/g, '').length !== 16 || !s.payment.cvv) {
+        if (
+          !s.payment.cardName.trim() ||
+          s.payment.cardNumber.replace(/\s/g, '').length !== 16 ||
+          !s.payment.cvv
+        ) {
           this.snackBar.open('Please fill in all payment fields', 'Close', { duration: 3000 });
           return;
         }

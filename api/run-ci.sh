@@ -9,6 +9,7 @@ echo "========================================="
 echo ""
 echo "[1/3] Restoring packages..."
 dotnet restore src/Api/Api.csproj
+dotnet restore tests/Api.Tests/Api.Tests.csproj
 echo "Restore successful"
 
 # Step 2: Build

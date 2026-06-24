@@ -38,16 +38,19 @@ export class ConfirmationPage implements OnInit {
     this.orderId = Number(id);
 
     if (this.orderId) {
-      this.orderService.getOrder(this.orderId).pipe(take(1)).subscribe({
-        next: order => {
-          this.order = order;
-          this.loading = false;
-        },
-        error: () => {
-          this.error = true;
-          this.loading = false;
-        },
-      });
+      this.orderService
+        .getOrder(this.orderId)
+        .pipe(take(1))
+        .subscribe({
+          next: order => {
+            this.order = order;
+            this.loading = false;
+          },
+          error: () => {
+            this.error = true;
+            this.loading = false;
+          },
+        });
     }
   }
 

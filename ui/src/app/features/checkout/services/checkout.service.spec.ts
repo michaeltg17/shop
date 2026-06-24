@@ -29,9 +29,7 @@ describe('CheckoutService', () => {
 
   const mockOrderResponse = {
     id: 1,
-    items: [
-      { productId: 1, productName: 'Test Product', price: 29.99, quantity: 2 },
-    ],
+    items: [{ productId: 1, productName: 'Test Product', price: 29.99, quantity: 2 }],
     total: 65.97,
     shipping: 5.99,
     status: 'pending',
@@ -252,11 +250,9 @@ describe('CheckoutService', () => {
       req.flush(mockOrderResponse);
 
       expect(router.navigate).toHaveBeenCalledWith(['/shop/checkout/confirmation', 1]);
-      expect(snackBar.open).toHaveBeenCalledWith(
-        'Order #1 placed successfully!',
-        'Close',
-        { duration: 4000 }
-      );
+      expect(snackBar.open).toHaveBeenCalledWith('Order #1 placed successfully!', 'Close', {
+        duration: 4000,
+      });
     });
 
     it('should clear cart after successful order', () => {

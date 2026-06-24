@@ -25,36 +25,59 @@
   <form class="card-form">
     <mat-form-field appearance="outline">
       <mat-label>Name on Card</mat-label>
-      <input matInput type="text" [(ngModel)]="cardName" (ngModelChange)="update()" placeholder="John Doe" />
+      <input
+        matInput
+        type="text"
+        [(ngModel)]="cardName"
+        (ngModelChange)="update()"
+        placeholder="John Doe"
+      />
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Card Number</mat-label>
-      <input matInput type="text" [value]="cardNumber" (input)="formatCardNumber($any($event).target.value)" placeholder="4242 4242 4242 4242" maxlength="19" />
+      <input
+        matInput
+        type="text"
+        [value]="cardNumber"
+        (input)="formatCardNumber($any($event).target.value)"
+        placeholder="4242 4242 4242 4242"
+        maxlength="19"
+      />
     </mat-form-field>
 
     <div class="form-row">
       <mat-form-field appearance="outline">
         <mat-label>Expiry</mat-label>
-        <input matInput type="text" [value]="expiry" (input)="formatExpiry($any($event).target.value)" placeholder="MM/YY" maxlength="5" />
+        <input
+          matInput
+          type="text"
+          [value]="expiry"
+          (input)="formatExpiry($any($event).target.value)"
+          placeholder="MM/YY"
+          maxlength="5"
+        />
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>CVV</mat-label>
-        <input matInput type="text" [(ngModel)]="cvv" (ngModelChange)="update()" placeholder="123" maxlength="4" />
+        <input
+          matInput
+          type="text"
+          [(ngModel)]="cvv"
+          (ngModelChange)="update()"
+          placeholder="123"
+          maxlength="4"
+        />
       </mat-form-field>
     </div>
   </form>
-  }
-
-  @if (method === 'paypal') {
+  } @if (method === 'paypal') {
   <div class="paypal-info">
     <mat-icon class="info-icon">info</mat-icon>
     <p>You will be redirected to PayPal to complete payment.</p>
   </div>
-  }
-
-  @if (method === 'placeholder') {
+  } @if (method === 'placeholder') {
   <div class="placeholder-info">
     <mat-icon class="info-icon">science</mat-icon>
     <p>This is a test order — no real payment will be processed.</p>

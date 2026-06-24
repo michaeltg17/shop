@@ -39,7 +39,9 @@
           <span class="item-name">{{ item.product.title }}</span>
           <span class="item-qty">× {{ item.quantity }}</span>
         </div>
-        <span class="item-price">${{ (item.product.price * item.quantity) | number: '1.2-2' }}</span>
+        <span class="item-price"
+          >${{ (item.product.price * item.quantity) | number: '1.2-2' }}</span
+        >
       </div>
       }
     </div>
