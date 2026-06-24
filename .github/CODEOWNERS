@@ -1,0 +1,19 @@
+# CODEOWNERS for michaeltg17/shop
+# Automatically assigns review requests and notifies the owners for matching files.
+# More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# API backend
+/api/ @michaeltg17
+
+# UI frontend
+/ui/ @michaeltg17
+
+# CI/CD workflows and GitHub configuration
+/.github/ @michaeltg17
+
+# Documentation and top-level README
+/docs/ @michaeltg17
+/README.md @michaeltg17
+
+# Default owner for everything else
+* @michaeltg17
