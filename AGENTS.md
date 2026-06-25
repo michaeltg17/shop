@@ -19,27 +19,21 @@ shop/
 
 ### CI (.github/workflows/)
 
-- `ci-api.yml` — runs on push/PR to `main` when `api/**` changes, or `workflow_dispatch`
-  - Runs CI in Docker via `docker build -f Dockerfile.ci` + `docker compose -f docker-compose.ci.yml run --rm ci`
-  - CI container: .NET 10 SDK, runs build + integration tests against a PostgreSQL sidecar
-  - On push to `main`: publishes `ghcr.io/michaeltg17/shop-api:<sha>` and `ghcr.io/michaeltg17/shop-api:latest`
-  - On PR: validates production Docker image builds (no push)
-  - Artifacts: `api-test-results` (30-day retention)
-
-- `ci-ui.yml` — runs on push/PR to `main` when `ui/**` changes, or `workflow_dispatch`
-  - Runs CI in Docker via `docker build -f Dockerfile.ci` + `docker compose -f docker-compose.ci.yml run --rm ci`
-  - CI container: Playwright image, runs prettier, lint, unit/E2E/mutation tests, SonarCloud
-  - On push to `main`: publishes `ghcr.io/michaeltg17/shop-ui:<sha>` and `ghcr.io/michaeltg17/shop-ui:latest`
-  - On PR: validates production Docker image builds (no push)
-  - Artifacts: `ui-coverage-reports` (30-day retention)
-  - Requires `SONAR_TOKEN` GH secret (skipped if absent)
+- `ci.yml` — runs on push/PR to `main` when `api/**` or `ui/**` changes, or `workflow_dispatch`
+  - Two parallel jobs: `ci-api` and `ci-ui`, each runs its own CI in Docker
+  - API: `docker build -f Dockerfile.ci` + `docker compose -f docker-compose.ci.yml run --rm ci` (.NET 10 SDK + PostgreSQL sidecar)
+  - UI: `docker build -f Dockerfile.ci` + `docker compose -f docker-compose.ci.yml run --rm ci` (Playwright image)
+  - On push to `main`: both jobs publish their images with `<sha>` and `latest` tags
+  - On PR: validates production Docker images build (no push)
+  - Artifacts: `api-test-results` and `ui-coverage-reports` (30-day retention)
 
 ### CD (.github/workflows/cd.yml)
 
-- Triggers when both `ci-api` and `ci-ui` succeed on `main` (`workflow_run` event)
+- Triggers when `ci` succeeds on `main` (`workflow_run` event)
 - Sequential webhook deployment to `statikk.mooo.com/deploy-shop`: dev → qa → prod
-- Payload: `{"environment":"dev|qa|prod","commit_sha":"<sha>"}`
+- Payload: `{"environment":"dev|qa|prod","tag":"<sha>"}`
 - Deploy server resolves images internally from GHCR (`shop-api:<sha>`, `shop-ui:<sha>`)
+- One SHA = one version of both API and UI
 
 ### Local CI
 
@@ -57,4 +51,4 @@ shop/
 
 - Prefer existing conventions over new patterns
 - No secret exposure in code or commits
-- Lint and format before changes
+- Lint and format before commits

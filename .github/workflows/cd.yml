@@ -1,9 +1,9 @@
 name: cd
+
 on:
   workflow_run:
     workflows:
-      - "ci-ui"
-      - "ci-api"
+      - "ci"
     types:
       - completed
     branches: [main]
@@ -19,11 +19,9 @@ jobs:
       - name: Trigger dev deployment
         run: |
           set -e
-          WORKFLOW=${{ github.event.workflow_run.name }}
-          COMPONENT=${WORKFLOW#ci-}
           TAG=${{ github.event.workflow_run.head_sha }}
           TAG=${TAG:0:7}
-          BODY="{\"environment\":\"dev\",\"component\":\"${COMPONENT}\",\"tag\":\"${TAG}\"}"
+          BODY="{\"environment\":\"dev\",\"tag\":\"${TAG}\"}"
           SIGNATURE=$(echo -n "$BODY" | openssl dgst -sha256 -hmac "${{ secrets.WEBHOOK_SECRET }}" | awk '{print $2}')
           curl -sf --connect-timeout 10 --max-time 60 \
             -u "deploy:${{ secrets.DEPLOY_PASSWORD }}" \
@@ -43,11 +41,9 @@ jobs:
       - name: Trigger qa deployment
         run: |
           set -e
-          WORKFLOW=${{ github.event.workflow_run.name }}
-          COMPONENT=${WORKFLOW#ci-}
           TAG=${{ github.event.workflow_run.head_sha }}
           TAG=${TAG:0:7}
-          BODY="{\"environment\":\"qa\",\"component\":\"${COMPONENT}\",\"tag\":\"${TAG}\"}"
+          BODY="{\"environment\":\"qa\",\"tag\":\"${TAG}\"}"
           SIGNATURE=$(echo -n "$BODY" | openssl dgst -sha256 -hmac "${{ secrets.WEBHOOK_SECRET }}" | awk '{print $2}')
           curl -sf --connect-timeout 10 --max-time 60 \
             -u "deploy:${{ secrets.DEPLOY_PASSWORD }}" \
@@ -67,11 +63,9 @@ jobs:
       - name: Trigger prod deployment
         run: |
           set -e
-          WORKFLOW=${{ github.event.workflow_run.name }}
-          COMPONENT=${WORKFLOW#ci-}
           TAG=${{ github.event.workflow_run.head_sha }}
           TAG=${TAG:0:7}
-          BODY="{\"environment\":\"prod\",\"component\":\"${COMPONENT}\",\"tag\":\"${TAG}\"}"
+          BODY="{\"environment\":\"prod\",\"tag\":\"${TAG}\"}"
           SIGNATURE=$(echo -n "$BODY" | openssl dgst -sha256 -hmac "${{ secrets.WEBHOOK_SECRET }}" | awk '{print $2}')
           curl -sf --connect-timeout 10 --max-time 60 \
             -u "deploy:${{ secrets.DEPLOY_PASSWORD }}" \
