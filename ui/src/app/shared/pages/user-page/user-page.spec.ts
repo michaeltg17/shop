@@ -8,7 +8,6 @@ import {
   TwoFaSetupResponse,
 } from '../../../core/auth/services/auth.service';
 import { TitleService } from '../../../core/services/title.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { of, throwError } from 'rxjs';
 
 describe('UserPage', () => {
@@ -16,7 +15,7 @@ describe('UserPage', () => {
   let fixture: ComponentFixture<UserPage>;
   let router: Router;
   let authServiceSpy: jest.Mocked<Partial<AuthService>>;
-  let snackBarSpy: jest.Mocked<Partial<MatSnackBar>>;
+  let snackBarOpen: jest.Mock;
 
   const mockProfile: ProfileResponse = {
     id: 'u1',
@@ -41,6 +40,8 @@ describe('UserPage', () => {
   };
 
   beforeEach(async () => {
+    TestBed.resetTestingModule();
+    snackBarOpen = jest.fn().mockReturnValue({ close: jest.fn() });
     authServiceSpy = {
       isAuthenticated: jest.fn().mockReturnValue(true),
       user: jest.fn().mockReturnValue({ username: 'Test', email: 'test@test.com', isAdmin: false }),
@@ -57,9 +58,6 @@ describe('UserPage', () => {
       getRecoveryCodes: jest.fn(),
       resetRecoveryCodes: jest.fn(),
     };
-    snackBarSpy = {
-      open: jest.fn().mockReturnValue({ close: jest.fn() } as MatSnackBar),
-    };
 
     await TestBed.configureTestingModule({
       imports: [UserPage, RouterModule],
@@ -72,13 +70,8 @@ describe('UserPage', () => {
         ]),
         { provide: AuthService, useValue: authServiceSpy },
         { provide: TitleService, useValue: { getTitle: jest.fn().mockReturnValue('User') } },
-        { provide: MatSnackBar, useValue: snackBarSpy },
       ],
     }).compileComponents();
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
   });
 
   function createComponent(profile?: ProfileResponse, twoFaStatus?: TwoFaStatusResponse) {
@@ -99,8 +92,17 @@ describe('UserPage', () => {
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
     jest.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    // Spy on the snackBar instance injected into the component
+    const snackBar = (component as any).snackBar;
+    snackBarOpen = jest.spyOn(snackBar, 'open').mockReturnValue({ close: jest.fn() } as any);
+
     fixture.detectChanges();
   }
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   it('should create', () => {
     createComponent();
@@ -123,10 +125,12 @@ describe('UserPage', () => {
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
     jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const snackBar = (component as any).snackBar;
+    snackBarOpen = jest.spyOn(snackBar, 'open').mockReturnValue({ close: jest.fn() } as any);
     fixture.detectChanges();
     tick();
     expect(component.loading).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Failed to load profile', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Failed to load profile', 'Dismiss', {
       duration: 3000,
     });
   }));
@@ -140,10 +144,13 @@ describe('UserPage', () => {
       roles: ['Customer'],
     };
     authServiceSpy.getProfile!.mockReturnValue(of(profileNoFields));
+    authServiceSpy.getTwoFaStatus!.mockReturnValue(of(mockTwoFaStatus));
     fixture = TestBed.createComponent(UserPage);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
     jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const snackBar = (component as any).snackBar;
+    snackBarOpen = jest.spyOn(snackBar, 'open').mockReturnValue({ close: jest.fn() } as any);
     fixture.detectChanges();
     tick();
     expect(component.editDisplayName).toBe('');
@@ -154,6 +161,7 @@ describe('UserPage', () => {
   it('should save profile successfully', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.editDisplayName = 'Updated Name';
     component.saveProfile();
     tick();
@@ -162,12 +170,13 @@ describe('UserPage', () => {
       phoneNumber: '1234567890',
     });
     expect(component.savingProfile).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Profile updated', 'Dismiss', { duration: 2000 });
+    expect(snackBarOpen).toHaveBeenCalledWith('Profile updated', 'Dismiss', { duration: 2000 });
   }));
 
   it('should save profile with undefined values when empty', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.editDisplayName = '';
     component.editPhoneNumber = '';
     component.saveProfile();
@@ -181,11 +190,12 @@ describe('UserPage', () => {
   it('should handle save profile error', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     authServiceSpy.updateProfile!.mockReturnValue(throwError(() => new Error('Error')));
     component.saveProfile();
     tick();
     expect(component.savingProfile).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Failed to update profile', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Failed to update profile', 'Dismiss', {
       duration: 3000,
     });
   }));
@@ -193,30 +203,33 @@ describe('UserPage', () => {
   // changePassword tests
   it('should show error when password fields are empty', () => {
     createComponent();
+    snackBarOpen.mockClear();
     component.changePassword();
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Please fill all fields', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Please fill all fields', 'Dismiss', {
       duration: 2000,
     });
   });
 
   it('should show error when new passwords do not match', () => {
     createComponent();
+    snackBarOpen.mockClear();
     component.currentPassword = 'current';
     component.newPassword = 'new1';
     component.confirmPassword = 'new2';
     component.changePassword();
-    expect(snackBarSpy.open).toHaveBeenCalledWith('New passwords do not match', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('New passwords do not match', 'Dismiss', {
       duration: 2000,
     });
   });
 
   it('should show error when password is too short', () => {
     createComponent();
+    snackBarOpen.mockClear();
     component.currentPassword = 'current';
     component.newPassword = 'short';
     component.confirmPassword = 'short';
     component.changePassword();
-    expect(snackBarSpy.open).toHaveBeenCalledWith(
+    expect(snackBarOpen).toHaveBeenCalledWith(
       'Password must be at least 6 characters',
       'Dismiss',
       { duration: 2000 }
@@ -226,6 +239,7 @@ describe('UserPage', () => {
   it('should change password successfully', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.currentPassword = 'currentPass';
     component.newPassword = 'newPass123';
     component.confirmPassword = 'newPass123';
@@ -239,7 +253,7 @@ describe('UserPage', () => {
     expect(component.newPassword).toBe('');
     expect(component.confirmPassword).toBe('');
     expect(component.changingPassword).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Password changed successfully', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Password changed successfully', 'Dismiss', {
       duration: 3000,
     });
   }));
@@ -247,6 +261,7 @@ describe('UserPage', () => {
   it('should handle change password error', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     authServiceSpy.changePassword!.mockReturnValue(throwError(() => new Error('Error')));
     component.currentPassword = 'currentPass';
     component.newPassword = 'newPass123';
@@ -254,7 +269,7 @@ describe('UserPage', () => {
     component.changePassword();
     tick();
     expect(component.changingPassword).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith(
+    expect(snackBarOpen).toHaveBeenCalledWith(
       'Failed to change password. Check current password.',
       'Dismiss',
       { duration: 4000 }
@@ -265,11 +280,12 @@ describe('UserPage', () => {
   it('should send email confirmation successfully', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.sendEmailConfirmation();
     tick();
     expect(authServiceSpy.sendEmailConfirmation).toHaveBeenCalled();
     expect(component.sendingConfirmation).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Confirmation email sent', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Confirmation email sent', 'Dismiss', {
       duration: 3000,
     });
   }));
@@ -277,11 +293,12 @@ describe('UserPage', () => {
   it('should handle email confirmation error', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     authServiceSpy.sendEmailConfirmation!.mockReturnValue(throwError(() => new Error('Error')));
     component.sendEmailConfirmation();
     tick();
     expect(component.sendingConfirmation).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Failed to send confirmation email', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Failed to send confirmation email', 'Dismiss', {
       duration: 3000,
     });
   }));
@@ -290,6 +307,7 @@ describe('UserPage', () => {
   it('should setup 2FA successfully', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.setupTwoFa();
     tick();
     expect(authServiceSpy.getTwoFaSetup).toHaveBeenCalled();
@@ -302,12 +320,13 @@ describe('UserPage', () => {
   it('should handle 2FA already enabled error', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     const err = { error: { error: '2FA already enabled' } };
     authServiceSpy.getTwoFaSetup!.mockReturnValue(throwError(() => err));
     component.setupTwoFa();
     tick();
     expect(component.twoFaLoading).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('2FA is already enabled', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('2FA is already enabled', 'Dismiss', {
       duration: 3000,
     });
   }));
@@ -315,11 +334,12 @@ describe('UserPage', () => {
   it('should handle 2FA setup general error', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     authServiceSpy.getTwoFaSetup!.mockReturnValue(throwError(() => new Error('Error')));
     component.setupTwoFa();
     tick();
     expect(component.twoFaLoading).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Failed to get 2FA setup', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Failed to get 2FA setup', 'Dismiss', {
       duration: 3000,
     });
   }));
@@ -327,18 +347,20 @@ describe('UserPage', () => {
   // enableTwoFa tests
   it('should show error for invalid 2FA code length', () => {
     createComponent();
+    snackBarOpen.mockClear();
     component.setupVerificationCode = '12345';
     component.enableTwoFa();
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Enter a valid 6-digit code', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Enter a valid 6-digit code', 'Dismiss', {
       duration: 2000,
     });
   });
 
   it('should show error for empty 2FA code', () => {
     createComponent();
+    snackBarOpen.mockClear();
     component.setupVerificationCode = '';
     component.enableTwoFa();
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Enter a valid 6-digit code', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Enter a valid 6-digit code', 'Dismiss', {
       duration: 2000,
     });
   });
@@ -346,6 +368,7 @@ describe('UserPage', () => {
   it('should enable 2FA successfully', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.setupVerificationCode = '123456';
     component.enableTwoFa();
     tick();
@@ -353,7 +376,7 @@ describe('UserPage', () => {
     expect(component.showingSetup).toBe(false);
     expect(component.setupVerificationCode).toBe('');
     expect(component.twoFaLoading).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('2FA enabled successfully', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('2FA enabled successfully', 'Dismiss', {
       duration: 3000,
     });
   }));
@@ -361,12 +384,13 @@ describe('UserPage', () => {
   it('should handle enable 2FA error', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.setupVerificationCode = '123456';
     authServiceSpy.enableTwoFactor!.mockReturnValue(throwError(() => new Error('Error')));
     component.enableTwoFa();
     tick();
     expect(component.twoFaLoading).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Invalid verification code', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Invalid verification code', 'Dismiss', {
       duration: 3000,
     });
   }));
@@ -374,9 +398,10 @@ describe('UserPage', () => {
   // disableTwoFa tests
   it('should show error for invalid disable 2FA code', () => {
     createComponent();
+    snackBarOpen.mockClear();
     component.disableVerificationCode = '12345';
     component.disableTwoFa();
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Enter a valid 6-digit code', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Enter a valid 6-digit code', 'Dismiss', {
       duration: 2000,
     });
   });
@@ -384,24 +409,26 @@ describe('UserPage', () => {
   it('should disable 2FA successfully', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.disableVerificationCode = '123456';
     component.disableTwoFa();
     tick();
     expect(authServiceSpy.disableTwoFactor).toHaveBeenCalledWith('123456');
     expect(component.disableVerificationCode).toBe('');
     expect(component.twoFaLoading).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('2FA disabled', 'Dismiss', { duration: 3000 });
+    expect(snackBarOpen).toHaveBeenCalledWith('2FA disabled', 'Dismiss', { duration: 3000 });
   }));
 
   it('should handle disable 2FA error', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.disableVerificationCode = '123456';
     authServiceSpy.disableTwoFactor!.mockReturnValue(throwError(() => new Error('Error')));
     component.disableTwoFa();
     tick();
     expect(component.twoFaLoading).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Invalid verification code', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Invalid verification code', 'Dismiss', {
       duration: 3000,
     });
   }));
@@ -410,6 +437,7 @@ describe('UserPage', () => {
   it('should get recovery codes', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.getRecoveryCodes();
     tick();
     expect(authServiceSpy.getRecoveryCodes).toHaveBeenCalled();
@@ -419,19 +447,21 @@ describe('UserPage', () => {
   it('should handle get recovery codes error', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     authServiceSpy.getRecoveryCodes!.mockReturnValue(throwError(() => new Error('Error')));
     component.getRecoveryCodes();
     tick();
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Failed to get recovery codes', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Failed to get recovery codes', 'Dismiss', {
       duration: 3000,
     });
   }));
 
   it('should show error for invalid reset recovery codes verification', () => {
     createComponent();
+    snackBarOpen.mockClear();
     component.resetCodesVerificationCode = '123';
     component.resetRecoveryCodes();
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Enter a valid 6-digit code', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Enter a valid 6-digit code', 'Dismiss', {
       duration: 2000,
     });
   });
@@ -439,6 +469,7 @@ describe('UserPage', () => {
   it('should reset recovery codes successfully', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.resetCodesVerificationCode = '123456';
     component.resetRecoveryCodes();
     tick();
@@ -446,7 +477,7 @@ describe('UserPage', () => {
     expect(component.recoveryCodes).toEqual(['newcode1', 'newcode2']);
     expect(component.resetCodesVerificationCode).toBe('');
     expect(component.twoFaLoading).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Recovery codes reset', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Recovery codes reset', 'Dismiss', {
       duration: 3000,
     });
   }));
@@ -454,12 +485,13 @@ describe('UserPage', () => {
   it('should handle reset recovery codes error', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.resetCodesVerificationCode = '123456';
     authServiceSpy.resetRecoveryCodes!.mockReturnValue(throwError(() => new Error('Error')));
     component.resetRecoveryCodes();
     tick();
     expect(component.twoFaLoading).toBe(false);
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Failed to reset recovery codes', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Failed to reset recovery codes', 'Dismiss', {
       duration: 3000,
     });
   }));
@@ -467,6 +499,7 @@ describe('UserPage', () => {
   // Logout test
   it('should logout and navigate to login', () => {
     createComponent();
+    snackBarOpen.mockClear();
     component.logout();
     expect(authServiceSpy.logout).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/login']);
@@ -475,6 +508,7 @@ describe('UserPage', () => {
   // Tab switching tests
   it('should switch to profile tab', () => {
     createComponent();
+    snackBarOpen.mockClear();
     component.switchTab('profile');
     expect(component.activeTab).toBe('profile');
   });
@@ -482,6 +516,7 @@ describe('UserPage', () => {
   it('should switch to security tab and load 2FA status', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.switchTab('security');
     expect(component.activeTab).toBe('security');
     tick();
@@ -491,6 +526,7 @@ describe('UserPage', () => {
   it('should switch to twofa tab and load 2FA status', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.switchTab('twofa');
     expect(component.activeTab).toBe('twofa');
     tick();
@@ -501,6 +537,7 @@ describe('UserPage', () => {
   it('should load 2FA status', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     component.loadTwoFaStatus();
     tick();
     expect(component.twoFaStatus).toEqual(mockTwoFaStatus);
@@ -509,10 +546,11 @@ describe('UserPage', () => {
   it('should handle 2FA status load error', fakeAsync(() => {
     createComponent();
     tick();
+    snackBarOpen.mockClear();
     authServiceSpy.getTwoFaStatus!.mockReturnValue(throwError(() => new Error('Error')));
     component.loadTwoFaStatus();
     tick();
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Failed to load 2FA status', 'Dismiss', {
+    expect(snackBarOpen).toHaveBeenCalledWith('Failed to load 2FA status', 'Dismiss', {
       duration: 3000,
     });
   }));
@@ -520,8 +558,6 @@ describe('UserPage', () => {
   // Edge cases
   it('should set loading to true before profile load', fakeAsync(() => {
     createComponent();
-    // loading should already be false after ngOnInit resolved
-    // re-test: set loading true manually, then verify init flow
     expect(component.loading).toBe(false);
   }));
 
@@ -530,6 +566,10 @@ describe('UserPage', () => {
     authServiceSpy.getTwoFaStatus!.mockReturnValue(of(mockTwoFaStatus));
     fixture = TestBed.createComponent(UserPage);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const snackBar = (component as any).snackBar;
+    snackBarOpen = jest.spyOn(snackBar, 'open').mockReturnValue({ close: jest.fn() } as any);
     component.activeTab = 'twofa';
     fixture.detectChanges();
     tick();
@@ -542,6 +582,10 @@ describe('UserPage', () => {
     authServiceSpy.getTwoFaStatus!.mockReturnValue(of(mockTwoFaStatus));
     fixture = TestBed.createComponent(UserPage);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const snackBar = (component as any).snackBar;
+    snackBarOpen = jest.spyOn(snackBar, 'open').mockReturnValue({ close: jest.fn() } as any);
     component.activeTab = 'security';
     fixture.detectChanges();
     tick();
@@ -554,6 +598,10 @@ describe('UserPage', () => {
     authServiceSpy.getTwoFaStatus!.mockReturnValue(of(mockTwoFaStatus));
     fixture = TestBed.createComponent(UserPage);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const snackBar = (component as any).snackBar;
+    snackBarOpen = jest.spyOn(snackBar, 'open').mockReturnValue({ close: jest.fn() } as any);
     component.activeTab = 'profile';
     fixture.detectChanges();
     tick();

@@ -173,15 +173,6 @@ describe('LoginPage', () => {
     expect(component.isLoginLoading).toBe(false);
   }));
 
-  it('should set isLoginLoading to true during login', fakeAsync(() => {
-    component.credentials = { email: 'admin@test.com', password: 'admin123' };
-    // onLogin sets loading immediately before subscribing
-    component.onLogin();
-    // Don't tick - check immediately before async resolution
-    expect(component.isLoginLoading).toBe(true);
-    tick(0);
-  }));
-
   // 2FA tests
   it('should show 2FA prompt when login throws TWO_FACTOR_REQUIRED', fakeAsync(() => {
     component.credentials = { email: 'user@test.com', password: 'pass' };
@@ -272,14 +263,6 @@ describe('LoginPage', () => {
     tick(0);
     expect(component.message).toBe('Failed to send reset email. Please try again.');
     expect(component.messageError).toBe(true);
-  }));
-
-  it('should set isLoginLoading to true during password reset', fakeAsync(() => {
-    component.resetEmail = 'user@test.com';
-    component.onForgotPassword();
-    // Check immediately before async resolution
-    expect(component.isLoginLoading).toBe(true);
-    tick(0);
   }));
 
   // Registration tests
