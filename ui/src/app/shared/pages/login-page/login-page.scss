@@ -67,6 +67,58 @@
     font-weight: 500;
     margin-top: 8px;
   }
+
+  .forgot-password-link {
+    text-align: right;
+    margin-top: -8px;
+
+    a {
+      color: #667eea;
+      font-size: 13px;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .back-link {
+    text-align: center;
+    margin-top: 12px;
+
+    a {
+      color: #667eea;
+      font-size: 14px;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .reset-sent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+
+    .success-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      color: #4caf50;
+    }
+
+    .message {
+      text-align: center;
+      color: #333;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  }
 }
 
 mat-spinner {

@@ -14,6 +14,7 @@ import { ThemeSelector } from '../../components/theme-selector/theme-selector';
 import { CartIcon } from '../../components/cart-icon/cart-icon';
 
 export type AuthMode = 'login' | 'register';
+export type LoginStep = 'credentials' | '2fa' | 'password-reset';
 
 @Component({
   selector: 'app-login-page',
@@ -39,13 +40,21 @@ export class LoginPage implements OnInit {
   authMode: AuthMode = 'login';
   tabIndex = 0;
   credentials = {
-    username: '',
+    email: '',
     password: '',
   };
 
   isLoginLoading = false;
   message: string | null = null;
   messageError = false;
+
+  // 2FA flow
+  loginStep: LoginStep = 'credentials';
+  twoFaCode = '';
+
+  // Password reset
+  resetEmail = '';
+  isResetSent = false;
 
   protected router = inject(Router);
   protected authService = inject(AuthService);
@@ -68,17 +77,58 @@ export class LoginPage implements OnInit {
     this.message = null;
     this.messageError = false;
 
-    // Simple validation
-    if (!this.credentials.username || !this.credentials.password) {
+    if (!this.credentials.email || !this.credentials.password) {
       this.isLoginLoading = false;
-      this.message = 'Please enter both username and password';
+      this.message = 'Please enter both email and password';
       this.messageError = true;
       return;
     }
 
     this.authService
-      .login(this.credentials.username, this.credentials.password)
-      .subscribe(success => {
+      .login(this.credentials.email, this.credentials.password)
+      .subscribe({
+        next: (success) => {
+          this.isLoginLoading = false;
+          if (success) {
+            const user = this.authService.user();
+            if (user?.isAdmin) {
+              this.router.navigate(['/admin/users']);
+            } else {
+              this.router.navigate(['/shop']);
+            }
+          } else {
+            this.message = 'Invalid email or password';
+            this.messageError = true;
+          }
+        },
+        error: (err) => {
+          this.isLoginLoading = false;
+          if (err.message === 'TWO_FACTOR_REQUIRED') {
+            this.loginStep = '2fa';
+            this.message = null;
+          } else {
+            this.message = 'Invalid email or password';
+            this.messageError = true;
+          }
+        },
+      });
+  }
+
+  onVerify2fa() {
+    this.isLoginLoading = true;
+    this.message = null;
+    this.messageError = false;
+
+    if (!this.twoFaCode || this.twoFaCode.length !== 6) {
+      this.isLoginLoading = false;
+      this.message = 'Please enter a valid 6-digit code';
+      this.messageError = true;
+      return;
+    }
+
+    this.authService
+      .verifyTwoFactor(this.twoFaCode)
+      .subscribe((success) => {
         this.isLoginLoading = false;
         if (success) {
           const user = this.authService.user();
@@ -88,7 +138,34 @@ export class LoginPage implements OnInit {
             this.router.navigate(['/shop']);
           }
         } else {
-          this.message = 'Invalid username or password';
+          this.message = 'Invalid verification code. Please try again.';
+          this.messageError = true;
+        }
+      });
+  }
+
+  onForgotPassword() {
+    if (!this.resetEmail) {
+      this.message = 'Please enter your email address';
+      this.messageError = true;
+      return;
+    }
+
+    this.isLoginLoading = true;
+    this.message = null;
+    this.messageError = false;
+
+    this.authService
+      .sendPasswordResetEmail(this.resetEmail)
+      .subscribe((success) => {
+        this.isLoginLoading = false;
+        if (success) {
+          this.isResetSent = true;
+          this.message =
+            'If an account with that email exists, a password reset link has been sent.';
+          this.messageError = false;
+        } else {
+          this.message = 'Failed to send reset email. Please try again.';
           this.messageError = true;
         }
       });
@@ -99,26 +176,33 @@ export class LoginPage implements OnInit {
     this.message = null;
     this.messageError = false;
 
-    // Simple validation
-    if (!this.credentials.username || !this.credentials.password) {
+    if (!this.credentials.email || !this.credentials.password) {
       this.isLoginLoading = false;
-      this.message = 'Please enter both username and password';
+      this.message = 'Please enter both email and password';
+      this.messageError = true;
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.credentials.email)) {
+      this.isLoginLoading = false;
+      this.message = 'Please enter a valid email address';
       this.messageError = true;
       return;
     }
 
     this.authService
-      .register(this.credentials.username, this.credentials.password)
-      .subscribe(success => {
+      .register(this.credentials.email, this.credentials.password)
+      .subscribe((success) => {
         this.isLoginLoading = false;
         if (success) {
-          this.message = 'Registration successful! Redirecting to shop...';
+          this.message = 'Registration successful! Check your email for verification.';
           this.messageError = false;
           setTimeout(() => {
             this.router.navigate(['/shop']);
-          }, 1000);
+          }, 2000);
         } else {
-          this.message = 'Username already taken';
+          this.message = 'Email already registered or invalid data';
           this.messageError = true;
         }
       });
@@ -129,7 +213,10 @@ export class LoginPage implements OnInit {
     this.tabIndex = 0;
     this.message = null;
     this.messageError = false;
-    this.credentials = { username: '', password: '' };
+    this.credentials = { email: '', password: '' };
+    this.loginStep = 'credentials';
+    this.twoFaCode = '';
+    this.isResetSent = false;
   }
 
   switchToRegister() {
@@ -137,7 +224,10 @@ export class LoginPage implements OnInit {
     this.tabIndex = 1;
     this.message = null;
     this.messageError = false;
-    this.credentials = { username: '', password: '' };
+    this.credentials = { email: '', password: '' };
+    this.loginStep = 'credentials';
+    this.twoFaCode = '';
+    this.isResetSent = false;
   }
 
   onTabChange(index: number) {
@@ -148,6 +238,30 @@ export class LoginPage implements OnInit {
     }
     this.message = null;
     this.messageError = false;
-    this.credentials = { username: '', password: '' };
+    this.credentials = { email: '', password: '' };
+    this.loginStep = 'credentials';
+    this.twoFaCode = '';
+    this.isResetSent = false;
+  }
+
+  backToCredentials() {
+    this.loginStep = 'credentials';
+    this.message = null;
+    this.messageError = false;
+    this.twoFaCode = '';
+  }
+
+  showForgotPassword() {
+    this.loginStep = 'password-reset';
+    this.message = null;
+    this.messageError = false;
+  }
+
+  backFromReset() {
+    this.loginStep = 'credentials';
+    this.message = null;
+    this.messageError = false;
+    this.isResetSent = false;
+    this.resetEmail = '';
   }
 }

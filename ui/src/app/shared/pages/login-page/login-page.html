@@ -23,6 +23,9 @@
 
 <div class="login-container">
   <div class="login-card">
+
+    @if (loginStep === 'credentials') {
+    <!-- Credentials form -->
     <div class="login-header">
       <h2>{{ authMode === 'login' ? 'Welcome Back' : 'Create Account' }}</h2>
       <p>
@@ -34,15 +37,17 @@
       <mat-tab label="Login">
         <form class="login-form" (ngSubmit)="onLogin()" #loginForm="ngForm">
           <mat-form-field class="full-width" appearance="fill">
-            <mat-label>Username</mat-label>
+            <mat-label>Email</mat-label>
             <input
               matInput
-              placeholder="Enter your username"
-              [(ngModel)]="credentials.username"
+              type="email"
+              placeholder="Enter your email"
+              [(ngModel)]="credentials.email"
               required
-              name="loginUsername"
+              email
+              name="loginEmail"
             />
-            <mat-icon matPrefix>person</mat-icon>
+            <mat-icon matPrefix>email</mat-icon>
           </mat-form-field>
 
           <mat-form-field class="full-width" appearance="fill">
@@ -57,6 +62,10 @@
             />
             <mat-icon matPrefix>lock</mat-icon>
           </mat-form-field>
+
+          <div class="forgot-password-link">
+            <a href="#" (click)="$event.preventDefault(); showForgotPassword()">Forgot password?</a>
+          </div>
 
           @if (message) {
           <div class="error-message">{{ message }}</div>
@@ -81,15 +90,17 @@
       <mat-tab label="Register">
         <form class="login-form" (ngSubmit)="onRegister()" #registerForm="ngForm">
           <mat-form-field class="full-width" appearance="fill">
-            <mat-label>Username</mat-label>
+            <mat-label>Email</mat-label>
             <input
               matInput
-              placeholder="Choose a username"
-              [(ngModel)]="credentials.username"
+              type="email"
+              placeholder="Enter your email"
+              [(ngModel)]="credentials.email"
               required
-              name="registerUsername"
+              email
+              name="registerEmail"
             />
-            <mat-icon matPrefix>person</mat-icon>
+            <mat-icon matPrefix>email</mat-icon>
           </mat-form-field>
 
           <mat-form-field class="full-width" appearance="fill">
@@ -97,9 +108,10 @@
             <input
               matInput
               type="password"
-              placeholder="Choose a password"
+              placeholder="Choose a password (min 6 chars)"
               [(ngModel)]="credentials.password"
               required
+              minlength="6"
               name="registerPassword"
             />
             <mat-icon matPrefix>lock</mat-icon>
@@ -125,5 +137,104 @@
         </form>
       </mat-tab>
     </mat-tab-group>
+    } @else if (loginStep === '2fa') {
+    <!-- 2FA Verification -->
+    <div class="login-header">
+      <h2>Two-Factor Authentication</h2>
+      <p>Enter the 6-digit code from your authenticator app</p>
+    </div>
+
+    <form class="login-form" (ngSubmit)="onVerify2fa()" #twoFaForm="ngForm">
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Verification code</mat-label>
+        <input
+          matInput
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]{6}"
+          maxlength="6"
+          placeholder="000000"
+          [(ngModel)]="twoFaCode"
+          required
+          name="twoFaCode"
+          autofocus
+        />
+        <mat-icon matPrefix>security</mat-icon>
+      </mat-form-field>
+
+      @if (message) {
+      <div class="error-message">{{ message }}</div>
+      }
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="login-button"
+        type="submit"
+        [disabled]="isLoginLoading"
+      >
+        @if (!isLoginLoading) {
+        <span>Verify</span>
+        } @else {
+        <mat-spinner diameter="20"></mat-spinner>
+        }
+      </button>
+
+      <div class="back-link">
+        <a href="#" (click)="$event.preventDefault(); backToCredentials()">← Back to login</a>
+      </div>
+    </form>
+    } @else if (loginStep === 'password-reset') {
+    <!-- Password Reset -->
+    <div class="login-header">
+      <h2>Reset Password</h2>
+      <p>Enter your email to receive a password reset link</p>
+    </div>
+
+    @if (!isResetSent) {
+    <form class="login-form" (ngSubmit)="onForgotPassword()" #resetForm="ngForm">
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          type="email"
+          placeholder="Enter your email"
+          [(ngModel)]="resetEmail"
+          required
+          email
+          name="resetEmail"
+        />
+        <mat-icon matPrefix>email</mat-icon>
+      </mat-form-field>
+
+      @if (message) {
+      <div class="error-message">{{ message }}</div>
+      }
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="login-button"
+        type="submit"
+        [disabled]="isLoginLoading"
+      >
+        @if (!isLoginLoading) {
+        <span>Send Reset Link</span>
+        } @else {
+        <mat-spinner diameter="20"></mat-spinner>
+        }
+      </button>
+    </form>
+    } @else {
+    <div class="reset-sent">
+      <mat-icon class="success-icon">check_circle</mat-icon>
+      <p class="message">{{ message }}</p>
+    </div>
+    }
+
+    <div class="back-link">
+      <a href="#" (click)="$event.preventDefault(); backFromReset()">← Back to login</a>
+    </div>
+    }
   </div>
 </div>

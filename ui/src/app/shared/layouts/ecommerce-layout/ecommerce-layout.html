@@ -21,7 +21,10 @@
   @if (!authService.isAuthenticated()) {
   <button mat-button routerLink="/login" routerLinkActive="active">Login</button>
   } @else {
+  @if (authService.user()?.isAdmin) {
   <button mat-button routerLink="/admin/users" routerLinkActive="active">Admin</button>
+  }
+  <button mat-button routerLink="/profile" routerLinkActive="active">Profile</button>
   <button mat-button (click)="authService.logout()">Logout</button>
   }
   <app-theme-selector></app-theme-selector>

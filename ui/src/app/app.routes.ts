@@ -47,7 +47,6 @@ export const routes: Routes = [
         runGuardsAndResolvers: 'always',
       },
       { path: 'products', component: ProductsPage },
-      { path: 'user', component: UserPage },
     ],
   },
   {
@@ -60,6 +59,8 @@ export const routes: Routes = [
       { path: 'cart', component: CartPage },
       { path: 'orders', component: OrdersPage },
       { path: 'contact', component: ContactPage },
+      { path: 'profile', component: UserPage, canActivate: [AuthGuard] },
     ],
   },
+  { path: 'profile', component: UserPage, canActivate: [AuthGuard] },
 ];

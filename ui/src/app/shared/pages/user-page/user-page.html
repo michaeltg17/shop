@@ -1,1 +1,263 @@
-<p>user-page works!</p>
+<mat-toolbar color="primary">
+  <span class="title">{{ titleService.getTitle() }}</span>
+  <span class="spacer"></span>
+  <button mat-button routerLink="/shop">Shop</button>
+  @if (authService.user()?.isAdmin) {
+  <button mat-button routerLink="/admin/users">Admin</button>
+  }
+  <button mat-button (click)="logout()">Logout</button>
+  <app-theme-selector></app-theme-selector>
+</mat-toolbar>
+
+@if (loading) {
+<mat-spinner diameter="40" style="display: block; margin: 40px auto;"></mat-spinner>
+} @else {
+<div class="settings-layout">
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav mode="side" opened class="sidenav">
+      <div class="user-info">
+        <mat-icon class="avatar">person</mat-icon>
+        <div class="user-details">
+          <div class="user-name">{{ profile?.displayName ?? profile?.email }}</div>
+          <div class="user-email">{{ profile?.email }}</div>
+        </div>
+      </div>
+      <mat-nav-list>
+        <a mat-listItem [class.active]="activeTab === 'profile'" (click)="switchTab('profile')">
+          <mat-icon matListItemIcon>person</mat-icon>
+          <span matListItemLine>Profile</span>
+        </a>
+        <a mat-listItem [class.active]="activeTab === 'security'" (click)="switchTab('security')">
+          <mat-icon matListItemIcon>lock</mat-icon>
+          <span matListItemLine>Password</span>
+        </a>
+        <a mat-listItem [class.active]="activeTab === 'twofa'" (click)="switchTab('twofa')">
+          <mat-icon matListItemIcon>security</mat-icon>
+          <span matListItemLine>Two-Factor Auth</span>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <div class="content">
+        <!-- Profile Tab -->
+        @if (activeTab === 'profile') {
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Profile</mat-card-title>
+            <mat-card-subtitle>{{ profile?.email }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="profile-fields">
+              <mat-form-field appearance="fill">
+                <mat-label>Email</mat-label>
+                <input matInput [value]="profile?.email" disabled />
+                <mat-icon matPrefix>email</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Display Name</mat-label>
+                <input matInput [(ngModel)]="editDisplayName" placeholder="Your name" />
+                <mat-icon matPrefix>person</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Phone Number</mat-label>
+                <input matInput [(ngModel)]="editPhoneNumber" placeholder="Optional" />
+                <mat-icon matPrefix>phone</mat-icon>
+              </mat-form-field>
+
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="saveProfile()"
+                [disabled]="savingProfile"
+              >
+                @if (!savingProfile) { Save } @else { <mat-spinner diameter="18"></mat-spinner> }
+              </button>
+            </div>
+
+            @if (!profile?.isEmailConfirmed) {
+            <div class="email-unconfirmed">
+              <mat-icon color="warn">warning</mat-icon>
+              <p>Email not confirmed</p>
+              <button mat-raised-button (click)="sendEmailConfirmation()" [disabled]="sendingConfirmation">
+                @if (!sendingConfirmation) { Resend Confirmation }
+                @else { <mat-spinner diameter="18"></mat-spinner> }
+              </button>
+            </div>
+            }
+
+            <div class="roles-info">
+              <mat-icon>badge</mat-icon>
+              <span>Roles: {{ (profile?.roles ?? []).join(', ') }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        }
+
+        <!-- Password Tab -->
+        @if (activeTab === 'security') {
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Change Password</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="password-fields">
+              <mat-form-field appearance="fill">
+                <mat-label>Current Password</mat-label>
+                <input matInput type="password" [(ngModel)]="currentPassword" />
+                <mat-icon matPrefix>lock</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>New Password</mat-label>
+                <input matInput type="password" [(ngModel)]="newPassword" />
+                <mat-icon matPrefix>lock</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Confirm New Password</mat-label>
+                <input matInput type="password" [(ngModel)]="confirmPassword" />
+                <mat-icon matPrefix>lock</mat-icon>
+              </mat-form-field>
+
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="changePassword()"
+                [disabled]="changingPassword"
+              >
+                @if (!changingPassword) { Change Password }
+                @else { <mat-spinner diameter="18"></mat-spinner> }
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        }
+
+        <!-- 2FA Tab -->
+        @if (activeTab === 'twofa') {
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Two-Factor Authentication</mat-card-title>
+            <mat-card-subtitle>
+              @if (twoFaStatus?.isTwoFaEnabled) {
+              <span class="status-enabled">Enabled</span>
+              } @else {
+              <span class="status-disabled">Disabled</span>
+              }
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <!-- Setup 2FA -->
+            @if (!twoFaStatus?.isTwoFaEnabled && !showingSetup) {
+            <div class="setup-section">
+              <p>
+                Add an extra layer of security to your account. You'll need an authenticator app like
+                Google Authenticator, Authy, or Microsoft Authenticator.
+              </p>
+              <button mat-raised-button color="primary" (click)="setupTwoFa()" [disabled]="twoFaLoading">
+                @if (!twoFaLoading) { Set up 2FA } @else { <mat-spinner diameter="18"></mat-spinner> }
+              </button>
+            </div>
+            }
+
+            <!-- 2FA Setup Flow -->
+            @if (showingSetup) {
+            <div class="setup-flow">
+              <h3>Scan the QR code with your authenticator app</h3>
+              @if (setupQrCode) {
+              <img [src]="setupQrCode" alt="QR Code" class="qr-code" />
+              }
+              <p class="secret-hint">
+                Secret: <code>{{ twoFaSetup?.secretBase32 }}</code>
+              </p>
+              <mat-form-field appearance="fill">
+                <mat-label>Verification code from your app</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  inputmode="numeric"
+                  pattern="[0-9]{6}"
+                  maxlength="6"
+                  [(ngModel)]="setupVerificationCode"
+                  placeholder="000000"
+                />
+              </mat-form-field>
+              <button mat-raised-button color="primary" (click)="enableTwoFa()" [disabled]="twoFaLoading">
+                @if (!twoFaLoading) { Enable 2FA } @else { <mat-spinner diameter="18"></mat-spinner> }
+              </button>
+              <button mat-button (click)="showingSetup = false">Cancel</button>
+            </div>
+            }
+
+            <!-- 2FA is enabled -->
+            @if (twoFaStatus?.isTwoFaEnabled && !showingSetup) {
+            <div class="enabled-section">
+              <mat-icon class="enabled-icon" color="primary">check_circle</mat-icon>
+              <p>Two-factor authentication is active on your account.</p>
+
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>Recovery Codes</mat-panel-title>
+                  <mat-panel-description>View and manage backup codes</mat-panel-description>
+                </mat-expansion-panel-header>
+
+                @if (recoveryCodes.length > 0) {
+                <div class="recovery-codes">
+                  @for (code of recoveryCodes; track code) {
+                  <span class="code">{{ code }}</span>
+                  }
+                </div>
+                } @else {
+                <p>No recovery codes loaded.</p>
+                <button mat-button (click)="getRecoveryCodes()">Load Recovery Codes</button>
+                }
+
+                <div class="reset-codes">
+                  <mat-form-field appearance="fill">
+                    <mat-label>Enter 2FA code to reset</mat-label>
+                    <input
+                      matInput
+                      type="text"
+                      inputmode="numeric"
+                      pattern="[0-9]{6}"
+                      maxlength="6"
+                      [(ngModel)]="resetCodesVerificationCode"
+                      placeholder="000000"
+                    />
+                  </mat-form-field>
+                  <button mat-button color="warn" (click)="resetRecoveryCodes()" [disabled]="twoFaLoading">
+                    @if (!twoFaLoading) { Reset Codes } @else { <mat-spinner diameter="18"></mat-spinner> }
+                  </button>
+                </div>
+              </mat-expansion-panel>
+
+              <div class="disable-section">
+                <mat-form-field appearance="fill">
+                  <mat-label>Enter 2FA code to disable</mat-label>
+                  <input
+                    matInput
+                    type="text"
+                    inputmode="numeric"
+                    pattern="[0-9]{6}"
+                    maxlength="6"
+                    [(ngModel)]="disableVerificationCode"
+                    placeholder="000000"
+                  />
+                </mat-form-field>
+                <button mat-raised-button color="warn" (click)="disableTwoFa()" [disabled]="twoFaLoading">
+                  @if (!twoFaLoading) { Disable 2FA } @else { <mat-spinner diameter="18"></mat-spinner> }
+                </button>
+              </div>
+            </div>
+            }
+          </mat-card-content>
+        </mat-card>
+        }
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+}
