@@ -244,11 +244,17 @@ public class AuthService : IAuthService
         // Store first/last name in claims (IdentityUser doesn't have these properties by default)
         if (request.FirstName != null)
         {
-            await _userManager.SetClaimAsync(user, new Claim("FirstName", request.FirstName));
+            var existing = await _userManager.GetClaimsAsync(user);
+            var old = existing.FirstOrDefault(c => c.Type == "FirstName");
+            if (old != null) await _userManager.RemoveClaimAsync(user, old);
+            await _userManager.AddClaimAsync(user, new Claim("FirstName", request.FirstName));
         }
         if (request.LastName != null)
         {
-            await _userManager.SetClaimAsync(user, new Claim("LastName", request.LastName));
+            var existing = await _userManager.GetClaimsAsync(user);
+            var old = existing.FirstOrDefault(c => c.Type == "LastName");
+            if (old != null) await _userManager.RemoveClaimAsync(user, old);
+            await _userManager.AddClaimAsync(user, new Claim("LastName", request.LastName));
         }
 
         var result = await _userManager.UpdateAsync(user);
