@@ -16,8 +16,7 @@ public class ProductsEndpointsTests : IAsyncDisposable
 
     public ProductsEndpointsTests()
     {
-        _factory = new WebApplicationFactory<Program>();
-        TestBase.Migrate(_factory);
+        _factory = TestBase.CreateFactory();
         _client = _factory.CreateClient();
     }
 

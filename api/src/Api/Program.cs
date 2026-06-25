@@ -16,8 +16,18 @@ builder.Services.AddOpenApi();
 
 // DB + Identity
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+var useInMemory = builder.Configuration.GetValue<bool>("Testing:UseInMemoryDatabase", false);
+
+if (useInMemory)
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseInMemoryDatabase("TestShopDb"));
+}
+else
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseNpgsql(connectionString));
+}
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
@@ -69,11 +79,14 @@ app.MapOpenApi();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Run EF migrations then seed default roles
+// Run EF migrations (skip for InMemory) then seed default roles
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    context.Database.Migrate();
+    if (!useInMemory)
+    {
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        context.Database.Migrate();
+    }
 
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     foreach (var role in new[] { "Customer", "Admin" })

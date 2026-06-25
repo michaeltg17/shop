@@ -16,8 +16,7 @@ public class AuthEndpointsTests : IAsyncDisposable
 
     public AuthEndpointsTests()
     {
-        _factory = new WebApplicationFactory<Program>();
-        TestBase.Migrate(_factory);
+        _factory = TestBase.CreateFactory();
         _client = _factory.CreateClient();
     }
 
