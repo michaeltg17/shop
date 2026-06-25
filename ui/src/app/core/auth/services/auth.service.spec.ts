@@ -1,5 +1,5 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { AuthService, User } from './auth.service';
+import { AuthService, ProfileResponse, TwoFaStatusResponse, User } from './auth.service';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
@@ -613,7 +613,7 @@ describe('AuthService', () => {
     // Setup auth
     localStorage.setItem('angular_auth_token', 'jwt');
 
-    let profile: any = null;
+    let profile: ProfileResponse | null = null;
     service.getProfile().subscribe(p => {
       profile = p;
     });
@@ -650,7 +650,7 @@ describe('AuthService', () => {
   }));
 
   it('should get 2FA status', fakeAsync(() => {
-    let status: any = null;
+    let status: TwoFaStatusResponse | null = null;
     service.getTwoFaStatus().subscribe(s => {
       status = s;
     });

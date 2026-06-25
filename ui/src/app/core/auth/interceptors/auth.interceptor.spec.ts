@@ -6,8 +6,6 @@ import {
 } from '@angular/common/http/testing';
 import { provideHttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
 import { AuthInterceptor } from './auth.interceptor';
-import { AuthService } from '../services/auth.service';
-import { of } from 'rxjs';
 
 describe('AuthInterceptor', () => {
   interface MockHandler {
