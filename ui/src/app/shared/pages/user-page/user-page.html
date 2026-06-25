@@ -10,7 +10,7 @@
 </mat-toolbar>
 
 @if (loading) {
-<mat-spinner diameter="40" style="display: block; margin: 40px auto;"></mat-spinner>
+<mat-spinner diameter="40" style="display: block; margin: 40px auto"></mat-spinner>
 } @else {
 <div class="settings-layout">
   <mat-sidenav-container class="sidenav-container">
@@ -81,9 +81,13 @@
             <div class="email-unconfirmed">
               <mat-icon color="warn">warning</mat-icon>
               <p>Email not confirmed</p>
-              <button mat-raised-button (click)="sendEmailConfirmation()" [disabled]="sendingConfirmation">
-                @if (!sendingConfirmation) { Resend Confirmation }
-                @else { <mat-spinner diameter="18"></mat-spinner> }
+              <button
+                mat-raised-button
+                (click)="sendEmailConfirmation()"
+                [disabled]="sendingConfirmation"
+              >
+                @if (!sendingConfirmation) { Resend Confirmation } @else {
+                <mat-spinner diameter="18"></mat-spinner> }
               </button>
             </div>
             }
@@ -128,8 +132,8 @@
                 (click)="changePassword()"
                 [disabled]="changingPassword"
               >
-                @if (!changingPassword) { Change Password }
-                @else { <mat-spinner diameter="18"></mat-spinner> }
+                @if (!changingPassword) { Change Password } @else {
+                <mat-spinner diameter="18"></mat-spinner> }
               </button>
             </div>
           </mat-card-content>
@@ -154,11 +158,17 @@
             @if (!twoFaStatus?.isTwoFaEnabled && !showingSetup) {
             <div class="setup-section">
               <p>
-                Add an extra layer of security to your account. You'll need an authenticator app like
-                Google Authenticator, Authy, or Microsoft Authenticator.
+                Add an extra layer of security to your account. You'll need an authenticator app
+                like Google Authenticator, Authy, or Microsoft Authenticator.
               </p>
-              <button mat-raised-button color="primary" (click)="setupTwoFa()" [disabled]="twoFaLoading">
-                @if (!twoFaLoading) { Set up 2FA } @else { <mat-spinner diameter="18"></mat-spinner> }
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="setupTwoFa()"
+                [disabled]="twoFaLoading"
+              >
+                @if (!twoFaLoading) { Set up 2FA } @else {
+                <mat-spinner diameter="18"></mat-spinner> }
               </button>
             </div>
             }
@@ -170,9 +180,7 @@
               @if (setupQrCode) {
               <img [src]="setupQrCode" alt="QR Code" class="qr-code" />
               }
-              <p class="secret-hint">
-                Secret: <code>{{ twoFaSetup?.secretBase32 }}</code>
-              </p>
+              <p class="secret-hint">Secret: <code>{{ twoFaSetup?.secretBase32 }}</code></p>
               <mat-form-field appearance="fill">
                 <mat-label>Verification code from your app</mat-label>
                 <input
@@ -185,8 +193,14 @@
                   placeholder="000000"
                 />
               </mat-form-field>
-              <button mat-raised-button color="primary" (click)="enableTwoFa()" [disabled]="twoFaLoading">
-                @if (!twoFaLoading) { Enable 2FA } @else { <mat-spinner diameter="18"></mat-spinner> }
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="enableTwoFa()"
+                [disabled]="twoFaLoading"
+              >
+                @if (!twoFaLoading) { Enable 2FA } @else {
+                <mat-spinner diameter="18"></mat-spinner> }
               </button>
               <button mat-button (click)="showingSetup = false">Cancel</button>
             </div>
@@ -228,8 +242,14 @@
                       placeholder="000000"
                     />
                   </mat-form-field>
-                  <button mat-button color="warn" (click)="resetRecoveryCodes()" [disabled]="twoFaLoading">
-                    @if (!twoFaLoading) { Reset Codes } @else { <mat-spinner diameter="18"></mat-spinner> }
+                  <button
+                    mat-button
+                    color="warn"
+                    (click)="resetRecoveryCodes()"
+                    [disabled]="twoFaLoading"
+                  >
+                    @if (!twoFaLoading) { Reset Codes } @else {
+                    <mat-spinner diameter="18"></mat-spinner> }
                   </button>
                 </div>
               </mat-expansion-panel>
@@ -247,8 +267,14 @@
                     placeholder="000000"
                   />
                 </mat-form-field>
-                <button mat-raised-button color="warn" (click)="disableTwoFa()" [disabled]="twoFaLoading">
-                  @if (!twoFaLoading) { Disable 2FA } @else { <mat-spinner diameter="18"></mat-spinner> }
+                <button
+                  mat-raised-button
+                  color="warn"
+                  (click)="disableTwoFa()"
+                  [disabled]="twoFaLoading"
+                >
+                  @if (!twoFaLoading) { Disable 2FA } @else {
+                  <mat-spinner diameter="18"></mat-spinner> }
                 </button>
               </div>
             </div>

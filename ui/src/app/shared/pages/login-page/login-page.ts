@@ -84,34 +84,32 @@ export class LoginPage implements OnInit {
       return;
     }
 
-    this.authService
-      .login(this.credentials.email, this.credentials.password)
-      .subscribe({
-        next: (success) => {
-          this.isLoginLoading = false;
-          if (success) {
-            const user = this.authService.user();
-            if (user?.isAdmin) {
-              this.router.navigate(['/admin/users']);
-            } else {
-              this.router.navigate(['/shop']);
-            }
+    this.authService.login(this.credentials.email, this.credentials.password).subscribe({
+      next: success => {
+        this.isLoginLoading = false;
+        if (success) {
+          const user = this.authService.user();
+          if (user?.isAdmin) {
+            this.router.navigate(['/admin/users']);
           } else {
-            this.message = 'Invalid email or password';
-            this.messageError = true;
+            this.router.navigate(['/shop']);
           }
-        },
-        error: (err) => {
-          this.isLoginLoading = false;
-          if (err.message === 'TWO_FACTOR_REQUIRED') {
-            this.loginStep = '2fa';
-            this.message = null;
-          } else {
-            this.message = 'Invalid email or password';
-            this.messageError = true;
-          }
-        },
-      });
+        } else {
+          this.message = 'Invalid email or password';
+          this.messageError = true;
+        }
+      },
+      error: err => {
+        this.isLoginLoading = false;
+        if (err.message === 'TWO_FACTOR_REQUIRED') {
+          this.loginStep = '2fa';
+          this.message = null;
+        } else {
+          this.message = 'Invalid email or password';
+          this.messageError = true;
+        }
+      },
+    });
   }
 
   onVerify2fa() {
@@ -126,22 +124,20 @@ export class LoginPage implements OnInit {
       return;
     }
 
-    this.authService
-      .verifyTwoFactor(this.twoFaCode)
-      .subscribe((success) => {
-        this.isLoginLoading = false;
-        if (success) {
-          const user = this.authService.user();
-          if (user?.isAdmin) {
-            this.router.navigate(['/admin/users']);
-          } else {
-            this.router.navigate(['/shop']);
-          }
+    this.authService.verifyTwoFactor(this.twoFaCode).subscribe(success => {
+      this.isLoginLoading = false;
+      if (success) {
+        const user = this.authService.user();
+        if (user?.isAdmin) {
+          this.router.navigate(['/admin/users']);
         } else {
-          this.message = 'Invalid verification code. Please try again.';
-          this.messageError = true;
+          this.router.navigate(['/shop']);
         }
-      });
+      } else {
+        this.message = 'Invalid verification code. Please try again.';
+        this.messageError = true;
+      }
+    });
   }
 
   onForgotPassword() {
@@ -155,20 +151,17 @@ export class LoginPage implements OnInit {
     this.message = null;
     this.messageError = false;
 
-    this.authService
-      .sendPasswordResetEmail(this.resetEmail)
-      .subscribe((success) => {
-        this.isLoginLoading = false;
-        if (success) {
-          this.isResetSent = true;
-          this.message =
-            'If an account with that email exists, a password reset link has been sent.';
-          this.messageError = false;
-        } else {
-          this.message = 'Failed to send reset email. Please try again.';
-          this.messageError = true;
-        }
-      });
+    this.authService.sendPasswordResetEmail(this.resetEmail).subscribe(success => {
+      this.isLoginLoading = false;
+      if (success) {
+        this.isResetSent = true;
+        this.message = 'If an account with that email exists, a password reset link has been sent.';
+        this.messageError = false;
+      } else {
+        this.message = 'Failed to send reset email. Please try again.';
+        this.messageError = true;
+      }
+    });
   }
 
   onRegister() {
@@ -193,7 +186,7 @@ export class LoginPage implements OnInit {
 
     this.authService
       .register(this.credentials.email, this.credentials.password)
-      .subscribe((success) => {
+      .subscribe(success => {
         this.isLoginLoading = false;
         if (success) {
           this.message = 'Registration successful! Check your email for verification.';

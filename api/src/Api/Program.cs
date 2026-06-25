@@ -80,6 +80,11 @@ using (var scope = app.Services.CreateScope())
 // Map endpoints
 app.MapRegisterEndpoint();
 app.MapLoginEndpoint();
+app.MapLogin2faEndpoint();
+app.MapTwoFaEndpoints();
+app.MapEmailConfirmationEndpoints();
+app.MapPasswordResetEndpoints();
+app.MapProfileEndpoints();
 app.MapGetProductsEndpoint();
 app.MapGetProductEndpoint();
 app.MapCreateProductEndpoint();

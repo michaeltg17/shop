@@ -115,7 +115,7 @@ export class AuthService {
 
   login(email: string, password: string): Observable<boolean> {
     return this.http.post<TwoFactorLoginResponse>('/api/auth/login', { email, password }).pipe(
-      map((response) => {
+      map(response => {
         if (response.requiresTwoFactor && response.twoFaSessionId) {
           // 2FA required — store session and notify UI
           this.requiresTwoFactor.set(true);
@@ -130,14 +130,14 @@ export class AuthService {
         }
         return false;
       }),
-      catchError((err) => {
+      catchError(err => {
         if (err.message === 'TWO_FACTOR_REQUIRED') {
           throw err; // Re-throw for UI handling
         }
         if (err.message === 'LOGIN_SUCCESS_FETCH_PROFILE') {
           // Fetch profile to get roles and full user info
           return this.getProfile().pipe(
-            map((profile) => {
+            map(profile => {
               const isAdmin = profile.roles.includes('Admin');
               const user: User = {
                 username: profile.displayName ?? profile.email,
@@ -175,44 +175,46 @@ export class AuthService {
       return of(false);
     }
 
-    return this.http.post<AuthResponse>('/api/auth/2fa/verify', {
-      twoFaSessionId: sessionId,
-      twoFaCode,
-    }).pipe(
-      switchMap((response) => {
-        this.saveToken(response.token);
-        // Fetch profile to get roles
-        return this.getProfile().pipe(
-          map((profile) => {
-            const isAdmin = profile.roles.includes('Admin');
-            const user: User = {
-              username: profile.displayName ?? profile.email,
-              email: profile.email,
-              id: profile.id,
-              isAdmin,
-              emailConfirmed: profile.isEmailConfirmed,
-              isTwoFactorEnabled: profile.isTwoFactorEnabled,
-            };
-            this.setAuth(user);
-            this.requiresTwoFactor.set(false);
-            this.twoFaSessionId.set(null);
-            return true;
-          }),
-          catchError(() => {
-            // Fallback
-            const user: User = {
-              username: response.email,
-              email: response.email,
-              isAdmin: false,
-            };
-            this.setAuth(user);
-            this.requiresTwoFactor.set(false);
-            this.twoFaSessionId.set(null);
-            return of(true);
-          })
-        );
+    return this.http
+      .post<AuthResponse>('/api/auth/2fa/verify', {
+        twoFaSessionId: sessionId,
+        twoFaCode,
       })
-    );
+      .pipe(
+        switchMap(response => {
+          this.saveToken(response.token);
+          // Fetch profile to get roles
+          return this.getProfile().pipe(
+            map(profile => {
+              const isAdmin = profile.roles.includes('Admin');
+              const user: User = {
+                username: profile.displayName ?? profile.email,
+                email: profile.email,
+                id: profile.id,
+                isAdmin,
+                emailConfirmed: profile.isEmailConfirmed,
+                isTwoFactorEnabled: profile.isTwoFactorEnabled,
+              };
+              this.setAuth(user);
+              this.requiresTwoFactor.set(false);
+              this.twoFaSessionId.set(null);
+              return true;
+            }),
+            catchError(() => {
+              // Fallback
+              const user: User = {
+                username: response.email,
+                email: response.email,
+                isAdmin: false,
+              };
+              this.setAuth(user);
+              this.requiresTwoFactor.set(false);
+              this.twoFaSessionId.set(null);
+              return of(true);
+            })
+          );
+        })
+      );
   }
 
   // ========== Registration ==========
@@ -231,11 +233,11 @@ export class AuthService {
     const request: RegisterRequest = { email, password };
 
     return this.http.post<AuthResponse>('/api/auth/register', request).pipe(
-      switchMap((response) => {
+      switchMap(response => {
         this.saveToken(response.token);
         // Fetch profile
         return this.getProfile().pipe(
-          map((profile) => {
+          map(profile => {
             const isAdmin = profile.roles.includes('Admin');
             const user: User = {
               username: profile.displayName ?? profile.email,
@@ -334,7 +336,7 @@ export class AuthService {
 
   updateProfile(request: ProfileUpdateRequest): Observable<ProfileResponse> {
     return this.http.put<ProfileResponse>('/api/auth/profile', request).pipe(
-      map((profile) => {
+      map(profile => {
         const isAdmin = profile.roles.includes('Admin');
         const user: User = {
           username: profile.displayName ?? profile.email,
@@ -360,9 +362,10 @@ export class AuthService {
   // ========== Email Confirmation ==========
 
   sendEmailConfirmation(): Observable<boolean> {
-    return this.http
-      .post<{ message: string }>('/api/auth/email/confirm/send', {})
-      .pipe(map(() => true), catchError(() => of(false)));
+    return this.http.post<{ message: string }>('/api/auth/email/confirm/send', {}).pipe(
+      map(() => true),
+      catchError(() => of(false))
+    );
   }
 
   confirmEmail(userId: string, email: string, code: string): Observable<boolean> {
@@ -419,7 +422,7 @@ export class AuthService {
 
   getRecoveryCodes(): Observable<string[]> {
     return this.http.get<{ codes: string[] }>('/api/auth/2fa/recovery-codes').pipe(
-      map((response) => response.codes),
+      map(response => response.codes),
       catchError(() => of([]))
     );
   }
@@ -430,7 +433,7 @@ export class AuthService {
         verificationCode,
       })
       .pipe(
-        map((response) => response.codes),
+        map(response => response.codes),
         catchError(() => of([]))
       );
   }
@@ -438,9 +441,10 @@ export class AuthService {
   // ========== Password Reset ==========
 
   sendPasswordResetEmail(email: string): Observable<boolean> {
-    return this.http
-      .post<{ message: string }>('/api/auth/password/reset/send', { email })
-      .pipe(map(() => true), catchError(() => of(false)));
+    return this.http.post<{ message: string }>('/api/auth/password/reset/send', { email }).pipe(
+      map(() => true),
+      catchError(() => of(false))
+    );
   }
 
   resetPassword(email: string, resetToken: string, newPassword: string): Observable<boolean> {
@@ -450,7 +454,10 @@ export class AuthService {
         resetToken,
         newPassword,
       })
-      .pipe(map(() => true), catchError(() => of(false)));
+      .pipe(
+        map(() => true),
+        catchError(() => of(false))
+      );
   }
 
   // ========== Storage Helpers ==========

@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -94,7 +89,7 @@ export class UserPage implements OnInit {
   loadProfile() {
     this.loading = true;
     this.authService.getProfile().subscribe({
-      next: (profile) => {
+      next: profile => {
         this.profile = profile;
         this.editDisplayName = profile.displayName ?? '';
         this.editPhoneNumber = profile.phoneNumber ?? '';
@@ -113,7 +108,7 @@ export class UserPage implements OnInit {
 
   loadTwoFaStatus() {
     this.authService.getTwoFaStatus().subscribe({
-      next: (status) => {
+      next: status => {
         this.twoFaStatus = status;
       },
       error: () => {
@@ -130,7 +125,7 @@ export class UserPage implements OnInit {
         phoneNumber: this.editPhoneNumber || undefined,
       })
       .subscribe({
-        next: (profile) => {
+        next: profile => {
           this.profile = profile;
           this.savingProfile = false;
           this.snackBar.open('Profile updated', 'Dismiss', { duration: 2000 });
@@ -196,13 +191,13 @@ export class UserPage implements OnInit {
   setupTwoFa() {
     this.twoFaLoading = true;
     this.authService.getTwoFaSetup().subscribe({
-      next: (setup) => {
+      next: setup => {
         this.twoFaSetup = setup;
         this.setupQrCode = `data:image/svg+xml;base64,${setup.qrCodeSvgBase64}`;
         this.showingSetup = true;
         this.twoFaLoading = false;
       },
-      error: (err) => {
+      error: err => {
         this.twoFaLoading = false;
         if (err?.error?.error === '2FA already enabled') {
           this.snackBar.open('2FA is already enabled', 'Dismiss', { duration: 3000 });
@@ -258,7 +253,7 @@ export class UserPage implements OnInit {
 
   getRecoveryCodes() {
     this.authService.getRecoveryCodes().subscribe({
-      next: (codes) => {
+      next: codes => {
         this.recoveryCodes = codes;
       },
       error: () => {
@@ -268,17 +263,14 @@ export class UserPage implements OnInit {
   }
 
   resetRecoveryCodes() {
-    if (
-      !this.resetCodesVerificationCode ||
-      this.resetCodesVerificationCode.length !== 6
-    ) {
+    if (!this.resetCodesVerificationCode || this.resetCodesVerificationCode.length !== 6) {
       this.snackBar.open('Enter a valid 6-digit code', 'Dismiss', { duration: 2000 });
       return;
     }
 
     this.twoFaLoading = true;
     this.authService.resetRecoveryCodes(this.resetCodesVerificationCode).subscribe({
-      next: (codes) => {
+      next: codes => {
         this.recoveryCodes = codes;
         this.resetCodesVerificationCode = '';
         this.twoFaLoading = false;
