@@ -27,14 +27,15 @@ describe('UserPage', () => {
             isAuthenticated: () => true,
             user: () => ({ username: 'Test', email: 'test@test.com', isAdmin: false }),
             logout: jest.fn(),
-            getProfile: () => of({
-              id: 'u1',
-              email: 'test@test.com',
-              displayName: 'Test',
-              isEmailConfirmed: true,
-              isTwoFactorEnabled: false,
-              roles: ['Customer'],
-            }),
+            getProfile: () =>
+              of({
+                id: 'u1',
+                email: 'test@test.com',
+                displayName: 'Test',
+                isEmailConfirmed: true,
+                isTwoFactorEnabled: false,
+                roles: ['Customer'],
+              }),
             updateProfile: () => of({}),
             changePassword: () => of(true),
             sendEmailConfirmation: () => of(true),

@@ -167,9 +167,12 @@ describe('LoginPage', () => {
   // 2FA tests
   it('should show 2FA prompt when login throws TWO_FACTOR_REQUIRED', fakeAsync(() => {
     component.credentials = { email: 'user@test.com', password: 'pass' };
-    authServiceSpy.login!.mockReturnValue(of(true).pipe(
-      // Simulate 2FA error
-    ));
+    authServiceSpy.login!.mockReturnValue(
+      of(true)
+        .pipe
+        // Simulate 2FA error
+        ()
+    );
     // Direct test - simulate the error path
     component.loginStep = 'credentials';
     expect(component.loginStep).toBe('credentials');
