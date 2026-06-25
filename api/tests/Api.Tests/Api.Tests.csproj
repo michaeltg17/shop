@@ -6,31 +6,18 @@
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
     <RollForward>LatestMajor</RollForward>
-    <!-- Force all assemblies from deps.json to be copied locally (needed for non-shared-framework deps like IdentityModel) -->
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-
-    <!-- MVC Testing: NOT a shared framework package — needs runtime DLL for WebApplicationFactory -->
+    <!-- Shared framework packages: floating version to match SDK -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="[10.0,)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="[10.0,)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="[10.0,)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="[10.0,)" />
+    <!-- Mvc.Testing: NOT shared framework, needs runtime DLL -->
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.9" />
-    <!-- EF Core: shared framework package in .NET 10, exclude runtime -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.9">
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
-    <!-- EF Core Abstractions: also shared framework in .NET 10 -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="10.0.9">
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
-    <!-- EF Core Relational: also shared framework in .NET 10 -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.9">
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
-    <!-- EF Core InMemory: shared framework package in .NET 10, exclude runtime -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.9">
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
+    <!-- Non-shared packages -->
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
@@ -49,15 +36,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Api\Api.csproj" />
   </ItemGroup>
-
-  <!-- Force copy of IdentityModel assemblies into output dir (SDK marks them as shared-framework but they are not) -->
-  <Target Name="CopyIdentityModelAssemblies" AfterTargets="Build">
-    <ItemGroup>
-      <_IdentityModelDlls Include="$(NuGetPackageRoot)microsoft.identitymodel.abstractions/8.19.1/lib/net10.0/Microsoft.IdentityModel.Abstractions.dll" />
-      <_IdentityModelDlls Include="$(NuGetPackageRoot)microsoft.identitymodel.logging/8.19.1/lib/net10.0/Microsoft.IdentityModel.Logging.dll" />
-      <_IdentityModelDlls Include="$(NuGetPackageRoot)microsoft.identitymodel.jsonwebtokens/8.19.1/lib/net10.0/Microsoft.IdentityModel.JsonWebTokens.dll" />
-    </ItemGroup>
-    <Copy SourceFiles="@(_IdentityModelDlls)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
-  </Target>
 
 </Project>
