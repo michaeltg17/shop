@@ -11,10 +11,10 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <!-- Shared framework packages: floating version from 10.0.4+ to satisfy Npgsql and match SDK -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="[10.0.4,)" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="[10.0.4,)" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="[10.0.4,)" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="[10.0.4,)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="10.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.9" />
     <!-- Mvc.Testing: NOT shared framework, needs runtime DLL -->
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.9" />
     <!-- Non-shared packages -->
