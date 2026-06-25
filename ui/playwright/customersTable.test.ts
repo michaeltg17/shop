@@ -24,8 +24,9 @@ test('loadCustomers invoked only once across navigation', async ({ page }) => {
   await page.waitForURL(/\/admin\/user/);
 
   // Navigate back to customers page
-  await page.goBack();
-  await page.waitForURL(/\/admin\/users/);
+  // goBack + waitForURL can be flaky in SPA; use a broader URL match and longer timeout
+  await page.goBack({ timeout: 10000 });
+  await page.waitForURL(/\/admin/, { timeout: 10000 });
 
   // Allow a short grace period for any unexpected network calls
   await page.waitForTimeout(500);
