@@ -783,7 +783,10 @@ describe('AuthService', () => {
     const loginReq = httpMock.expectOne('/api/auth/login');
     loginReq.flush({ requiresTwoFactor: false, token: 'jwt', email: 'test@test.com' });
     const profileReq = httpMock.expectOne('/api/auth/profile');
-    profileReq.error(new ErrorEvent('Network error'), { status: 500, statusText: 'Internal Server Error' });
+    profileReq.error(new ErrorEvent('Network error'), {
+      status: 500,
+      statusText: 'Internal Server Error',
+    });
     tick();
     expect(service.isAuthenticated()).toBe(true);
     expect(service.user()?.username).toBe('test@test.com');
@@ -812,7 +815,10 @@ describe('AuthService', () => {
     verifyReq.flush({ token: 'jwt-final', email: 'user@shop.com' });
 
     const profileReq = httpMock.expectOne('/api/auth/profile');
-    profileReq.error(new ErrorEvent('Network error'), { status: 500, statusText: 'Internal Server Error' });
+    profileReq.error(new ErrorEvent('Network error'), {
+      status: 500,
+      statusText: 'Internal Server Error',
+    });
 
     tick();
     expect(service.isAuthenticated()).toBe(true);
@@ -827,7 +833,10 @@ describe('AuthService', () => {
     const req = httpMock.expectOne('/api/auth/register');
     req.flush({ token: 'jwt', email: 'new@shop.com' });
     const profileReq = httpMock.expectOne('/api/auth/profile');
-    profileReq.error(new ErrorEvent('Network error'), { status: 500, statusText: 'Internal Server Error' });
+    profileReq.error(new ErrorEvent('Network error'), {
+      status: 500,
+      statusText: 'Internal Server Error',
+    });
     tick();
     expect(service.isAuthenticated()).toBe(true);
     expect(service.user()?.username).toBe('new@shop.com');
@@ -841,14 +850,21 @@ describe('AuthService', () => {
       setup = s;
     });
     const req = httpMock.expectOne('/api/auth/2fa/setup');
-    req.flush({ provisioningUri: 'otpauth://...', secretBase32: 'ABCDEF', qrCodeSvgBase64: 'base64data' });
+    req.flush({
+      provisioningUri: 'otpauth://...',
+      secretBase32: 'ABCDEF',
+      qrCodeSvgBase64: 'base64data',
+    });
     tick();
     expect(setup?.provisioningUri).toBeTruthy();
   }));
 
   it('should disableTwoFactor return false on error', fakeAsync(() => {
     // Setup user
-    localStorage.setItem('angular_auth_user', JSON.stringify({ username: 'Test', isAdmin: false, isTwoFactorEnabled: true }));
+    localStorage.setItem(
+      'angular_auth_user',
+      JSON.stringify({ username: 'Test', isAdmin: false, isTwoFactorEnabled: true })
+    );
     localStorage.setItem('angular_auth_token', 'jwt');
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
