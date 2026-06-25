@@ -4,6 +4,10 @@ WORKDIR /app
 COPY Shop.slnx .
 COPY src/Api/ src/Api/
 COPY tests/Api.Tests/ tests/Api.Tests/
+
+# Restore packages during build so they're available at runtime
+RUN dotnet restore Shop.slnx
+
 COPY run-ci.sh .
 
 CMD ["bash", "/app/run-ci.sh"]
