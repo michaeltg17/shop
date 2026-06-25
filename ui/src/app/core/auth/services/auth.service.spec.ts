@@ -763,4 +763,288 @@ describe('AuthService', () => {
 
     expect(localStorage.getItem('angular_auth_token')).toBe('my-token');
   });
+
+  // --- Coverage: login fallback paths ---
+
+  it('should return false when login response has no token and no 2FA', fakeAsync(() => {
+    service.login('test@test.com', 'pass').subscribe(success => {
+      expect(success).toBe(false);
+    });
+    const loginReq = httpMock.expectOne('/api/auth/login');
+    loginReq.flush({ requiresTwoFactor: false }); // No token
+    tick();
+    expect(service.isAuthenticated()).toBe(false);
+  }));
+
+  it('should fallback to minimal user when profile fetch fails during login', fakeAsync(() => {
+    service.login('test@test.com', 'pass').subscribe(success => {
+      expect(success).toBe(true);
+    });
+    const loginReq = httpMock.expectOne('/api/auth/login');
+    loginReq.flush({ requiresTwoFactor: false, token: 'jwt', email: 'test@test.com' });
+    const profileReq = httpMock.expectOne('/api/auth/profile');
+    profileReq.error(new ErrorEvent('Network error'), { status: 500, statusText: 'Internal Server Error' });
+    tick();
+    expect(service.isAuthenticated()).toBe(true);
+    expect(service.user()?.username).toBe('test@test.com');
+    expect(service.user()?.isAdmin).toBe(false);
+  }));
+
+  it('should verifyTwoFactor return false when no session id', fakeAsync(() => {
+    service.requiresTwoFactor.set(true);
+    service.twoFaSessionId.set(null);
+
+    service.verifyTwoFactor('123456').subscribe(success => {
+      expect(success).toBe(false);
+    });
+    tick();
+  }));
+
+  it('should fallback to minimal user when profile fetch fails during 2FA verification', fakeAsync(() => {
+    service.requiresTwoFactor.set(true);
+    service.twoFaSessionId.set('session-123');
+
+    service.verifyTwoFactor('123456').subscribe(success => {
+      expect(success).toBe(true);
+    });
+
+    const verifyReq = httpMock.expectOne('/api/auth/2fa/verify');
+    verifyReq.flush({ token: 'jwt-final', email: 'user@shop.com' });
+
+    const profileReq = httpMock.expectOne('/api/auth/profile');
+    profileReq.error(new ErrorEvent('Network error'), { status: 500, statusText: 'Internal Server Error' });
+
+    tick();
+    expect(service.isAuthenticated()).toBe(true);
+    expect(service.user()?.username).toBe('user@shop.com');
+    expect(service.requiresTwoFactor()).toBe(false);
+  }));
+
+  it('should fallback to minimal user when profile fetch fails during register', fakeAsync(() => {
+    service.register('new@shop.com', 'pass123').subscribe(success => {
+      expect(success).toBe(true);
+    });
+    const req = httpMock.expectOne('/api/auth/register');
+    req.flush({ token: 'jwt', email: 'new@shop.com' });
+    const profileReq = httpMock.expectOne('/api/auth/profile');
+    profileReq.error(new ErrorEvent('Network error'), { status: 500, statusText: 'Internal Server Error' });
+    tick();
+    expect(service.isAuthenticated()).toBe(true);
+    expect(service.user()?.username).toBe('new@shop.com');
+  }));
+
+  // --- Coverage: 2FA management ---
+
+  it('should getTwoFaSetup', fakeAsync(() => {
+    let setup: TwoFaSetupResponse | null = null;
+    service.getTwoFaSetup().subscribe(s => {
+      setup = s;
+    });
+    const req = httpMock.expectOne('/api/auth/2fa/setup');
+    req.flush({ provisioningUri: 'otpauth://...', secretBase32: 'ABCDEF', qrCodeSvgBase64: 'base64data' });
+    tick();
+    expect(setup?.provisioningUri).toBeTruthy();
+  }));
+
+  it('should disableTwoFactor return false on error', fakeAsync(() => {
+    // Setup user
+    localStorage.setItem('angular_auth_user', JSON.stringify({ username: 'Test', isAdmin: false, isTwoFactorEnabled: true }));
+    localStorage.setItem('angular_auth_token', 'jwt');
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+    const svc = TestBed.inject(AuthService);
+    const hMock = TestBed.inject(HttpTestingController);
+
+    svc.disableTwoFactor('123456').subscribe(success => {
+      expect(success).toBe(false);
+    });
+    const req = hMock.expectOne('/api/auth/2fa/disable');
+    req.error(new ErrorEvent('error'), { status: 400, statusText: 'Bad Request' });
+    tick();
+    hMock.verify();
+  }));
+
+  it('should getRecoveryCodes return empty array on error', fakeAsync(() => {
+    let codes: string[] = [];
+    service.getRecoveryCodes().subscribe(c => {
+      codes = c;
+    });
+    const req = httpMock.expectOne('/api/auth/2fa/recovery-codes');
+    req.error(new ErrorEvent('error'), { status: 500, statusText: 'Internal Server Error' });
+    tick();
+    expect(codes).toEqual([]);
+  }));
+
+  it('should resetRecoveryCodes', fakeAsync(() => {
+    let codes: string[] = [];
+    service.resetRecoveryCodes('123456').subscribe(c => {
+      codes = c;
+    });
+    const req = httpMock.expectOne('/api/auth/2fa/recovery-codes/reset');
+    req.flush({ codes: ['new1', 'new2'] });
+    tick();
+    expect(codes.length).toBe(2);
+  }));
+
+  it('should resetRecoveryCodes return empty array on error', fakeAsync(() => {
+    let codes: string[] = [];
+    service.resetRecoveryCodes('123456').subscribe(c => {
+      codes = c;
+    });
+    const req = httpMock.expectOne('/api/auth/2fa/recovery-codes/reset');
+    req.error(new ErrorEvent('error'), { status: 400, statusText: 'Bad Request' });
+    tick();
+    expect(codes).toEqual([]);
+  }));
+
+  it('should sendPasswordResetEmail return false on error', fakeAsync(() => {
+    service.sendPasswordResetEmail('user@shop.com').subscribe(success => {
+      expect(success).toBe(false);
+    });
+    const req = httpMock.expectOne('/api/auth/password/reset/send');
+    req.error(new ErrorEvent('error'), { status: 500, statusText: 'Internal Server Error' });
+    tick();
+  }));
+
+  it('should resetPassword return false on error', fakeAsync(() => {
+    service.resetPassword('user@shop.com', 'token', 'newpass').subscribe(success => {
+      expect(success).toBe(false);
+    });
+    const req = httpMock.expectOne('/api/auth/password/reset');
+    req.error(new ErrorEvent('error'), { status: 400, statusText: 'Bad Request' });
+    tick();
+  }));
+
+  it('should changePassword return false on error', fakeAsync(() => {
+    service.changePassword({ currentPassword: 'old', newPassword: 'new' }).subscribe(success => {
+      expect(success).toBe(false);
+    });
+    const req = httpMock.expectOne('/api/auth/password/change');
+    req.error(new ErrorEvent('error'), { status: 400, statusText: 'Bad Request' });
+    tick();
+  }));
+
+  it('should sendEmailConfirmation return false on error', fakeAsync(() => {
+    service.sendEmailConfirmation().subscribe(success => {
+      expect(success).toBe(false);
+    });
+    const req = httpMock.expectOne('/api/auth/email/confirm/send');
+    req.error(new ErrorEvent('error'), { status: 500, statusText: 'Internal Server Error' });
+    tick();
+  }));
+
+  it('should confirmEmail', fakeAsync(() => {
+    service.confirmEmail('u1', 'user@shop.com', 'ABC123').subscribe(success => {
+      expect(success).toBe(true);
+    });
+    const req = httpMock.expectOne('/api/auth/email/confirm');
+    req.flush({ message: 'confirmed' });
+    tick();
+  }));
+
+  it('should confirmEmail return false on error', fakeAsync(() => {
+    service.confirmEmail('u1', 'user@shop.com', 'BAD').subscribe(success => {
+      expect(success).toBe(false);
+    });
+    const req = httpMock.expectOne('/api/auth/email/confirm');
+    req.error(new ErrorEvent('error'), { status: 400, statusText: 'Bad Request' });
+    tick();
+  }));
+
+  // --- Coverage: updateProfile ---
+
+  it('should updateProfile and update auth state', fakeAsync(() => {
+    // First login to set state
+    service.login('test@test.com', 'pass').subscribe(() => undefined);
+    const loginReq = httpMock.expectOne('/api/auth/login');
+    loginReq.flush({ requiresTwoFactor: false, token: 'jwt', email: 'test@test.com' });
+    const profileReq = httpMock.expectOne('/api/auth/profile');
+    profileReq.flush({
+      id: 'u1',
+      email: 'test@test.com',
+      displayName: 'Test',
+      isEmailConfirmed: true,
+      isTwoFactorEnabled: false,
+      roles: ['Customer'],
+    });
+    tick();
+
+    service.updateProfile({ displayName: 'NewName', phoneNumber: '123' }).subscribe(profile => {
+      expect(profile.displayName).toBe('NewName');
+    });
+    const updateReq = httpMock.expectOne('/api/auth/profile');
+    updateReq.flush({
+      id: 'u1',
+      email: 'test@test.com',
+      displayName: 'NewName',
+      phoneNumber: '123',
+      isEmailConfirmed: true,
+      isTwoFactorEnabled: false,
+      roles: ['Customer'],
+    });
+    tick();
+    expect(service.user()?.username).toBe('NewName');
+  }));
+
+  // --- Coverage: getUserId ---
+
+  it('should getUserId return user id from user object', () => {
+    // Login to set user
+    service.login('test@test.com', 'pass').subscribe(() => undefined);
+    const loginReq = httpMock.expectOne('/api/auth/login');
+    loginReq.flush({ requiresTwoFactor: false, token: 'jwt', email: 'test@test.com' });
+    const profileReq = httpMock.expectOne('/api/auth/profile');
+    profileReq.flush({
+      id: 'user-id-123',
+      email: 'test@test.com',
+      displayName: 'Test',
+      isEmailConfirmed: true,
+      isTwoFactorEnabled: false,
+      roles: ['Customer'],
+    });
+    // getUserId runs sync
+    expect(service.getUserId()).toBe('user-id-123');
+  });
+
+  it('should getUserId return null when no user and no token', () => {
+    expect(service.getUserId()).toBeNull();
+  });
+
+  // --- Coverage: isEmailConfirmed ---
+
+  it('should isEmailConfirmed return value from user object', () => {
+    // Login
+    service.login('test@test.com', 'pass').subscribe(() => undefined);
+    const loginReq = httpMock.expectOne('/api/auth/login');
+    loginReq.flush({ requiresTwoFactor: false, token: 'jwt', email: 'test@test.com' });
+    const profileReq = httpMock.expectOne('/api/auth/profile');
+    profileReq.flush({
+      id: 'u1',
+      email: 'test@test.com',
+      displayName: 'Test',
+      isEmailConfirmed: false,
+      isTwoFactorEnabled: false,
+      roles: ['Customer'],
+    });
+    expect(service.isEmailConfirmed()).toBe(false);
+  });
+
+  it('should isEmailConfirmed default to true when no token', () => {
+    // Clear everything
+    service.logout();
+    expect(service.isEmailConfirmed()).toBe(true);
+  });
+
+  // --- Coverage: enableTwoFactor fallback ---
+
+  it('should enableTwoFactor return false on error', fakeAsync(() => {
+    service.enableTwoFactor('123456').subscribe(success => {
+      expect(success).toBe(false);
+    });
+    const req = httpMock.expectOne('/api/auth/2fa/enable');
+    req.error(new ErrorEvent('error'), { status: 400, statusText: 'Bad Request' });
+    tick();
+  }));
 });

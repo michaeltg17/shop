@@ -260,7 +260,8 @@ export class AuthService {
             return of(true);
           })
         );
-      })
+      }),
+      catchError(() => of(false))
     );
   }
 
