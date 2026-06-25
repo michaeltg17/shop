@@ -34,12 +34,6 @@ describe('UserPage', () => {
     hasRecoveryCodes: false,
   };
 
-  const mockTwoFaStatusEnabled: TwoFaStatusResponse = {
-    isTwoFaEnabled: true,
-    isEmailConfirmed: true,
-    hasRecoveryCodes: true,
-  };
-
   const mockTwoFaSetup: TwoFaSetupResponse = {
     provisioningUri: 'otpauth://totp/test',
     secretBase32: 'JBSWY3DPEHPK3PXP',
@@ -64,7 +58,7 @@ describe('UserPage', () => {
       resetRecoveryCodes: jest.fn(),
     };
     snackBarSpy = {
-      open: jest.fn().mockReturnValue({} as any),
+      open: jest.fn().mockReturnValue({ close: jest.fn() } as MatSnackBar),
     };
 
     await TestBed.configureTestingModule({
