@@ -23,15 +23,33 @@
         </div>
       </div>
       <mat-nav-list>
-        <a mat-listItem [class.active]="activeTab === 'profile'" (click)="switchTab('profile')" (keydown.enter)="switchTab('profile')" tabindex="0">
+        <a
+          mat-listItem
+          [class.active]="activeTab === 'profile'"
+          (click)="switchTab('profile')"
+          (keydown.enter)="switchTab('profile')"
+          tabindex="0"
+        >
           <mat-icon matListItemIcon>person</mat-icon>
           <span matListItemLine>Profile</span>
         </a>
-        <a mat-listItem [class.active]="activeTab === 'security'" (click)="switchTab('security')" (keydown.enter)="switchTab('security')" tabindex="0">
+        <a
+          mat-listItem
+          [class.active]="activeTab === 'security'"
+          (click)="switchTab('security')"
+          (keydown.enter)="switchTab('security')"
+          tabindex="0"
+        >
           <mat-icon matListItemIcon>lock</mat-icon>
           <span matListItemLine>Password</span>
         </a>
-        <a mat-listItem [class.active]="activeTab === 'twofa'" (click)="switchTab('twofa')" (keydown.enter)="switchTab('twofa')" tabindex="0">
+        <a
+          mat-listItem
+          [class.active]="activeTab === 'twofa'"
+          (click)="switchTab('twofa')"
+          (keydown.enter)="switchTab('twofa')"
+          tabindex="0"
+        >
           <mat-icon matListItemIcon>security</mat-icon>
           <span matListItemLine>Two-Factor Auth</span>
         </a>
