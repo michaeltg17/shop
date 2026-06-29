@@ -30,8 +30,9 @@ shop/
 ### CD (.github/workflows/cd.yml)
 
 - Triggers when `ci` succeeds on `main` (`workflow_run` event)
-- Sequential webhook deployment to `statikk.mooo.com/deploy-shop`: dev → qa → prod
-- Payload: `{"environment":"dev|qa|prod","tag":"<sha>"}`
+- Sequential webhook deployment to `statikk.mooo.com/deploy`: dev → qa → prod
+- Payload: `{"project":"shop","environment":"dev|qa|prod","tag":"<sha>"}`
+- Deploy logic extracted to `.github/workflows/deploy.yml` (reusable workflow)
 - Deploy server resolves images internally from GHCR (`shop-api:<sha>`, `shop-ui:<sha>`)
 - One SHA = one version of both API and UI
 
