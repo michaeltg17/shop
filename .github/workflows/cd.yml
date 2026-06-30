@@ -14,10 +14,9 @@ on:
         required: true
         default: 'latest'
 
-if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-
 jobs:
   deploy-dev:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment:
       name: dev
@@ -31,6 +30,7 @@ jobs:
           deploy_password: ${{ secrets.DEPLOY_PASSWORD }}
 
   deploy-qa:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     needs: deploy-dev
     runs-on: ubuntu-latest
     environment:
@@ -45,6 +45,7 @@ jobs:
           deploy_password: ${{ secrets.DEPLOY_PASSWORD }}
 
   deploy-prod:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     needs: deploy-qa
     runs-on: ubuntu-latest
     environment:
