@@ -22,7 +22,7 @@ jobs:
       name: dev
       url: https://dev.shop.statikk.mooo.com
     steps:
-      - uses: ./.github/actions/deploy.yml
+      - uses: ./.github/actions/deploy
         with:
           environment: dev
           tag: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.event.workflow_run.head_sha }}
@@ -37,7 +37,7 @@ jobs:
       name: qa
       url: https://qa.shop.statikk.mooo.com
     steps:
-      - uses: ./.github/actions/deploy.yml
+      - uses: ./.github/actions/deploy
         with:
           environment: qa
           tag: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.event.workflow_run.head_sha }}
@@ -52,7 +52,7 @@ jobs:
       name: prod
       url: https://shop.statikk.mooo.com
     steps:
-      - uses: ./.github/actions/deploy.yml
+      - uses: ./.github/actions/deploy
         with:
           environment: prod
           tag: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.event.workflow_run.head_sha }}
